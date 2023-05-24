@@ -49,6 +49,9 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+  storeReviews  StoreReview[]
+  orders        Order[]
+  products      Product[]
 }
 
 model VerificationToken {
@@ -57,4 +60,160 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Store {
+  id                String    @id @default(cuid())
+  name              String
+  photo             String?
+  hasStock          Boolean
+  receiveOrders     Boolean
+  facebook          String?
+  instagram         String?
+  whatsapp          String?
+  website           String?
+  countryId         String
+  country           Country @relation(fields: [countryId], references: [id], onDelete: Cascade)
+  productsCountry   ProductsCountry[]
+  customProperties  StoreCustomProperties[]
+  productTypes      ProductType[]
+  addresses         StoreAddress[]
+  storeReviews      StoreReview[]
+  orders            Order[]
+
+  @@index([countryId])
+}
+
+model ProductsCountry {
+  id     String  @id @default(cuid())
+  name   String  @unique
+  stores Store[]
+}
+
+model StoreCustomProperties {
+  id       String  @id @default(cuid())
+  storeId  String
+  store    Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  property String
+  value    String
+
+  @@unique([storeId, property])
+}
+
+model ProductType {
+  id     String  @id @default(cuid())
+  name   String  @unique
+  stores Store[]
+}
+
+model Country {
+  id     String  @id @default(cuid())
+  name   String  @unique
+  stores Store[]
+}
+
+model StoreAddress {
+  id       String  @id @default(cuid())
+  storeId  String
+  store    Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  address  String
+  city     String
+  district String
+
+  @@index([storeId])
+}
+
+model StoreReview {
+  id      String  @id @default(cuid())
+  storeId String
+  store   Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  userId  String
+  user    User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rating  Int
+  comment String
+  orderId String? @unique
+  order   Order? @relation(fields: [orderId], references: [id])
+
+  @@index([storeId])
+  @@index([userId])
+}
+
+model Order {
+  id            String  @id @default(cuid())
+  storeId       String
+  store         Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  userId        String
+  user          User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orderDate     DateTime?
+  deliveryDate  DateTime?
+  productsCost  Float
+  paidAmount    Float
+  delivered     Boolean @default(false)
+  minApproximateDeliveryDate DateTime?
+  maxApproximateDeliveryDate DateTime?
+  review        StoreReview?
+  products      OrderProduct[]
+  orderNotes    OrderNote[]
+  orderPayments OrderPayment[]
+
+  @@index([storeId])
+  @@index([userId])
+}
+
+model OrderProduct {
+  id           String  @id @default(cuid())
+  orderId      String
+  order        Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productName  String
+  price        Float?
+  deliveryId   String
+  delivery     Delivery @relation(fields: [deliveryId], references: [id])
+  product      Product?
+
+  @@index([orderId])
+  @@index([deliveryId])
+}
+
+model OrderNote {
+  id      String  @id @default(cuid())
+  note    String
+  orderId String
+  order   Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+}
+
+model OrderPayment {
+  id           String  @id @default(cuid())
+  orderId      String
+  order        Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  paymentDate  DateTime
+  amount       Float
+
+  @@index([orderId])
+}
+
+model Delivery {
+  id                          String  @id @default(cuid())
+  price                       Float
+  deliveryDate                DateTime?
+  minApproximateDeliveryDate  DateTime?
+  maxApproximateDeliveryDate  DateTime?
+  currier                     String?
+  tracking                    String?
+  orderProducts               OrderProduct[]
+}
+
+model Product {
+  id  String  @id @default(cuid())
+  name String
+  orderProductId String? @unique
+  order OrderProduct? @relation(fields: [orderProductId], references: [id])
+  price Float
+  imageUrl String?
+  acquisitionDate DateTime?
+  userId String
+  user  User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }

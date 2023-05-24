@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="BuyTrack" id="Project-2613" database="LogicalDesign" >
+	<schema name="INSTANCE" catalogname="BuyTrack" >
+		<table name="Address" prior="Adrress" >
+			<column name="id" type="VARCHAR" length="50" jt="12" mandatory="y" />
+			<column name="name" type="VARCHAR" length="100" jt="12" mandatory="y" />
+			<index name="pk_Address_0" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<fk name="fk_Address_Store" to_schema="BuyTrack.INSTANCE" to_table="Store" type="Identifying" mandatory="y" cardinality="ZeroMore" range_from="0" range_to="0" >
+				<fk_column name="id" pk="countryId" />
+			</fk>
+		</table>
+		<table name="Brand" prior="Entity" >
+			<column name="id" type="VARCHAR" length="50" jt="12" mandatory="y" />
+			<column name="name" type="VARCHAR" length="100" jt="12" mandatory="y" />
+			<index name="pk_Brand" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+		</table>
+		<table name="Delivery" prior="Entity_0" >
+			<column name="id" type="VARCHAR" length="50" jt="12" mandatory="y" />
+			<column name="price" type="DECIMAL" length="6" decimal="2" jt="3" mandatory="y" />
+			<column name="deliveryDate" type="DATE" jt="91" />
+			<column name="minApproximateDeliveryDate" type="DATE" jt="91" />
+			<column name="maxApproximateDeliveryDate" type="DATE" jt="91" />
+			<column name="currier" type="VARCHAR" length="50" jt="12" />
+			<column name="tracking" type="VARCHAR" length="50" jt="12" />
+			<index name="pk_Delivery" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<fk name="fk_Delivery_OrderProducts" to_schema="BuyTrack.INSTANCE" to_table="OrderProducts" type="Identifying" mandatory="y" cardinality="ZeroMore" range_from="0" range_to="0" >
+				<fk_column name="id" pk="deliveryId" />
+			</fk>
+		</table>
+		<table name="Entity" />
+		<table name="Order" >
+			<column name="id" type="VARCHAR" length="50" jt="12" mandatory="y" />
+			<column name="storeId" type="VARCHAR" length="50" jt="12" mandatory="y" />
+			<column name="userId" type="VARCHAR" length="50" jt="12" />
+			<column name="orderDate" type="DATE" jt="91" mandatory="y" />
+			<column name="deliveryDate" type="DATE" jt="91" />
+			<column name="productsCost" prior="productsPrice" type="DECIMAL" length="6" decimal="2" jt="3" />
+			<column name="deliveryCost" type="DECIMAL" length="6" decimal="2" jt="3" />
+			<column name="paidAmount" type="DECIMAL" length="6" decimal="2" jt="3" >
+				<defo><![CDATA[0]]></defo>
+			</column>
+			<column name="delivered" type="BOOLEAN" jt="-7" mandatory="y" >
+				<defo><![CDATA[false]]></defo>
+			</column>
+			<column name="minApproximateDeliveryDate" type="DATE" jt="91" />
+			<column name="maxApproximateDeliveryDate" type="DATE" jt="91" />
+			<index name="pk_storeId" unique="UNIQUE_KEY" >
+				<column name="storeId" />
+			</index>
+			<index name="pk_Order" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<index name="unq_userId" unique="UNIQUE_INDEX" >
+				<column name="userId" />
+			</index>
+			<fk name="fk_Order_Order_Products" to_schema="BuyTrack.INSTANCE" to_table="OrderProducts" type="Identifying" mandatory="y" cardinality="ZeroMore" range_from="0" range_to="0" >
+				<fk_column name="id" pk="orderId" />
+			</fk>
+			<fk name="fk_Order_Order_Notes" to_schema="BuyTrack.INSTANCE" to_table="OrderNotes" type="Identifying" mandatory="y" cardinality="ZeroMore" range_from="0" range_to="0" >
+				<fk_column name="id" pk="orderId" />
+			</fk>
+			<fk name="fk_Order_Store_Review" to_schema="BuyTrack.INSTANCE" to_table="StoreReview" type="Identifying" mandatory="y" cardinality="ZeroMore" range_from="0" range_to="0" >
+				<fk_column name="id" pk="orderId" />
+			</fk>
+			<fk name="fk_Order_OrderPayments" to_schema="BuyTrack.INSTANCE" to_table="OrderPayments" type="Identifying" mandatory="y" cardinality="ZeroMore" range_from="0" range_to="0" >
+				<fk_column name="id" pk="orderId" />
+			</fk>
+		</table>
+		<table name="OrderNotes" prior="Order_Notes" >
+			<column name="id" type="VARCHAR" length="50" jt="12" mandatory="y" />
+			<column name="note" type="VARCHAR" length="600" jt="12" />
+			<column name="orderId" type="VARCHAR" length="50" jt="12" />
+			<index name="pk_Order_Notes" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<index name="unq_orderId" unique="UNIQUE_INDEX" >
+				<column name="orderId" />
+			</index>
+		</table>
+		<table name="OrderPayments" prior="Order_" >
+			<column name="id" type="VARCHAR" length="50" jt="12" mandatory="y" />
+			<column name="orderId" type="VARCHAR" length="50" jt="12" mandatory="y" />
+			<column name="paymentDate" type="DATE" jt="91" mandatory="y" />
+			<column name="amount" type="DECIMAL" length="6" decimal="2" jt="3" />
+			<index name="pk_OrderPayments" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<index name="unq_orderId" unique="UNIQUE_INDEX" >
+				<column name="orderId" />
+			</index>
+		</table>
+		<table name="OrderProducts" prior="Order_Products" >
+			<column name="id" type="VARCHAR" length="50" jt="12" mandatory="y" />
+			<column name="orderId" type="VARCHAR" length="50" jt="12" mandatory="y" />
+			<column name="product" type="VARCHAR" length="500" jt="12" mandatory="y" />
+			<column name="price" type="DECIMAL" length="6" decimal="2" jt="3" />
+			<column name="deliveryId" type="VARCHAR" length="50" jt="12" />
+			<index name="pk_Order_Products" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<index name="unq_orderId" unique="UNIQUE_INDEX" >
+				<column name="orderId" />
+			</index>
+			<index name="unq_deliveryId" unique="UNIQUE_INDEX" >
+				<column name="deliveryId" />
+			</index>
+			<fk name="fk_OrderProducts_Products" to_schema="BuyTrack.INSTANCE" to_table="Products" type="Identifying" mandatory="y" cardinality="ZeroMore" range_from="0" range_to="0" >
+				<fk_column name="id" pk="orderProductId" />
+			</fk>
+		</table>
+		<table name="ProductType" prior="Product_Type" >
+			<column name="id" type="VARCHAR" length="50" jt="12" mandatory="y" />
+			<column name="name" type="VARCHAR" length="100" jt="12" mandatory="y" />
+			<index name="pk_Product_Type" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<fk name="fk_Product_Type_Store_Product_Type" to_schema="BuyTrack.INSTANCE" to_table="Store_ProductType" type="Identifying" mandatory="y" cardinality="ZeroMore" range_from="0" range_to="0" >
+				<fk_column name="id" pk="productTypeId" />
+			</fk>
+		</table>
+		<table name="Products" prior="Entity_0" >
+			<column name="id" type="VARCHAR" length="50" jt="12" mandatory="y" />
+			<column name="name" type="VARCHAR" length="100" jt="12" mandatory="y" />
+			<column name="orderProductId" prior="orderId" type="VARCHAR" length="50" jt="12" />
+			<column name="price" type="DECIMAL" length="6" decimal="2" jt="3" />
+			<column name="imageUrl" type="VARCHAR" length="100" jt="12" />
+			<column name="acquisitionDate" type="DATE" jt="91" />
+			<column name="userId" type="VARCHAR" length="50" jt="12" mandatory="y" />
+			<index name="pk_Products" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<index name="unq_userId" unique="UNIQUE_INDEX" >
+				<column name="userId" />
+			</index>
+			<index name="unq_orderId" unique="UNIQUE_INDEX" >
+				<column name="orderProductId" />
+			</index>
+		</table>
+		<table name="ProductsCountry" prior="Country" >
+			<column name="id" type="VARCHAR" length="50" jt="12" mandatory="y" />
+			<column name="name" type="VARCHAR" length="100" jt="12" mandatory="y" />
+			<index name="pk_Country" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<fk name="fk_Country_Store_Country" to_schema="BuyTrack.INSTANCE" to_table="Store_ProductsCountry" type="Identifying" mandatory="y" cardinality="ZeroMore" range_from="0" range_to="0" >
+				<fk_column name="id" pk="countryId" />
+			</fk>
+		</table>
+		<table name="Store" >
+			<column name="id" type="VARCHAR" length="50" jt="12" mandatory="y" />
+			<column name="name" type="VARCHAR" length="100" jt="12" mandatory="y" />
+			<column name="photo" type="VARCHAR" length="100" jt="12" />
+			<column name="hasStock" type="BOOLEAN" jt="-7" mandatory="y" />
+			<column name="receiveOrders" type="BOOLEAN" jt="-7" mandatory="y" />
+			<column name="facebook" type="VARCHAR" length="100" jt="12" />
+			<column name="instagram" type="VARCHAR" length="100" jt="12" />
+			<column name="whatsapp" type="VARCHAR" length="50" jt="12" />
+			<column name="website" type="VARCHAR" length="50" jt="12" />
+			<column name="countryId" prior="country" type="VARCHAR" length="50" jt="12" />
+			<index name="pk" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<index name="unq_countryId" unique="UNIQUE_INDEX" >
+				<column name="countryId" />
+			</index>
+			<fk name="fk_Store_Order" to_schema="BuyTrack.INSTANCE" to_table="Order" type="Identifying" mandatory="y" cardinality="ZeroMore" range_from="0" range_to="0" >
+				<fk_column name="id" pk="storeId" />
+			</fk>
+			<fk name="fk_Store_Store_Product_Type" to_schema="BuyTrack.INSTANCE" to_table="Store_ProductType" type="Identifying" mandatory="y" cardinality="ZeroMore" range_from="0" range_to="0" >
+				<fk_column name="id" pk="storeId" />
+			</fk>
+			<fk name="fk_Store_Store_Country" to_schema="BuyTrack.INSTANCE" to_table="Store_ProductsCountry" type="Identifying" mandatory="y" cardinality="ZeroMore" range_from="0" range_to="0" >
+				<fk_column name="id" pk="storeId" />
+			</fk>
+			<fk name="fk_Store_Store_Custom_Properties" to_schema="BuyTrack.INSTANCE" to_table="StoreCustomProperties" type="Identifying" mandatory="y" cardinality="ZeroMore" range_from="0" range_to="0" >
+				<fk_column name="id" pk="id" />
+			</fk>
+			<fk name="fk_Store_Address" to_schema="BuyTrack.INSTANCE" to_table="StoreAddress" type="Identifying" mandatory="y" cardinality="ZeroMore" range_from="0" range_to="0" >
+				<fk_column name="id" pk="storeId" />
+			</fk>
+			<fk name="fk_Store_Store_Review" to_schema="BuyTrack.INSTANCE" to_table="StoreReview" type="Identifying" mandatory="y" cardinality="ZeroMore" range_from="0" range_to="0" >
+				<fk_column name="id" pk="storeId" />
+			</fk>
+		</table>
+		<table name="StoreAddress" prior="Store_Address" >
+			<column name="id" type="VARCHAR" length="50" jt="12" mandatory="y" />
+			<column name="storeId" type="VARCHAR" length="50" jt="12" mandatory="y" />
+			<column name="address" type="VARCHAR" length="500" jt="12" mandatory="y" />
+			<column name="city" type="VARCHAR" length="50" jt="12" mandatory="y" />
+			<column name="district" type="VARCHAR" length="50" jt="12" mandatory="y" />
+			<index name="pk_Address" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<index name="unq_storeId" unique="UNIQUE_INDEX" >
+				<column name="storeId" />
+			</index>
+		</table>
+		<table name="StoreCustomProperties" prior="Store_Custom_Properties" >
+			<column name="id" type="VARCHAR" length="50" jt="12" mandatory="y" />
+			<column name="storeId" type="VARCHAR" length="50" jt="12" />
+			<column name="property" type="VARCHAR" length="50" jt="12" mandatory="y" />
+			<column name="value" type="VARCHAR" length="200" jt="12" />
+			<index name="pk_Store_Custom_Properties" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+		</table>
+		<table name="StoreReview" prior="Store_Review" >
+			<column name="id" type="VARCHAR" length="50" jt="12" mandatory="y" />
+			<column name="storeId" type="VARCHAR" length="50" jt="12" mandatory="y" />
+			<column name="userId" type="VARCHAR" length="50" jt="12" mandatory="y" />
+			<column name="rating" prior="averageRating" type="DOUBLE" jt="8" mandatory="y" />
+			<column name="comment" type="VARCHAR" length="1000" jt="12" />
+			<column name="orderId" type="VARCHAR" length="50" jt="12" />
+			<index name="pk_Store_Review" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<index name="unq_orderId" unique="UNIQUE_INDEX" >
+				<column name="orderId" />
+			</index>
+			<index name="unq_userId" unique="UNIQUE_INDEX" >
+				<column name="userId" />
+			</index>
+			<index name="unq_storeId" unique="UNIQUE_INDEX" >
+				<column name="storeId" />
+			</index>
+		</table>
+		<table name="StoreType" prior="Entity_0" >
+			<column name="id" type="VARCHAR" length="50" jt="12" mandatory="y" />
+			<column name="name" type="VARCHAR" length="100" jt="12" mandatory="y" />
+			<index name="pk_StoreType" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+		</table>
+		<table name="Store_ProductType" prior="Store_Product_Type" >
+			<column name="storeId" type="VARCHAR" length="50" jt="12" mandatory="y" />
+			<column name="productTypeId" type="VARCHAR" length="50" jt="12" mandatory="y" />
+			<index name="pk_Store_Product_Type" unique="PRIMARY_KEY" >
+				<column name="storeId" />
+				<column name="productTypeId" />
+			</index>
+		</table>
+		<table name="Store_ProductsCountry" prior="Store_Country" >
+			<column name="storeId" type="VARCHAR" length="50" jt="12" mandatory="y" />
+			<column name="countryId" type="VARCHAR" length="50" jt="12" mandatory="y" />
+			<index name="pk_Store_Country" unique="PRIMARY_KEY" >
+				<column name="storeId" />
+				<column name="countryId" />
+			</index>
+		</table>
+		<table name="User" prior="Entity_0" >
+			<column name="id" type="VARCHAR" length="50" jt="12" mandatory="y" />
+			<index name="pk_User" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<fk name="fk_User_Order" to_schema="BuyTrack.INSTANCE" to_table="Order" type="Identifying" mandatory="y" cardinality="ZeroMore" range_from="0" range_to="0" >
+				<fk_column name="id" pk="userId" />
+			</fk>
+			<fk name="fk_User_Store_Review" to_schema="BuyTrack.INSTANCE" to_table="StoreReview" type="Identifying" mandatory="y" cardinality="ZeroMore" range_from="0" range_to="0" >
+				<fk_column name="id" pk="userId" />
+			</fk>
+			<fk name="fk_User_Products" to_schema="BuyTrack.INSTANCE" to_table="Products" type="Identifying" mandatory="y" cardinality="ZeroMore" range_from="0" range_to="0" >
+				<fk_column name="id" pk="userId" />
+			</fk>
+		</table>
+	</schema>
+	<layout name="Default Layout" id="Layout-1eb5" show_relation="columns" >
+		<entity schema="BuyTrack.INSTANCE" name="Address" color="C1D8EE" x="128" y="416" />
+		<entity schema="BuyTrack.INSTANCE" name="Delivery" color="C1D8EE" x="976" y="560" />
+		<entity schema="BuyTrack.INSTANCE" name="Order" color="C1D8EE" x="576" y="176" />
+		<entity schema="BuyTrack.INSTANCE" name="OrderNotes" color="C1D8EE" x="880" y="304" />
+		<entity schema="BuyTrack.INSTANCE" name="OrderPayments" color="C1D8EE" x="832" y="128" />
+		<entity schema="BuyTrack.INSTANCE" name="OrderProducts" color="C1D8EE" x="768" y="464" />
+		<entity schema="BuyTrack.INSTANCE" name="ProductType" color="C1D8EE" x="224" y="672" />
+		<entity schema="BuyTrack.INSTANCE" name="Products" color="C1D8EE" x="1008" y="384" />
+		<entity schema="BuyTrack.INSTANCE" name="ProductsCountry" color="C1D8EE" x="640" y="608" />
+		<entity schema="BuyTrack.INSTANCE" name="Store" color="C1D8EE" x="288" y="240" />
+		<entity schema="BuyTrack.INSTANCE" name="StoreAddress" color="C1D8EE" x="592" y="432" />
+		<entity schema="BuyTrack.INSTANCE" name="StoreCustomProperties" color="C1D8EE" x="48" y="256" />
+		<entity schema="BuyTrack.INSTANCE" name="StoreReview" color="C1D8EE" x="432" y="64" />
+		<entity schema="BuyTrack.INSTANCE" name="Store_ProductType" color="C1D8EE" x="192" y="544" />
+		<entity schema="BuyTrack.INSTANCE" name="Store_ProductsCountry" color="C1D8EE" x="432" y="608" />
+		<entity schema="BuyTrack.INSTANCE" name="User" color="C1D8EE" x="672" y="48" />
+	</layout>
+</project>
