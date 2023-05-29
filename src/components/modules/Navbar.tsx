@@ -16,13 +16,13 @@ const LINKS = [
   {
     id: 2,
     text: "Pedidos",
-    href: "/pedidos",
+    href: "/orders",
     isPublic: false,
   },
   {
     id: 3,
     text: "Tiendas",
-    href: "/tiendas",
+    href: "/stores",
     isPublic: true,
   },
 ];
