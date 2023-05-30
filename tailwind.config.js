@@ -14,6 +14,10 @@ module.exports = {
           light: "#22c55e",
           DEFAULT: "#22c55e",
         },
+        muted: {
+          light: "#a1a1aa",
+          DEFAULT: "#a1a1aa",
+        },
       },
     },
   },
