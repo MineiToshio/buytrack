@@ -4,6 +4,31 @@ import { FC, useState } from "react";
 import Typography from "./Typography";
 import { cn } from "@/styles/utils";
 import useHandleOutsideClick from "@/hooks/useHandleOutsideClick";
+import { VariantProps, cva } from "class-variance-authority";
+
+const selectVariants = cva("relative w-full cursor-pointer rounded-md p-2", {
+  variants: {
+    variant: {
+      standard:
+        "border border-solid after:absolute after:right-2 after:top-2 after:text-gray-900 after:content-['⏷']",
+      ghost: "hover:bg-slate-100",
+    },
+    status: {
+      open: "shadow-md",
+      close: "",
+    },
+  },
+  compoundVariants: [
+    {
+      variant: "ghost",
+      status: "open",
+      class: "border border-solid hover:bg-white",
+    },
+  ],
+  defaultVariants: {
+    variant: "ghost",
+  },
+});
 
 type OptionValue = string | number | boolean | undefined;
 
@@ -12,7 +37,7 @@ export type Option = {
   value: OptionValue;
 };
 
-type SelectProps = {
+type SelectProps = VariantProps<typeof selectVariants> & {
   className?: string;
   placeholder?: string;
   options: Array<Option>;
@@ -26,6 +51,7 @@ const Select: FC<SelectProps> = ({
   onChange,
   className,
   placeholder,
+  variant,
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const selectRef = useHandleOutsideClick(() => setIsOpen(false));
@@ -37,8 +63,11 @@ const Select: FC<SelectProps> = ({
   return (
     <div
       className={cn(
-        "relative w-full cursor-pointer rounded-md border border-solid p-2 after:absolute after:right-2 after:top-2 after:text-gray-900 after:content-['⏷']",
-        className
+        selectVariants({
+          variant,
+          status: isOpen ? "open" : "close",
+          className,
+        })
       )}
       onClick={toggleOpen}
       ref={selectRef}
@@ -52,7 +81,7 @@ const Select: FC<SelectProps> = ({
       )}
       <div
         className={cn(
-          "top-13 absolute left-[-1px] flex w-[calc(100%+2px)] flex-col overflow-y-auto border border-t-0 border-solid bg-white transition",
+          "top-13 absolute left-[-1px] z-10 flex w-[calc(100%+2px)] flex-col overflow-y-auto rounded-b-md border border-t-0 border-solid bg-white shadow-md transition",
           {
             hidden: !isOpen,
           }
