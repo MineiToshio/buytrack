@@ -2,7 +2,7 @@ import { cn } from "@/styles/utils";
 import { VariantProps, cva } from "class-variance-authority";
 import { InputHTMLAttributes, forwardRef } from "react";
 
-const inputVariants = cva("w-full p-2 outline-0", {
+const inputVariants = cva("text-base sm:text-lg w-full p-2 outline-0", {
   variants: {
     variant: {
       ghost:
