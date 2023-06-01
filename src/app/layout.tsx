@@ -13,6 +13,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
           <Navbar />
           {children}
         </Providers>
+        <div id="portal" />
       </body>
     </html>
   );
