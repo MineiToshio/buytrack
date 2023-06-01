@@ -1,8 +1,8 @@
 import { regularFont, secondaryFont } from "@/styles/fonts";
 import { cn } from "@/styles/utils";
 import { VariantProps, cva } from "class-variance-authority";
-import { Loader2 } from "lucide-react";
-import { ButtonHTMLAttributes, FC, forwardRef } from "react";
+import { ButtonHTMLAttributes, forwardRef } from "react";
+import Icons from "./Icons";
 
 export const buttonVariants = cva(
   "active:scale-95 inline-flex items-center justify-center rounded-md text-base font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none",
@@ -50,7 +50,7 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
     isLoading?: boolean;
   };
 
-const Button: FC<ButtonProps> = forwardRef<HTMLButtonElement, ButtonProps>(
+const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
     { className, children, variant, font, color, isLoading, size, ...props },
     ref
@@ -64,7 +64,9 @@ const Button: FC<ButtonProps> = forwardRef<HTMLButtonElement, ButtonProps>(
         disabled={isLoading}
         {...props}
       >
-        {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+        {isLoading ? (
+          <Icons.Loader className="mr-2 h-4 w-4 animate-spin" />
+        ) : null}
         {children}
       </button>
     );
