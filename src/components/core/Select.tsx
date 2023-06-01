@@ -11,7 +11,7 @@ const selectVariants = cva("relative w-full cursor-pointer rounded-md p-2", {
     variant: {
       standard:
         "border border-solid after:absolute after:right-2 after:top-2 after:text-gray-900 after:content-['⏷']",
-      ghost: "hover:bg-slate-100",
+      ghost: "border border-solid border-transparent hover:bg-slate-100",
     },
     status: {
       open: "shadow-md",
@@ -22,7 +22,7 @@ const selectVariants = cva("relative w-full cursor-pointer rounded-md p-2", {
     {
       variant: "ghost",
       status: "open",
-      class: "border border-solid hover:bg-white",
+      class: "border-gray-200 hover:bg-white",
     },
   ],
   defaultVariants: {
