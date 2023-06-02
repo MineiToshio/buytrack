@@ -81,13 +81,13 @@ const Select: FC<SelectProps> = ({
       )}
       <div
         className={cn(
-          "top-13 absolute left-[-1px] z-10 flex w-[calc(100%+2px)] flex-col overflow-y-auto rounded-b-md border border-t-0 border-solid bg-white shadow-md transition max-h-40",
+          "top-13 absolute left-[-1px] z-10 flex max-h-40 w-[calc(100%+2px)] flex-col overflow-y-auto rounded-b-md border border-t-0 border-solid bg-white shadow-md transition",
           {
             hidden: !isOpen,
           }
         )}
       >
-        {options ? (
+        {options && options.length > 0 ? (
           <>
             {options.map((o) => {
               const key =
