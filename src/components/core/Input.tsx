@@ -8,7 +8,7 @@ const inputVariants = cva("text-base sm:text-lg w-full p-2 outline-0", {
       standard:
         "border border-solid rounded-md focus:outline focus:outline-1 focus:outline-slate-200 focus:drop-shadow-md",
       ghost:
-        "cursor-pointer rounded-md hover:bg-slate-100 focus:outline focus:outline-1 focus:outline-slate-200 focus:drop-shadow-md focus:hover:bg-white",
+        "cursor-pointer rounded-md hover:bg-slate-100 focus:outline focus:outline-1 focus:outline-slate-200 focus:drop-shadow-md focus:cursor-text focus:hover:bg-white",
       unstyled: "p-0",
     },
   },
