@@ -74,7 +74,7 @@ model Store {
   website           String?
   countryId         String
   country           Country @relation(fields: [countryId], references: [id], onDelete: Cascade)
-  productsCountry   ProductsCountry[]
+  productsCountry   Store_ProductsCountry[]
   customProperties  StoreCustomProperties[]
   productTypes      ProductType[]
   addresses         StoreAddress[]
@@ -84,10 +84,21 @@ model Store {
   @@index([countryId])
 }
 
+model Store_ProductsCountry {
+  idStore           String
+  store             Store @relation(fields: [idStore], references: [id])
+  idProductsCountry String
+  country           ProductsCountry @relation(fields: [idProductsCountry], references: [id])
+
+  @@id([idStore, idProductsCountry])
+  @@index([idStore])
+  @@index([idProductsCountry])
+}
+
 model ProductsCountry {
   id     String  @id @default(cuid())
   name   String  @unique
-  stores Store[]
+  stores Store_ProductsCountry[]
 }
 
 model StoreCustomProperties {
