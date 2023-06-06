@@ -1,10 +1,11 @@
 "use client";
 
-import { FC, useState } from "react";
-import Typography from "./Typography";
-import { cn } from "@/styles/utils";
+import Chip from "@/core/Chip";
 import useHandleOutsideClick from "@/hooks/useHandleOutsideClick";
+import { cn } from "@/styles/utils";
 import { VariantProps, cva } from "class-variance-authority";
+import { FC, useMemo, useState } from "react";
+import Typography from "./Typography";
 
 const selectVariants = cva("relative w-full cursor-pointer rounded-md p-2", {
   variants: {
@@ -30,20 +31,30 @@ const selectVariants = cva("relative w-full cursor-pointer rounded-md p-2", {
   },
 });
 
-type OptionValue = string | number | boolean | undefined;
+export type OptionValue = string | number | boolean;
 
 export type Option = {
   label: string;
   value: OptionValue;
 };
 
+type SingleOption = {
+  multiple?: false;
+  value: OptionValue | undefined;
+  onChange: (value: OptionValue) => void;
+};
+
+type MultipleOption = {
+  multiple: true;
+  value: OptionValue[] | undefined;
+  onChange: (value: OptionValue[]) => void;
+};
+
 type SelectProps = VariantProps<typeof selectVariants> & {
   className?: string;
   placeholder?: string;
   options?: Array<Option>;
-  value: OptionValue;
-  onChange: (value: OptionValue) => void;
-};
+} & (SingleOption | MultipleOption);
 
 const Select: FC<SelectProps> = ({
   value,
@@ -52,11 +63,43 @@ const Select: FC<SelectProps> = ({
   className,
   placeholder,
   variant,
+  multiple,
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const selectRef = useHandleOutsideClick(() => setIsOpen(false));
 
-  const selectedOption = options?.find((o) => o.value === value);
+  const selectedOption = useMemo(() => {
+    if (options && value) {
+      if (multiple)
+        return options?.filter((o) => o.value && value.includes(o.value));
+      return options?.filter((o) => o.value === value);
+    }
+  }, [multiple, options, value]);
+
+  const handleChange = (selectedValue: OptionValue) => {
+    if (multiple) {
+      const formattedValue = value ?? [];
+      const isSelected = formattedValue.find((v) => v === selectedValue);
+
+      if (isSelected) {
+        const newValue = formattedValue.filter((v) => v !== selectedValue);
+        onChange(newValue);
+      } else {
+        const newValue = [...formattedValue, selectedValue];
+        onChange(newValue);
+      }
+    } else {
+      onChange(selectedValue);
+    }
+  };
+
+  const handleDelete = (selectedValue: OptionValue) => {
+    if (multiple) {
+      const formattedValue = value ?? [];
+      const newValue = formattedValue.filter((v) => v !== selectedValue);
+      onChange(newValue);
+    }
+  };
 
   const toggleOpen = () => setIsOpen((o) => !o);
 
@@ -72,8 +115,26 @@ const Select: FC<SelectProps> = ({
       onClick={toggleOpen}
       ref={selectRef}
     >
-      {selectedOption ? (
-        <Typography>{selectedOption.label}</Typography>
+      {selectedOption && selectedOption.length > 0 ? (
+        <>
+          {multiple ? (
+            <div className="flex">
+              {selectedOption.map((so) => {
+                const key =
+                  typeof so.value === "boolean" ? (so.value ? 1 : 0) : so.value;
+                return (
+                  <Chip
+                    label={so.label}
+                    key={key}
+                    onDelete={() => handleDelete(so.value)}
+                  />
+                );
+              })}
+            </div>
+          ) : (
+            <Typography>{selectedOption[0].label}</Typography>
+          )}
+        </>
       ) : (
         <Typography color="muted" className="select-none">
           {placeholder}
@@ -96,7 +157,7 @@ const Select: FC<SelectProps> = ({
                 <span
                   className="group w-full p-2 hover:bg-primary"
                   key={key}
-                  onClick={() => onChange(o.value)}
+                  onClick={() => handleChange(o.value)}
                 >
                   <Typography className="select-none group-hover:text-white">
                     {o.label}
