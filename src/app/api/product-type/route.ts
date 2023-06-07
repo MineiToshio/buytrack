@@ -43,7 +43,6 @@ export const POST = async (req: NextRequest) => {
       return NextResponse.json(
         {
           error: `You already have a product type named ${name}.`,
-          createdApiKey: null,
         },
         { status: 400 }
       );

@@ -43,7 +43,6 @@ export const POST = async (req: NextRequest) => {
       return NextResponse.json(
         {
           error: `You already have a country named ${name}.`,
-          createdApiKey: null,
         },
         { status: 400 }
       );
