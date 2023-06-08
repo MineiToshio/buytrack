@@ -9,6 +9,8 @@ import {
   PlusCircle,
   X,
   Globe2,
+  CornerUpLeft,
+  BookCopy,
 } from "lucide-react";
 
 export const Icons = {
@@ -22,6 +24,8 @@ export const Icons = {
   Add: PlusCircle,
   Cancel: X,
   Globe: Globe2,
+  CornerUpLeftArrow: CornerUpLeft,
+  Category: BookCopy,
 };
 
 export default Icons;
