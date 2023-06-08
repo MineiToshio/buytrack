@@ -66,8 +66,8 @@ model Store {
   id                String    @id @default(cuid())
   name              String
   photo             String?
-  hasStock          Boolean
-  receiveOrders     Boolean
+  hasStock          Boolean?
+  receiveOrders     Boolean?
   facebook          String?
   instagram         String?
   whatsapp          String?
@@ -76,7 +76,7 @@ model Store {
   country           Country @relation(fields: [countryId], references: [id], onDelete: Cascade)
   productsCountry   Store_ProductsCountry[]
   customProperties  StoreCustomProperties[]
-  productTypes      ProductType[]
+  productTypes      Store_ProductType[]
   addresses         StoreAddress[]
   storeReviews      StoreReview[]
   orders            Order[]
@@ -111,10 +111,21 @@ model StoreCustomProperties {
   @@unique([storeId, property])
 }
 
+model Store_ProductType {
+  idStore           String
+  store             Store @relation(fields: [idStore], references: [id])
+  idProductType     String
+  productType       ProductType @relation(fields: [idProductType], references: [id])
+
+  @@id([idStore, idProductType])
+  @@index([idStore])
+  @@index([idProductType])
+}
+
 model ProductType {
   id     String  @id @default(cuid())
   name   String  @unique
-  stores Store[]
+  stores Store_ProductType[]
 }
 
 model Country {
