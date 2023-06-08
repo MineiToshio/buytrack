@@ -69,7 +69,7 @@ const Select: FC<SelectProps> = ({
   const selectRef = useHandleOutsideClick(() => setIsOpen(false));
 
   const selectedOption = useMemo(() => {
-    if (options && value) {
+    if (options && value != null) {
       if (multiple)
         return options?.filter((o) => o.value && value.includes(o.value));
       return options?.filter((o) => o.value === value);
