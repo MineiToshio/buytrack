@@ -36,15 +36,16 @@ export type StoreFormType = {
   hasStock?: boolean;
   receiveOrders?: boolean;
   countryId: string;
-  storeCountryIds?: string[];
+  productsCountryIds?: string[];
   productTypeIds?: string[];
 };
 
 type StoreFormProps = {
   onSubmit: (data: StoreFormType) => void;
+  isLoading?: boolean;
 };
 
-const StoreForm: FC<StoreFormProps> = ({ onSubmit }) => {
+const StoreForm: FC<StoreFormProps> = ({ isLoading, onSubmit }) => {
   const { options: countryOptions, addNewOption: addNewCountry } =
     useSelect<Country>(GET_COUNTRY, CREATE_COUNTRY, ["country"]);
 
@@ -68,7 +69,7 @@ const StoreForm: FC<StoreFormProps> = ({ onSubmit }) => {
     handleSubmit,
     formState: { errors },
   } = useForm<StoreFormType>();
-  console.log(errors);
+
   return (
     <form className="flex w-full flex-col" onSubmit={handleSubmit(onSubmit)}>
       <div className="mb-4">
@@ -140,6 +141,9 @@ const StoreForm: FC<StoreFormProps> = ({ onSubmit }) => {
         formField="countryId"
         newModalTitle="Nuevo país"
         onAdd={addNewCountry}
+        required
+        error={!!errors.countryId}
+        errorMessage="El país de la tienda es obligatorio"
       />
       <StoreFormRow
         title="Países de importación"
@@ -148,7 +152,7 @@ const StoreForm: FC<StoreFormProps> = ({ onSubmit }) => {
         type="select"
         options={productsCountryOptions}
         control={control}
-        formField="storeCountryIds"
+        formField="productsCountryIds"
         newModalTitle="Nuevo país de importación"
         onAdd={addNewProductsCountry}
         multiple
@@ -165,7 +169,7 @@ const StoreForm: FC<StoreFormProps> = ({ onSubmit }) => {
         onAdd={addNewProductType}
         multiple
       />
-      <Button type="submit" className="mt-5 w-fit">
+      <Button type="submit" className="mt-5 w-fit" isLoading={isLoading}>
         Guardar
       </Button>
     </form>

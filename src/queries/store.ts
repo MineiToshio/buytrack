@@ -14,25 +14,29 @@ export const getStoreById = (id: string) =>
 
 export const createStore = (
   store: StoreData,
-  storeCountryIds: string[],
-  productTypeIds: string[]
+  productsCountryIds?: string[],
+  productTypeIds?: string[]
 ) =>
   db.store.create({
     data: {
       ...store,
-      productsCountry: {
-        create: storeCountryIds.map((c) => ({
-          country: {
-            connect: { id: c },
-          },
-        })),
-      },
-      productTypes: {
-        create: productTypeIds.map((p) => ({
-          productType: {
-            connect: { id: p },
-          },
-        })),
-      },
+      ...(productsCountryIds != null && {
+        productsCountry: {
+          create: productsCountryIds?.map((c) => ({
+            country: {
+              connect: { id: c },
+            },
+          })),
+        },
+      }),
+      ...(productTypeIds != null && {
+        productTypes: {
+          create: productTypeIds?.map((p) => ({
+            productType: {
+              connect: { id: p },
+            },
+          })),
+        },
+      }),
     },
   });

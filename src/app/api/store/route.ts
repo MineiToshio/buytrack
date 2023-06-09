@@ -13,8 +13,8 @@ const reqPostSchema = z.object({
   whatsapp: z.string().optional(),
   website: z.string().optional(),
   countryId: z.string(),
-  storeCountryIds: z.string().array(),
-  productTypeIds: z.string().array(),
+  productsCountryIds: z.string().array().optional(),
+  productTypeIds: z.string().array().optional(),
 });
 
 export const GET = async () => {
@@ -40,12 +40,12 @@ export const POST = async (req: NextRequest) => {
       );
     }
 
-    const { storeCountryIds, productTypeIds, ...country } =
+    const { productsCountryIds, productTypeIds, ...country } =
       reqPostSchema.parse(body);
 
     const newCountry = await createStore(
       country,
-      storeCountryIds,
+      productsCountryIds,
       productTypeIds
     );
     return NextResponse.json(newCountry, { status: 200 });
