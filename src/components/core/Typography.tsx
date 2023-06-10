@@ -5,9 +5,9 @@ import { HTMLAttributes, forwardRef } from "react";
 const typographyVariants = cva("", {
   variants: {
     size: {
-      default: "text-base sm:text-lg",
       xs: "text-xs, sm:text-sm",
       sm: "text-sm, sm:text-base",
+      md: "text-base sm:text-lg",
       lg: "text-lg, sm:text-xl",
     },
     color: {
@@ -16,7 +16,7 @@ const typographyVariants = cva("", {
     },
   },
   defaultVariants: {
-    size: "default",
+    size: "md",
     color: "default",
   },
 });

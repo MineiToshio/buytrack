@@ -7,7 +7,14 @@ type StoreData =
   | (Prisma.Without<Prisma.StoreUncheckedCreateInput, Prisma.StoreCreateInput> &
       Prisma.StoreCreateInput);
 
-export const getStores = () => db.store.findMany({ orderBy: { name: "asc" } });
+export const getStores = () =>
+  db.store.findMany({
+    include: {
+      productsCountry: { include: { country: true } },
+      productTypes: { include: { productType: true } },
+    },
+    orderBy: { name: "asc" },
+  });
 
 export const getStoreById = (id: string) =>
   db.store.findFirst({ where: { id } });

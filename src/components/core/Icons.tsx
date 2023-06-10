@@ -11,6 +11,7 @@ import {
   Globe2,
   CornerUpLeft,
   BookCopy,
+  Store,
 } from "lucide-react";
 
 export const Icons = {
@@ -26,6 +27,7 @@ export const Icons = {
   Globe: Globe2,
   CornerUpLeftArrow: CornerUpLeft,
   Category: BookCopy,
+  Store,
 };
 
 export default Icons;
