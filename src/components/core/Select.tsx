@@ -124,6 +124,7 @@ const Select: FC<SelectProps> = ({
                   typeof so.value === "boolean" ? (so.value ? 1 : 0) : so.value;
                 return (
                   <Chip
+                    className="mr-2"
                     label={so.label}
                     key={key}
                     onDelete={() => handleDelete(so.value)}

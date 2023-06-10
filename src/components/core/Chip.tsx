@@ -1,28 +1,41 @@
-import { cn } from "@/styles/utils";
-import { FC, MouseEvent } from "react";
 import Typography from "@/core/Typography";
+import { cn } from "@/styles/utils";
+import { VariantProps, cva } from "class-variance-authority";
+import { FC, MouseEvent } from "react";
 import Icons from "./Icons";
 
-type ChipProps = {
+const chipVariants = cva("flex items-center rounded-3xl bg-gray-300", {
+  variants: {
+    size: {
+      lg: "px-3 py-1",
+      md: "px-3 py-1",
+      sm: "px-2 py-1",
+      xs: "px-1 py-1",
+    },
+  },
+  defaultVariants: {
+    size: "md",
+  },
+});
+
+type ChipProps = VariantProps<typeof chipVariants> & {
   label: string;
   className?: string;
+  title?: string;
   onDelete?: () => void;
 };
 
-const Chip: FC<ChipProps> = ({ label, onDelete, className }) => {
+const Chip: FC<ChipProps> = ({ label, onDelete, className, size, title }) => {
   const handleDelete = (e: MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     if (onDelete) onDelete();
   };
 
   return (
-    <div
-      className={cn(
-        "mr-2 flex items-center rounded-3xl border bg-gray-300 px-3 py-1",
-        className
-      )}
-    >
-      <Typography className="text-white">{label}</Typography>
+    <div className={cn(chipVariants({ size, className }))} title={title}>
+      <Typography className="text-white" size={size}>
+        {label}
+      </Typography>
       {onDelete && (
         <button
           onClick={handleDelete}
