@@ -1,6 +1,8 @@
 import Heading from "@/core/Heading";
 import StoreCard from "./StoreCard";
 import { getStores } from "@/queries/store";
+import Button from "@/core/Button";
+import Link from "next/link";
 
 const page = async () => {
   const stores = await getStores();
@@ -10,6 +12,11 @@ const page = async () => {
       <Heading size="sm" className="mb-5">
         Tiendas
       </Heading>
+      <div className="mb-5 flex w-full justify-end">
+        <Link href="/stores/new">
+          <Button>Agregar Tienda</Button>
+        </Link>
+      </div>
       <div className="mb-10 grid w-full gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {stores.map((s) => (
           <StoreCard
