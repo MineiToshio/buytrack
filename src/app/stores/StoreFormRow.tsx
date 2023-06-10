@@ -64,8 +64,8 @@ const StoreFormRow: FC<RowProps> = forwardRef<HTMLInputElement, RowProps>(
     },
     ref
   ) => (
-    <div className="mb-2 flex items-center">
-      <div className="mr-3 flex w-full max-w-[220px] items-center">
+    <div className="mb-2 flex flex-col items-center md:flex-row">
+      <div className="mr-3 mt-2 flex h-full w-full max-w-[220px] self-start">
         <Icon className="mr-2 text-muted" />
         <Typography color="muted" className="block truncate" as="span">
           {title}

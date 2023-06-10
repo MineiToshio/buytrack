@@ -86,6 +86,47 @@ const StoreForm: FC<StoreFormProps> = ({ isLoading, onSubmit }) => {
         )}
       </div>
       <StoreFormRow
+        title="Tipos de producto"
+        Icon={Icons.Category}
+        placeholder="Elige los tipo de productos en venta"
+        type="select"
+        options={productTypeOptions}
+        control={control}
+        formField="productTypeIds"
+        newModalTitle="Nuevo tipo de producto"
+        onAdd={addNewProductType}
+        multiple
+        required
+        error={!!errors.productTypeIds}
+        errorMessage="El tipo de producto es obligatorio"
+      />
+      <StoreFormRow
+        title="Países de importación"
+        Icon={Icons.CornerUpLeftArrow}
+        placeholder="Elige los países de importación"
+        type="select"
+        options={productsCountryOptions}
+        control={control}
+        formField="productsCountryIds"
+        newModalTitle="Nuevo país de importación"
+        onAdd={addNewProductsCountry}
+        multiple
+      />
+      <StoreFormRow
+        title="País"
+        Icon={Icons.Globe}
+        placeholder="Elige el país de la tienda"
+        type="select"
+        options={countryOptions}
+        control={control}
+        formField="countryId"
+        newModalTitle="Nuevo país"
+        onAdd={addNewCountry}
+        required
+        error={!!errors.countryId}
+        errorMessage="El país de la tienda es obligatorio"
+      />
+      <StoreFormRow
         title="Whatsapp"
         Icon={Icons.Message}
         placeholder="987 654 321"
@@ -130,44 +171,6 @@ const StoreForm: FC<StoreFormProps> = ({ isLoading, onSubmit }) => {
         options={YES_NO_OPTIONS}
         control={control}
         formField="receiveOrders"
-      />
-      <StoreFormRow
-        title="País"
-        Icon={Icons.Globe}
-        placeholder="Elige un país"
-        type="select"
-        options={countryOptions}
-        control={control}
-        formField="countryId"
-        newModalTitle="Nuevo país"
-        onAdd={addNewCountry}
-        required
-        error={!!errors.countryId}
-        errorMessage="El país de la tienda es obligatorio"
-      />
-      <StoreFormRow
-        title="Países de importación"
-        Icon={Icons.CornerUpLeftArrow}
-        placeholder="Elige los países de importación"
-        type="select"
-        options={productsCountryOptions}
-        control={control}
-        formField="productsCountryIds"
-        newModalTitle="Nuevo país de importación"
-        onAdd={addNewProductsCountry}
-        multiple
-      />
-      <StoreFormRow
-        title="Tipos de producto"
-        Icon={Icons.Category}
-        placeholder="Elige el tipo de producto"
-        type="select"
-        options={productTypeOptions}
-        control={control}
-        formField="productTypeIds"
-        newModalTitle="Nuevo tipo de producto"
-        onAdd={addNewProductType}
-        multiple
       />
       <Button type="submit" className="mt-5 w-fit" isLoading={isLoading}>
         Guardar
