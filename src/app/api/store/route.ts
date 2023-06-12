@@ -1,11 +1,14 @@
 import { authOptions } from "@/helpers/auth";
 import { createStore, getStores } from "@/queries/store";
+import { StoreType } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
 const reqPostSchema = z.object({
   name: z.string(),
+  url: z.string(),
+  type: z.enum([StoreType.Business, StoreType.Person]),
   hasStock: z.boolean().optional(),
   receiveOrders: z.boolean().optional(),
   facebook: z.string().optional(),

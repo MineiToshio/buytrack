@@ -11,6 +11,11 @@ datasource db {
   relationMode = "prisma"
 }
 
+enum StoreType {
+  Business
+  Person
+}
+
 model Account {
   id                 String  @id @default(cuid())
   userId             String
@@ -64,6 +69,7 @@ model VerificationToken {
 
 model Store {
   id                String    @id @default(cuid())
+  url               String
   name              String
   photo             String?
   hasStock          Boolean?
@@ -73,6 +79,7 @@ model Store {
   whatsapp          String?
   website           String?
   countryId         String
+  type              StoreType
   country           Country @relation(fields: [countryId], references: [id], onDelete: Cascade)
   productsCountry   Store_ProductsCountry[]
   customProperties  StoreCustomProperties[]

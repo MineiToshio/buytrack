@@ -11,10 +11,16 @@ import {
   GET_PRODUCT_TYPE,
 } from "@/helpers/apiUrls";
 import useSelect from "@/hooks/useAddSelect";
-import { Country, ProductType, ProductsCountry } from "@prisma/client";
+import {
+  Country,
+  ProductType,
+  ProductsCountry,
+  StoreType,
+} from "@prisma/client";
 import { FC } from "react";
 import { useForm } from "react-hook-form";
 import StoreFormRow from "./StoreFormRow";
+import { storeTypeOptions } from "@/helpers/constants";
 
 const YES_NO_OPTIONS = [
   {
@@ -36,6 +42,7 @@ export type StoreFormType = {
   hasStock?: boolean;
   receiveOrders?: boolean;
   countryId: string;
+  type: StoreType;
   productsCountryIds?: string[];
   productTypeIds?: string[];
 };
@@ -85,6 +92,15 @@ const StoreForm: FC<StoreFormProps> = ({ isLoading, onSubmit }) => {
           </Typography>
         )}
       </div>
+      <StoreFormRow
+        title="Tipo"
+        Icon={Icons.ChevronSquareDown}
+        placeholder="Negocio o persona"
+        type="select"
+        options={storeTypeOptions}
+        control={control}
+        formField="type"
+      />
       <StoreFormRow
         title="Tipos de producto"
         Icon={Icons.Category}
