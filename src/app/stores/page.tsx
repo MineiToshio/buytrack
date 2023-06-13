@@ -21,6 +21,7 @@ const page = async () => {
         {stores.map((s) => (
           <StoreCard
             key={s.id}
+            url={s.url}
             name={s.name}
             photo={s.photo}
             productTypes={s.productTypes}
