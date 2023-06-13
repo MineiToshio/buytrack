@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "db-push": "npx prisma db push && npx prisma generate",
+    "db-reset": "npx prisma db push --force-reset"
   },
   "dependencies": {
     "@next-auth/prisma-adapter": "^1.0.6",
