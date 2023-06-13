@@ -1,13 +1,19 @@
-import Heading from "@/core/Heading";
 import NewStoreForm from "@/app/stores/new/NewStoreForm";
+import Heading from "@/core/Heading";
 import { getQueryClient } from "@/helpers/reactQuery";
-import { getCountries } from "@/queries/country";
-import { dehydrate } from "@tanstack/react-query";
 import Hydrate from "@/modules/Hydrate";
+import { getCountries } from "@/queries/country";
+import { getProductTypes } from "@/queries/productType";
+import { getProductsCountries } from "@/queries/productsCountry";
+import { dehydrate } from "@tanstack/react-query";
 
 const page = async ({}) => {
   const queryClient = getQueryClient();
-  await queryClient.prefetchQuery(["country"], getCountries);
+  await Promise.all([
+    queryClient.prefetchQuery(["country"], getCountries),
+    queryClient.prefetchQuery(["products-country"], getProductsCountries),
+    queryClient.prefetchQuery(["product-type"], getProductTypes),
+  ]);
   const dehydratedState = dehydrate(queryClient);
 
   return (
