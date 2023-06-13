@@ -12,7 +12,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
         <Providers>
           {/* @ts-expect-error */}
           <Navbar />
-          {children}
+          <div className="min-h-[calc(100vh-12.5rem)]">{children}</div>
           <Footer />
         </Providers>
         <div id="portal" />
