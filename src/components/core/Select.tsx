@@ -17,6 +17,7 @@ const selectVariants = cva("relative w-full cursor-pointer rounded-md p-2", {
     status: {
       open: "shadow-md",
       close: "",
+      readOnly: "",
     },
   },
   compoundVariants: [
@@ -24,6 +25,11 @@ const selectVariants = cva("relative w-full cursor-pointer rounded-md p-2", {
       variant: "ghost",
       status: "open",
       class: "border-gray-200 hover:bg-white",
+    },
+    {
+      variant: "ghost",
+      status: "readOnly",
+      class: "shadow-none hover:bg-transparent cursor-default",
     },
   ],
   defaultVariants: {
@@ -54,6 +60,7 @@ type SelectProps = VariantProps<typeof selectVariants> & {
   className?: string;
   placeholder?: string;
   options?: Array<Option>;
+  readOnly?: boolean;
 } & (SingleOption | MultipleOption);
 
 const Select: FC<SelectProps> = ({
@@ -64,6 +71,7 @@ const Select: FC<SelectProps> = ({
   placeholder,
   variant,
   multiple,
+  readOnly,
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const selectRef = useHandleOutsideClick(() => setIsOpen(false));
@@ -108,7 +116,7 @@ const Select: FC<SelectProps> = ({
       className={cn(
         selectVariants({
           variant,
-          status: isOpen ? "open" : "close",
+          status: readOnly ? "readOnly" : isOpen ? "open" : "close",
           className,
         })
       )}
@@ -127,6 +135,7 @@ const Select: FC<SelectProps> = ({
                     className="mr-2"
                     label={so.label}
                     key={key}
+                    readOnly={readOnly}
                     onDelete={() => handleDelete(so.value)}
                   />
                 );
@@ -145,7 +154,7 @@ const Select: FC<SelectProps> = ({
         className={cn(
           "top-13 absolute left-[-1px] z-10 flex max-h-40 w-[calc(100%+2px)] flex-col overflow-y-auto rounded-b-md border border-t-0 border-solid bg-white shadow-md transition",
           {
-            hidden: !isOpen,
+            hidden: !isOpen || readOnly,
           }
         )}
       >

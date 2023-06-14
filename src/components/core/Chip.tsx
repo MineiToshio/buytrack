@@ -22,10 +22,18 @@ type ChipProps = VariantProps<typeof chipVariants> & {
   label: string;
   className?: string;
   title?: string;
+  readOnly?: boolean;
   onDelete?: () => void;
 };
 
-const Chip: FC<ChipProps> = ({ label, onDelete, className, size, title }) => {
+const Chip: FC<ChipProps> = ({
+  label,
+  onDelete,
+  className,
+  size,
+  title,
+  readOnly,
+}) => {
   const handleDelete = (e: MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     if (onDelete) onDelete();
@@ -36,7 +44,7 @@ const Chip: FC<ChipProps> = ({ label, onDelete, className, size, title }) => {
       <Typography className="text-white" size={size}>
         {label}
       </Typography>
-      {onDelete && (
+      {onDelete && !readOnly && (
         <button
           onClick={handleDelete}
           className="ml-2 flex h-6 w-6 items-center justify-center rounded-full bg-gray-400 hover:bg-gray-500"

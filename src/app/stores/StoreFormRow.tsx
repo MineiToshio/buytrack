@@ -42,6 +42,7 @@ type RowProps = {
   required?: boolean;
   error?: boolean;
   errorMessage?: string;
+  readOnly?: boolean;
 } & (RowInputProps | SelectInputProps);
 
 const StoreFormRow: FC<RowProps> = forwardRef<HTMLInputElement, RowProps>(
@@ -59,6 +60,7 @@ const StoreFormRow: FC<RowProps> = forwardRef<HTMLInputElement, RowProps>(
       required,
       error,
       errorMessage = "Este campo es obligatorio",
+      readOnly,
       onAdd,
       ...props
     },
@@ -73,7 +75,12 @@ const StoreFormRow: FC<RowProps> = forwardRef<HTMLInputElement, RowProps>(
       </div>
       <div className="flex w-full flex-col">
         {type === "input" && (
-          <Input placeholder={placeholder} {...props} ref={ref} />
+          <Input
+            placeholder={placeholder}
+            readOnly={readOnly}
+            {...props}
+            ref={ref}
+          />
         )}
         {type === "select" && (
           <div className="flex w-full">
@@ -90,6 +97,7 @@ const StoreFormRow: FC<RowProps> = forwardRef<HTMLInputElement, RowProps>(
                       multiple={true}
                       onChange={field.onChange}
                       value={field.value}
+                      readOnly={readOnly}
                     />
                   ) : (
                     <>
@@ -99,6 +107,7 @@ const StoreFormRow: FC<RowProps> = forwardRef<HTMLInputElement, RowProps>(
                           options={options}
                           onChange={field.onChange}
                           value={field.value}
+                          readOnly={readOnly}
                         />
                       )}
                     </>
@@ -106,7 +115,7 @@ const StoreFormRow: FC<RowProps> = forwardRef<HTMLInputElement, RowProps>(
                 </>
               )}
             />
-            {newModalTitle && onAdd && (
+            {newModalTitle && onAdd && !readOnly && (
               <AddButton title={newModalTitle} onAdd={onAdd} />
             )}
           </div>

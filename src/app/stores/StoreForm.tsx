@@ -21,7 +21,7 @@ import {
   ProductsCountry,
   StoreType,
 } from "@prisma/client";
-import { FC, useEffect } from "react";
+import { FC, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import StoreFormRow from "./StoreFormRow";
 
@@ -57,6 +57,8 @@ type StoreFormProps = {
 };
 
 const StoreForm: FC<StoreFormProps> = ({ isLoading, store, onSubmit }) => {
+  const [isReadOnly, setIsReadOnly] = useState<boolean>(!!store);
+
   const { options: countryOptions, addNewOption: addNewCountry } =
     useSelect<Country>(GET_COUNTRY, CREATE_COUNTRY, ["country"]);
 
@@ -113,6 +115,7 @@ const StoreForm: FC<StoreFormProps> = ({ isLoading, store, onSubmit }) => {
           variant="unstyled"
           placeholder="Sin nombre"
           className="text-lg font-semibold sm:text-3xl"
+          readOnly={isReadOnly}
           {...register("name", { required: true })}
         />
         {errors.name && (
@@ -129,6 +132,7 @@ const StoreForm: FC<StoreFormProps> = ({ isLoading, store, onSubmit }) => {
         options={storeTypeOptions}
         control={control}
         formField="type"
+        readOnly={isReadOnly}
       />
       <StoreFormRow
         title="Tipos de producto"
@@ -144,6 +148,7 @@ const StoreForm: FC<StoreFormProps> = ({ isLoading, store, onSubmit }) => {
         required
         error={!!errors.productTypeIds}
         errorMessage="El tipo de producto es obligatorio"
+        readOnly={isReadOnly}
       />
       <StoreFormRow
         title="Países de importación"
@@ -156,6 +161,7 @@ const StoreForm: FC<StoreFormProps> = ({ isLoading, store, onSubmit }) => {
         newModalTitle="Nuevo país de importación"
         onAdd={addNewProductsCountry}
         multiple
+        readOnly={isReadOnly}
       />
       <StoreFormRow
         title="País"
@@ -170,12 +176,14 @@ const StoreForm: FC<StoreFormProps> = ({ isLoading, store, onSubmit }) => {
         required
         error={!!errors.countryId}
         errorMessage="El país de la tienda es obligatorio"
+        readOnly={isReadOnly}
       />
       <StoreFormRow
         title="Whatsapp"
         Icon={Icons.Message}
         placeholder="987 654 321"
         type="input"
+        readOnly={isReadOnly}
         {...register("whatsapp")}
       />
       <StoreFormRow
@@ -183,6 +191,7 @@ const StoreForm: FC<StoreFormProps> = ({ isLoading, store, onSubmit }) => {
         Icon={Icons.Facebook}
         placeholder="https://fb.com/misitio"
         type="input"
+        readOnly={isReadOnly}
         {...register("facebook")}
       />
       <StoreFormRow
@@ -190,6 +199,7 @@ const StoreForm: FC<StoreFormProps> = ({ isLoading, store, onSubmit }) => {
         Icon={Icons.Instagram}
         placeholder="https://instagram.com/misitio"
         type="input"
+        readOnly={isReadOnly}
         {...register("instagram")}
       />
       <StoreFormRow
@@ -197,6 +207,7 @@ const StoreForm: FC<StoreFormProps> = ({ isLoading, store, onSubmit }) => {
         Icon={Icons.Web}
         placeholder="https://misitio.com"
         type="input"
+        readOnly={isReadOnly}
         {...register("website")}
       />
       <StoreFormRow
@@ -207,6 +218,7 @@ const StoreForm: FC<StoreFormProps> = ({ isLoading, store, onSubmit }) => {
         options={YES_NO_OPTIONS}
         control={control}
         formField="hasStock"
+        readOnly={isReadOnly}
       />
       <StoreFormRow
         title="Recibe órdenes"
@@ -216,10 +228,13 @@ const StoreForm: FC<StoreFormProps> = ({ isLoading, store, onSubmit }) => {
         options={YES_NO_OPTIONS}
         control={control}
         formField="receiveOrders"
+        readOnly={isReadOnly}
       />
-      <Button type="submit" className="mt-5 w-fit" isLoading={isLoading}>
-        Guardar
-      </Button>
+      {!isReadOnly && (
+        <Button type="submit" className="mt-5 w-fit" isLoading={isLoading}>
+          Guardar
+        </Button>
+      )}
     </form>
   );
 };
