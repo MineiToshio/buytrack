@@ -19,6 +19,16 @@ export const getStores = () =>
 export const getStoreById = (id: string) =>
   db.store.findFirst({ where: { id } });
 
+export const getStoreByUrl = (url: string) =>
+  db.store.findFirst({
+    where: { url },
+    include: {
+      productsCountry: { include: { country: true } },
+      productTypes: { include: { productType: true } },
+      country: true,
+    },
+  });
+
 export const createStore = (
   store: StoreData,
   productsCountryIds?: string[],

@@ -1,3 +1,5 @@
+"use client";
+
 import Typography from "@/components/core/Typography";
 import Button from "@/core/Button";
 import Icons from "@/core/Icons";
@@ -10,17 +12,18 @@ import {
   GET_PRODUCTS_COUNTRY,
   GET_PRODUCT_TYPE,
 } from "@/helpers/apiUrls";
+import { storeTypeOptions } from "@/helpers/constants";
 import useSelect from "@/hooks/useAddSelect";
+import { StoreFull } from "@/types/prisma";
 import {
   Country,
   ProductType,
   ProductsCountry,
   StoreType,
 } from "@prisma/client";
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import StoreFormRow from "./StoreFormRow";
-import { storeTypeOptions } from "@/helpers/constants";
 
 const YES_NO_OPTIONS = [
   {
@@ -50,9 +53,10 @@ export type StoreFormType = {
 type StoreFormProps = {
   onSubmit: (data: StoreFormType) => void;
   isLoading?: boolean;
+  store?: StoreFull | null;
 };
 
-const StoreForm: FC<StoreFormProps> = ({ isLoading, onSubmit }) => {
+const StoreForm: FC<StoreFormProps> = ({ isLoading, store, onSubmit }) => {
   const { options: countryOptions, addNewOption: addNewCountry } =
     useSelect<Country>(GET_COUNTRY, CREATE_COUNTRY, ["country"]);
 
@@ -74,8 +78,33 @@ const StoreForm: FC<StoreFormProps> = ({ isLoading, onSubmit }) => {
     control,
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<StoreFormType>();
+
+  useEffect(() => {
+    if (store) {
+      setValue("name", store.name);
+      setValue("countryId", store.countryId);
+      setValue("type", store.type);
+      store.whatsapp && setValue("whatsapp", store.whatsapp);
+      store.facebook && setValue("facebook", store.facebook);
+      store.instagram && setValue("instagram", store.instagram);
+      store.website && setValue("website", store.website);
+      store.hasStock && setValue("hasStock", store.hasStock);
+      store.receiveOrders && setValue("receiveOrders", store.receiveOrders);
+      store.productTypes &&
+        setValue(
+          "productTypeIds",
+          store.productTypes.map((pt) => pt.productType.id)
+        );
+      store.productsCountry &&
+        setValue(
+          "productsCountryIds",
+          store.productsCountry.map((pc) => pc.country.id)
+        );
+    }
+  }, [setValue, store]);
 
   return (
     <form className="flex w-full flex-col" onSubmit={handleSubmit(onSubmit)}>
