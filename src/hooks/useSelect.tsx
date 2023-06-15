@@ -8,11 +8,11 @@ type DataType = {
   name: string;
 };
 
-function useSelect<T extends DataType>(
-  getUrl: string,
-  postUrl: string,
+const useSelect = <T extends DataType>(
   queryKey: string[],
-) {
+  getUrl: string,
+  postUrl?: string,
+) => {
   const [options, setOptions] = useState<Option[]>([]);
 
   const { data, isLoading, error } = useQuery(queryKey, () => get<T[]>(getUrl));
@@ -28,17 +28,19 @@ function useSelect<T extends DataType>(
   }, [data]);
 
   const addNewOption = async (name: string) => {
-    const newOption = await post<T>(postUrl, {
-      name,
-    });
-    if (newOption) {
-      setOptions((o) => [
-        {
-          value: newOption.id,
-          label: newOption.name,
-        },
-        ...o,
-      ]);
+    if (postUrl) {
+      const newOption = await post<T>(postUrl, {
+        name,
+      });
+      if (newOption) {
+        setOptions((o) => [
+          {
+            value: newOption.id,
+            label: newOption.name,
+          },
+          ...o,
+        ]);
+      }
     }
   };
 
@@ -48,6 +50,6 @@ function useSelect<T extends DataType>(
     error,
     addNewOption,
   };
-}
+};
 
 export default useSelect;

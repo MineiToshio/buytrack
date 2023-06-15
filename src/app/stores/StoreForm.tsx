@@ -13,7 +13,7 @@ import {
   GET_PRODUCT_TYPE,
 } from "@/helpers/apiUrls";
 import { storeTypeOptions } from "@/helpers/constants";
-import useSelect from "@/hooks/useAddSelect";
+import useSelect from "@/hooks/useSelect";
 import FormRow from "@/modules/FormRow";
 import { StoreFull } from "@/types/prisma";
 import {
@@ -60,21 +60,19 @@ const StoreForm: FC<StoreFormProps> = ({ isLoading, store, onSubmit }) => {
   const [isReadOnly, setIsReadOnly] = useState<boolean>(!!store);
 
   const { options: countryOptions, addNewOption: addNewCountry } =
-    useSelect<Country>(GET_COUNTRY, CREATE_COUNTRY, ["country"]);
+    useSelect<Country>(["country"], GET_COUNTRY, CREATE_COUNTRY);
 
   const {
     options: productsCountryOptions,
     addNewOption: addNewProductsCountry,
   } = useSelect<ProductsCountry>(
+    ["products-country"],
     GET_PRODUCTS_COUNTRY,
     CREATE_PRODUCTS_COUNTRY,
-    ["products-country"],
   );
 
   const { options: productTypeOptions, addNewOption: addNewProductType } =
-    useSelect<ProductType>(GET_PRODUCT_TYPE, CREATE_PRODUCT_TYPE, [
-      "product-type",
-    ]);
+    useSelect<ProductType>(["product-type"], GET_PRODUCT_TYPE, CREATE_PRODUCT_TYPE);
 
   const {
     control,
