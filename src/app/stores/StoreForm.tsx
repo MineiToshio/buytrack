@@ -14,6 +14,7 @@ import {
 } from "@/helpers/apiUrls";
 import { storeTypeOptions } from "@/helpers/constants";
 import useSelect from "@/hooks/useAddSelect";
+import FormRow from "@/modules/FormRow";
 import { StoreFull } from "@/types/prisma";
 import {
   Country,
@@ -23,7 +24,6 @@ import {
 } from "@prisma/client";
 import { FC, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import StoreFormRow from "./StoreFormRow";
 
 const YES_NO_OPTIONS = [
   {
@@ -124,7 +124,7 @@ const StoreForm: FC<StoreFormProps> = ({ isLoading, store, onSubmit }) => {
           </Typography>
         )}
       </div>
-      <StoreFormRow
+      <FormRow
         title="Tipo"
         Icon={Icons.ChevronSquareDown}
         placeholder="Negocio o persona"
@@ -134,7 +134,7 @@ const StoreForm: FC<StoreFormProps> = ({ isLoading, store, onSubmit }) => {
         formField="type"
         readOnly={isReadOnly}
       />
-      <StoreFormRow
+      <FormRow
         title="Tipos de producto"
         Icon={Icons.Category}
         placeholder="Elige los tipo de productos en venta"
@@ -150,7 +150,7 @@ const StoreForm: FC<StoreFormProps> = ({ isLoading, store, onSubmit }) => {
         errorMessage="El tipo de producto es obligatorio"
         readOnly={isReadOnly}
       />
-      <StoreFormRow
+      <FormRow
         title="Países de importación"
         Icon={Icons.CornerUpLeftArrow}
         placeholder="Elige los países de importación"
@@ -163,7 +163,7 @@ const StoreForm: FC<StoreFormProps> = ({ isLoading, store, onSubmit }) => {
         multiple
         readOnly={isReadOnly}
       />
-      <StoreFormRow
+      <FormRow
         title="País"
         Icon={Icons.Globe}
         placeholder="Elige el país de la tienda"
@@ -178,7 +178,7 @@ const StoreForm: FC<StoreFormProps> = ({ isLoading, store, onSubmit }) => {
         errorMessage="El país de la tienda es obligatorio"
         readOnly={isReadOnly}
       />
-      <StoreFormRow
+      <FormRow
         title="Whatsapp"
         Icon={Icons.Message}
         placeholder="987 654 321"
@@ -186,7 +186,7 @@ const StoreForm: FC<StoreFormProps> = ({ isLoading, store, onSubmit }) => {
         readOnly={isReadOnly}
         {...register("whatsapp")}
       />
-      <StoreFormRow
+      <FormRow
         title="Facebook"
         Icon={Icons.Facebook}
         placeholder="https://fb.com/misitio"
@@ -194,7 +194,7 @@ const StoreForm: FC<StoreFormProps> = ({ isLoading, store, onSubmit }) => {
         readOnly={isReadOnly}
         {...register("facebook")}
       />
-      <StoreFormRow
+      <FormRow
         title="Instagram"
         Icon={Icons.Instagram}
         placeholder="https://instagram.com/misitio"
@@ -202,7 +202,7 @@ const StoreForm: FC<StoreFormProps> = ({ isLoading, store, onSubmit }) => {
         readOnly={isReadOnly}
         {...register("instagram")}
       />
-      <StoreFormRow
+      <FormRow
         title="Website"
         Icon={Icons.Web}
         placeholder="https://misitio.com"
@@ -210,7 +210,7 @@ const StoreForm: FC<StoreFormProps> = ({ isLoading, store, onSubmit }) => {
         readOnly={isReadOnly}
         {...register("website")}
       />
-      <StoreFormRow
+      <FormRow
         title="Tiene stock"
         Icon={Icons.ChevronSquareDown}
         placeholder="si o no"
@@ -220,7 +220,7 @@ const StoreForm: FC<StoreFormProps> = ({ isLoading, store, onSubmit }) => {
         formField="hasStock"
         readOnly={isReadOnly}
       />
-      <StoreFormRow
+      <FormRow
         title="Recibe órdenes"
         Icon={Icons.ChevronSquareDown}
         placeholder="si o no"
