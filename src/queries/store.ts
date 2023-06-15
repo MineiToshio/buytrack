@@ -32,7 +32,7 @@ export const getStoreByUrl = (url: string) =>
 export const createStore = (
   store: StoreData,
   productsCountryIds?: string[],
-  productTypeIds?: string[]
+  productTypeIds?: string[],
 ) =>
   db.store.create({
     data: {

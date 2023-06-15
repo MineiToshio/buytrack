@@ -31,7 +31,7 @@ const Navbar = async () => {
   const session = await getServerSession(authOptions);
 
   const linksToRender = LINKS.filter(
-    (l) => l.isPublic || (session && !l.isPublic)
+    (l) => l.isPublic || (session && !l.isPublic),
   );
 
   return (
@@ -48,7 +48,7 @@ const Navbar = async () => {
                 href={link.href}
                 className={cn(
                   "ml-4 text-lg font-semibold text-white hover:underline hover:decoration-2 hover:underline-offset-8",
-                  secondaryFont.className
+                  secondaryFont.className,
                 )}
               >
                 {link.text}

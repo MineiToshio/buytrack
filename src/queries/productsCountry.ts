@@ -11,7 +11,7 @@ export const getProductsCountryByName = (name: string) =>
   db.productsCountry.findFirst({ where: { name } });
 
 export const createProductsCountry = (
-  productsCountry: Omit<ProductsCountry, "id">
+  productsCountry: Omit<ProductsCountry, "id">,
 ) =>
   db.productsCountry.create({
     data: productsCountry,

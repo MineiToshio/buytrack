@@ -39,7 +39,7 @@ export const POST = async (req: NextRequest) => {
         {
           error: "Unauthorized to perform this action.",
         },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -49,7 +49,7 @@ export const POST = async (req: NextRequest) => {
     const newCountry = await createStore(
       country,
       productsCountryIds,
-      productTypeIds
+      productTypeIds,
     );
     return NextResponse.json(newCountry, { status: 200 });
   } catch (error) {

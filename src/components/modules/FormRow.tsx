@@ -62,7 +62,7 @@ const FormRow = <T extends FieldValues>(
     onAdd,
     ...props
   }: RowProps<T>,
-  ref: Ref<HTMLInputElement>
+  ref: Ref<HTMLInputElement>,
 ) => (
   <div className="mb-2 flex flex-col items-center md:flex-row">
     <div className="mr-3 mt-2 flex h-full w-full max-w-[220px] self-start">
@@ -130,5 +130,5 @@ const FormRow = <T extends FieldValues>(
 FormRow.displayName = "FormRow";
 
 export default forwardRef(FormRow) as <T extends FieldValues>(
-  p: RowProps<T> & { ref?: Ref<HTMLInputElement> }
+  p: RowProps<T> & { ref?: Ref<HTMLInputElement> },
 ) => ReactElement;

@@ -68,7 +68,7 @@ const StoreForm: FC<StoreFormProps> = ({ isLoading, store, onSubmit }) => {
   } = useSelect<ProductsCountry>(
     GET_PRODUCTS_COUNTRY,
     CREATE_PRODUCTS_COUNTRY,
-    ["products-country"]
+    ["products-country"],
   );
 
   const { options: productTypeOptions, addNewOption: addNewProductType } =
@@ -98,12 +98,12 @@ const StoreForm: FC<StoreFormProps> = ({ isLoading, store, onSubmit }) => {
       store.productTypes &&
         setValue(
           "productTypeIds",
-          store.productTypes.map((pt) => pt.productType.id)
+          store.productTypes.map((pt) => pt.productType.id),
         );
       store.productsCountry &&
         setValue(
           "productsCountryIds",
-          store.productsCountry.map((pc) => pc.country.id)
+          store.productsCountry.map((pc) => pc.country.id),
         );
     }
   }, [setValue, store]);

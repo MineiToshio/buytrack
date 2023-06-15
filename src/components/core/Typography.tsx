@@ -38,7 +38,7 @@ const Typography = forwardRef<HTMLParagraphElement, TypographyProps>(
         {children}
       </Element>
     );
-  }
+  },
 );
 
 Typography.displayName = "Paragraph";

@@ -6,5 +6,8 @@ export const storeTypeLabel = {
 };
 
 export const storeTypeOptions = Object.entries(storeTypeLabel).map(
-  ([value, label]) => ({ label, value })
+  ([value, label]) => ({
+    label,
+    value,
+  }),
 );

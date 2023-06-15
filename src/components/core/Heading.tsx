@@ -15,7 +15,7 @@ const headingVariants = cva(
     defaultVariants: {
       size: "default",
     },
-  }
+  },
 );
 
 type HeadingProps = HTMLAttributes<HTMLHeadingElement> &
@@ -35,7 +35,7 @@ const Heading = forwardRef<HTMLHeadingElement, HeadingProps>(
         {children}
       </Element>
     );
-  }
+  },
 );
 
 Heading.displayName = "Heading";

@@ -118,7 +118,7 @@ const Select: FC<SelectProps> = ({
           variant,
           status: readOnly ? "readOnly" : isOpen ? "open" : "close",
           className,
-        })
+        }),
       )}
       onClick={toggleOpen}
       ref={selectRef}
@@ -155,7 +155,7 @@ const Select: FC<SelectProps> = ({
           "top-13 absolute left-[-1px] z-10 flex max-h-40 w-[calc(100%+2px)] flex-col overflow-y-auto rounded-b-md border border-t-0 border-solid bg-white shadow-md transition",
           {
             hidden: !isOpen || readOnly,
-          }
+          },
         )}
       >
         {options && options.length > 0 ? (

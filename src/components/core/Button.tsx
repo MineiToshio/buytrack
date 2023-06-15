@@ -42,7 +42,7 @@ export const buttonVariants = cva(
       size: "default",
       color: "default",
     },
-  }
+  },
 );
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
@@ -53,12 +53,12 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
     { className, children, variant, font, color, isLoading, size, ...props },
-    ref
+    ref,
   ) => {
     return (
       <button
         className={cn(
-          buttonVariants({ variant, size, font, color, className })
+          buttonVariants({ variant, size, font, color, className }),
         )}
         ref={ref}
         disabled={isLoading}
@@ -70,7 +70,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {children}
       </button>
     );
-  }
+  },
 );
 
 Button.displayName = "Button";

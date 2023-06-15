@@ -31,7 +31,7 @@ export const POST = async (req: NextRequest) => {
         {
           error: "Unauthorized to perform this action.",
         },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -44,7 +44,7 @@ export const POST = async (req: NextRequest) => {
         {
           error: `You already have a product type named ${name}.`,
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 

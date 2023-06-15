@@ -11,7 +11,7 @@ type DataType = {
 function useSelect<T extends DataType>(
   getUrl: string,
   postUrl: string,
-  queryKey: string[]
+  queryKey: string[],
 ) {
   const [options, setOptions] = useState<Option[]>([]);
 

@@ -11,7 +11,7 @@ const getBody = (verb: HTTP_METHOD, data?: any) => ({
 
 const request = async <T>(
   url: string,
-  options?: RequestInit
+  options?: RequestInit,
 ): Promise<T | undefined> => {
   try {
     const res = await fetch(url, options);

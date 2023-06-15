@@ -18,7 +18,7 @@ const Modal: FC<ModalProps> = ({ children, onClose, open }) => {
           {
             "hidden opacity-0": !open,
             "flex opacity-100": open,
-          }
+          },
         )}
       >
         <div className="relative w-min min-w-[300px] max-w-3xl rounded-md bg-white">

@@ -41,11 +41,11 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           variant,
           status: readOnly ? "readOnly" : null,
           className,
-        })
+        }),
       )}
       {...props}
     />
-  )
+  ),
 );
 
 Input.displayName = "Input";
