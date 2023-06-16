@@ -72,7 +72,11 @@ const StoreForm: FC<StoreFormProps> = ({ isLoading, store, onSubmit }) => {
   );
 
   const { options: productTypeOptions, addNewOption: addNewProductType } =
-    useSelect<ProductType>(["product-type"], GET_PRODUCT_TYPE, CREATE_PRODUCT_TYPE);
+    useSelect<ProductType>(
+      ["product-type"],
+      GET_PRODUCT_TYPE,
+      CREATE_PRODUCT_TYPE,
+    );
 
   const {
     control,

@@ -14,6 +14,7 @@ type RowInputProps = {
   newModalTitle?: undefined;
   onAdd?: undefined;
   multiple?: undefined;
+  searchPlaceholder?: undefined;
 };
 
 type SelectInputProps<T extends FieldValues> = {
@@ -24,6 +25,7 @@ type SelectInputProps<T extends FieldValues> = {
   newModalTitle?: string;
   onAdd?: (value: string) => void;
   multiple?: boolean;
+  searchPlaceholder?: string;
 };
 
 type FormOptionValue = string | boolean | number | string[] | undefined;
@@ -42,6 +44,7 @@ type RowProps<T extends FieldValues> = {
   error?: boolean;
   errorMessage?: string;
   readOnly?: boolean;
+  allowSearch?: boolean;
 } & (RowInputProps | SelectInputProps<T>);
 
 const FormRow = <T extends FieldValues>(
@@ -49,6 +52,7 @@ const FormRow = <T extends FieldValues>(
     Icon,
     title,
     placeholder,
+    searchPlaceholder,
     type,
     options,
     control,
@@ -59,6 +63,7 @@ const FormRow = <T extends FieldValues>(
     error,
     errorMessage = "Este campo es obligatorio",
     readOnly,
+    allowSearch,
     onAdd,
     ...props
   }: RowProps<T>,
@@ -96,6 +101,8 @@ const FormRow = <T extends FieldValues>(
                     onChange={field.onChange}
                     value={field.value}
                     readOnly={readOnly}
+                    allowSearch={allowSearch}
+                    searchPlaceholder={searchPlaceholder}
                   />
                 ) : (
                   <>
@@ -106,6 +113,8 @@ const FormRow = <T extends FieldValues>(
                         onChange={field.onChange}
                         value={field.value}
                         readOnly={readOnly}
+                        allowSearch={allowSearch}
+                        searchPlaceholder={searchPlaceholder}
                       />
                     )}
                   </>
