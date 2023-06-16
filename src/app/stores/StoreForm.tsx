@@ -134,6 +134,9 @@ const StoreForm: FC<StoreFormProps> = ({ isLoading, store, onSubmit }) => {
         options={storeTypeOptions}
         control={control}
         formField="type"
+        required
+        error={!!errors.type}
+        errorMessage="El tipo de tienda es obligatorio"
         readOnly={isReadOnly}
       />
       <FormRow
