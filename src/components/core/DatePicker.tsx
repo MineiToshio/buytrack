@@ -10,7 +10,7 @@ import es from "date-fns/locale/es";
 
 registerLocale("es", es);
 
-const inputVariants = cva("text-base sm:text-lg w-full p-2 outline-0", {
+const datePickerVariants = cva("text-base sm:text-lg w-full p-2 outline-0", {
   variants: {
     variant: {
       standard:
@@ -40,7 +40,7 @@ type DatePickerProps = {
   placeholder?: string;
   className?: string;
 } & ReactDatePickerProps &
-  VariantProps<typeof inputVariants>;
+  VariantProps<typeof datePickerVariants>;
 
 const DatePicker: FC<DatePickerProps> = ({
   value,
@@ -49,25 +49,23 @@ const DatePicker: FC<DatePickerProps> = ({
   placeholder,
   className,
   ...props
-}) => {
-  return (
-    <ReactDatePicker
-      className={cn(
-        inputVariants({
-          variant,
-          status: readOnly ? "readOnly" : null,
-          className,
-        }),
-      )}
-      calendarClassName="[&_.react-datepicker\_\_day--selected]:bg-primary [&_.react-datepicker\_\_day--selected:hover]:bg-green-600 [&_.react-datepicker\_\_day--keyboard-selected]:bg-green-200 [&_.react-datepicker\_\_day--keyboard-selected:hover]:bg-green-600 [&_.react-datepicker\_\_triangle::after]:!left-[-110px] [&_.react-datepicker\_\_triangle::before]:!left-[-110px]"
-      selected={value}
-      placeholderText={placeholder}
-      readOnly={readOnly}
-      dateFormat="dd/MM/yyyy"
-      locale="es"
-      {...props}
-    />
-  );
-};
+}) => (
+  <ReactDatePicker
+    className={cn(
+      datePickerVariants({
+        variant,
+        status: readOnly ? "readOnly" : null,
+        className,
+      }),
+    )}
+    calendarClassName="[&_.react-datepicker\_\_day--selected]:bg-primary [&_.react-datepicker\_\_day--selected:hover]:bg-green-600 [&_.react-datepicker\_\_day--keyboard-selected]:bg-green-200 [&_.react-datepicker\_\_day--keyboard-selected:hover]:bg-green-600 [&_.react-datepicker\_\_triangle::after]:!left-[-110px] [&_.react-datepicker\_\_triangle::before]:!left-[-110px]"
+    selected={value}
+    placeholderText={placeholder}
+    readOnly={readOnly}
+    dateFormat="dd/MM/yyyy"
+    locale="es"
+    {...props}
+  />
+);
 
 export default DatePicker;
