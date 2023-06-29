@@ -12,6 +12,11 @@ import {
   CornerUpLeft,
   BookCopy,
   Store,
+  Calendar,
+  CalendarDays,
+  Trash2,
+  CircleDollarSign,
+  Calculator,
 } from "lucide-react";
 
 export const Icons = {
@@ -28,6 +33,11 @@ export const Icons = {
   CornerUpLeftArrow: CornerUpLeft,
   Category: BookCopy,
   Store,
+  Calendar,
+  CalendarDays,
+  Delete: Trash2,
+  Money: CircleDollarSign,
+  Calculator,
 };
 
 export default Icons;

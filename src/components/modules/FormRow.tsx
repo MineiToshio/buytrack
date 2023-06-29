@@ -5,6 +5,9 @@ import Typography from "@/core/Typography";
 import { LucideIcon } from "lucide-react";
 import { ReactElement, Ref, forwardRef } from "react";
 import { Control, Controller, FieldValues, Path } from "react-hook-form";
+import DatePicker from "../core/DatePicker";
+import DateRangePicker from "../core/DateRangePicker";
+import Button from "../core/Button";
 
 type RowInputProps = {
   type: "input";
@@ -15,6 +18,10 @@ type RowInputProps = {
   onAdd?: undefined;
   multiple?: undefined;
   searchPlaceholder?: undefined;
+  minDate?: undefined;
+  maxDate?: undefined;
+  ButtonIcon?: LucideIcon;
+  onButtonClick?: () => void;
 };
 
 type SelectInputProps<T extends FieldValues> = {
@@ -26,6 +33,40 @@ type SelectInputProps<T extends FieldValues> = {
   onAdd?: (value: string) => void;
   multiple?: boolean;
   searchPlaceholder?: string;
+  minDate?: undefined;
+  maxDate?: undefined;
+  ButtonIcon?: undefined;
+  onButtonClick?: undefined;
+};
+
+type DatePickerProps<T extends FieldValues> = {
+  type: "datepicker";
+  options?: undefined;
+  control: Control<T>;
+  formField: Path<T>;
+  newModalTitle?: undefined;
+  onAdd?: undefined;
+  multiple?: undefined;
+  searchPlaceholder?: undefined;
+  minDate?: Date;
+  maxDate?: Date;
+  ButtonIcon?: undefined;
+  onButtonClick?: undefined;
+};
+
+type DateRangePickerProps<T extends FieldValues> = {
+  type: "dateRangePicker";
+  options?: undefined;
+  control: Control<T>;
+  formField: Path<T>;
+  newModalTitle?: undefined;
+  onAdd?: undefined;
+  multiple?: undefined;
+  searchPlaceholder?: undefined;
+  minDate?: Date;
+  maxDate?: Date;
+  ButtonIcon?: undefined;
+  onButtonClick?: undefined;
 };
 
 type FormOptionValue = string | boolean | number | string[] | undefined;
@@ -45,7 +86,12 @@ type RowProps<T extends FieldValues> = {
   errorMessage?: string;
   readOnly?: boolean;
   allowSearch?: boolean;
-} & (RowInputProps | SelectInputProps<T>);
+} & (
+  | RowInputProps
+  | SelectInputProps<T>
+  | DatePickerProps<T>
+  | DateRangePickerProps<T>
+);
 
 const FormRow = <T extends FieldValues>(
   {
@@ -64,7 +110,11 @@ const FormRow = <T extends FieldValues>(
     errorMessage = "Este campo es obligatorio",
     readOnly,
     allowSearch,
+    minDate,
+    maxDate,
     onAdd,
+    ButtonIcon,
+    onButtonClick,
     ...props
   }: RowProps<T>,
   ref: Ref<HTMLInputElement>,
@@ -78,12 +128,19 @@ const FormRow = <T extends FieldValues>(
     </div>
     <div className="flex w-full flex-col">
       {type === "input" && (
-        <Input
-          placeholder={placeholder}
-          readOnly={readOnly}
-          {...props}
-          ref={ref}
-        />
+        <div className="flex w-full">
+          <Input
+            placeholder={placeholder}
+            readOnly={readOnly}
+            {...props}
+            ref={ref}
+          />
+          {ButtonIcon && onButtonClick && (
+            <Button variant="text" onClick={onButtonClick}>
+              <ButtonIcon />
+            </Button>
+          )}
+        </div>
       )}
       {type === "select" && (
         <div className="flex w-full">
@@ -126,6 +183,40 @@ const FormRow = <T extends FieldValues>(
             <AddButton title={newModalTitle} onAdd={onAdd} />
           )}
         </div>
+      )}
+      {type === "datepicker" && (
+        <Controller
+          name={formField}
+          control={control}
+          rules={{ required }}
+          render={({ field }) => (
+            <DatePicker
+              placeholder={placeholder}
+              onChange={field.onChange}
+              value={field.value}
+              readOnly={readOnly}
+              minDate={minDate}
+              maxDate={maxDate}
+            />
+          )}
+        />
+      )}
+      {type === "dateRangePicker" && (
+        <Controller
+          name={formField}
+          control={control}
+          rules={{ required }}
+          render={({ field }) => (
+            <DateRangePicker
+              placeholder={placeholder}
+              onChange={field.onChange}
+              value={field.value}
+              readOnly={readOnly}
+              minDate={minDate}
+              maxDate={maxDate}
+            />
+          )}
+        />
       )}
       {error && (
         <Typography size="xs" className="ml-2 text-error">
