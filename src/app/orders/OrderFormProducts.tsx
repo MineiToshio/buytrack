@@ -21,7 +21,7 @@ type OrderFormProductsProps = {
   formField: ArrayPath<OrderFormType>;
   register: UseFormRegister<OrderFormType>;
   setFocus: UseFormSetFocus<OrderFormType>;
-  errors?: ErrorArrayField<Product>
+  errors?: ErrorArrayField<Product>;
 };
 
 type InputAttribute = "product" | "price";
@@ -107,7 +107,9 @@ const OrderFormProducts: FC<OrderFormProductsProps> = ({
         <div key={field.id} className="flex items-center gap-4">
           <Input
             variant="standard"
-            className={cn("w-[calc(75%-24px)]", { "border-error": !!errors?.[index]?.product })}
+            className={cn("w-[calc(75%-24px)]", {
+              "border-error": !!errors?.[index]?.product,
+            })}
             placeholder="Producto"
             autoComplete="off"
             onKeyDown={handleKeyDown}
