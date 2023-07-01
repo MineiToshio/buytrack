@@ -6,3 +6,5 @@ export const CREATE_PRODUCT_TYPE = "/api/product-type";
 export const GET_PRODUCT_TYPE = "/api/product-type";
 export const CREATE_STORE = "/api/store";
 export const GET_STORE = "/api/store";
+export const CREATE_ORDER = "/api/order";
+export const GET_ORDER = "/api/order";

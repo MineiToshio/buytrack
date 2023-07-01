@@ -176,8 +176,9 @@ model Order {
   orderDate     DateTime?
   deliveryDate  DateTime?
   productsCost  Float
-  paidAmount    Float
+  paidAmount    Float @default(0)
   delivered     Boolean @default(false)
+  createdDate   DateTime @default(now())
   minApproximateDeliveryDate DateTime?
   maxApproximateDeliveryDate DateTime?
   review        StoreReview?
@@ -195,8 +196,8 @@ model OrderProduct {
   order        Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
   productName  String
   price        Float?
-  deliveryId   String
-  delivery     Delivery @relation(fields: [deliveryId], references: [id])
+  deliveryId   String?
+  delivery     Delivery? @relation(fields: [deliveryId], references: [id])
   product      Product?
 
   @@index([orderId])
@@ -204,10 +205,11 @@ model OrderProduct {
 }
 
 model OrderNote {
-  id      String  @id @default(cuid())
-  note    String
-  orderId String
-  order   Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  id          String  @id @default(cuid())
+  note        String
+  orderId     String
+  createdDate DateTime @default(now())
+  order       Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
   @@index([orderId])
 }
@@ -225,6 +227,7 @@ model OrderPayment {
 model Delivery {
   id                          String  @id @default(cuid())
   price                       Float
+  delivered                   Boolean @default(false)
   deliveryDate                DateTime?
   minApproximateDeliveryDate  DateTime?
   maxApproximateDeliveryDate  DateTime?
