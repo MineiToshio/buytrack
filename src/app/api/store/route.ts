@@ -22,8 +22,8 @@ const reqPostSchema = z.object({
 
 export const GET = async () => {
   try {
-    const countries = await getStores();
-    return NextResponse.json(countries, { status: 200 });
+    const stores = await getStores();
+    return NextResponse.json(stores, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error }, { status: 500 });
   }
@@ -46,12 +46,12 @@ export const POST = async (req: NextRequest) => {
     const { productsCountryIds, productTypeIds, ...country } =
       reqPostSchema.parse(body);
 
-    const newCountry = await createStore(
+    const newStore = await createStore(
       country,
       productsCountryIds,
       productTypeIds,
     );
-    return NextResponse.json(newCountry, { status: 200 });
+    return NextResponse.json(newStore, { status: 200 });
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json({ error: error.issues }, { status: 400 });
