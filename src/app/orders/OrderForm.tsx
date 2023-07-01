@@ -10,7 +10,7 @@ import { useForm } from "react-hook-form";
 import OrderFormProducts from "./OrderFormProducts";
 
 export type Product = {
-  product: string;
+  productName: string;
   price?: number;
 };
 
@@ -42,16 +42,21 @@ const OrderForm: FC<OrderFormProps> = ({ isLoading, order, onSubmit }) => {
     getValues,
     setValue,
     setFocus,
+    clearErrors,
     formState: { errors },
   } = useForm<OrderFormType>();
 
   const calculatePrice = () => {
     const values = getValues();
     const productsCost = values.products.reduce(
-      (acc, curr) => acc + Number(curr.price ?? 0),
+      (acc, curr) => acc + Number(!Number.isNaN(curr.price) ? curr.price : 0),
       0,
     );
-    setValue("productsCost", productsCost);
+
+    if (productsCost >= 0) {
+      setValue("productsCost", productsCost);
+      clearErrors("productsCost");
+    }
   };
 
   return (
@@ -101,7 +106,9 @@ const OrderForm: FC<OrderFormProps> = ({ isLoading, order, onSubmit }) => {
         onButtonClick={calculatePrice}
         error={!!errors.productsCost}
         errorMessage="El costo total es obligatorio"
-        {...register("productsCost", { required: true })}
+        inputType="number"
+        min={0}
+        {...register("productsCost", { required: true, valueAsNumber: true })}
       />
       <OrderFormProducts
         control={control}

@@ -3,7 +3,7 @@ import Input from "@/core/Input";
 import Select, { OptionValue, type Option } from "@/core/Select";
 import Typography from "@/core/Typography";
 import { LucideIcon } from "lucide-react";
-import { ReactElement, Ref, forwardRef } from "react";
+import { HTMLInputTypeAttribute, ReactElement, Ref, forwardRef } from "react";
 import { Control, Controller, FieldValues, Path } from "react-hook-form";
 import DatePicker from "../core/DatePicker";
 import DateRangePicker from "../core/DateRangePicker";
@@ -20,6 +20,7 @@ type RowInputProps = {
   searchPlaceholder?: undefined;
   minDate?: undefined;
   maxDate?: undefined;
+  inputType?: HTMLInputTypeAttribute;
   ButtonIcon?: LucideIcon;
   onButtonClick?: () => void;
 };
@@ -35,6 +36,7 @@ type SelectInputProps<T extends FieldValues> = {
   searchPlaceholder?: string;
   minDate?: undefined;
   maxDate?: undefined;
+  inputType?: undefined;
   ButtonIcon?: undefined;
   onButtonClick?: undefined;
 };
@@ -50,6 +52,7 @@ type DatePickerProps<T extends FieldValues> = {
   searchPlaceholder?: undefined;
   minDate?: Date;
   maxDate?: Date;
+  inputType?: undefined;
   ButtonIcon?: undefined;
   onButtonClick?: undefined;
 };
@@ -65,6 +68,7 @@ type DateRangePickerProps<T extends FieldValues> = {
   searchPlaceholder?: undefined;
   minDate?: Date;
   maxDate?: Date;
+  inputType?: undefined;
   ButtonIcon?: undefined;
   onButtonClick?: undefined;
 };
@@ -112,6 +116,7 @@ const FormRow = <T extends FieldValues>(
     allowSearch,
     minDate,
     maxDate,
+    inputType,
     onAdd,
     ButtonIcon,
     onButtonClick,
@@ -132,6 +137,7 @@ const FormRow = <T extends FieldValues>(
           <Input
             placeholder={placeholder}
             readOnly={readOnly}
+            type={inputType}
             {...props}
             ref={ref}
           />

@@ -24,7 +24,7 @@ type OrderFormProductsProps = {
   errors?: ErrorArrayField<Product>;
 };
 
-type InputAttribute = "product" | "price";
+type InputAttribute = "productName" | "price";
 type InputData = { index: number; attribute: InputAttribute };
 
 const OrderFormProducts: FC<OrderFormProductsProps> = ({
@@ -40,7 +40,7 @@ const OrderFormProducts: FC<OrderFormProductsProps> = ({
   });
 
   const addNewRow = useCallback(
-    () => append({ product: "", price: undefined }),
+    () => append({ productName: "", price: undefined }),
     [append],
   );
 
@@ -68,7 +68,7 @@ const OrderFormProducts: FC<OrderFormProductsProps> = ({
       if (e.key === "ArrowRight") {
         setFocus(`products.${index}.price`);
       } else if (e.key === "ArrowLeft") {
-        setFocus(`products.${index}.product`);
+        setFocus(`products.${index}.productName`);
       } else if (e.key === "ArrowUp") {
         e.preventDefault();
         if (index > 0) {
@@ -108,12 +108,12 @@ const OrderFormProducts: FC<OrderFormProductsProps> = ({
           <Input
             variant="standard"
             className={cn("w-[calc(75%-24px)]", {
-              "border-error": !!errors?.[index]?.product,
+              "border-error": !!errors?.[index]?.productName,
             })}
             placeholder="Producto"
             autoComplete="off"
             onKeyDown={handleKeyDown}
-            {...register(`products.${index}.product`, { required: true })}
+            {...register(`products.${index}.productName`, { required: true })}
           />
           <Input
             variant="standard"
@@ -123,7 +123,10 @@ const OrderFormProducts: FC<OrderFormProductsProps> = ({
             autoComplete="off"
             min={0}
             onKeyDown={handleKeyDown}
-            {...register(`products.${index}.price`, { min: 0 })}
+            {...register(`products.${index}.price`, {
+              min: 0,
+              valueAsNumber: true,
+            })}
           />
           {fields.length > 1 && (
             <Button
