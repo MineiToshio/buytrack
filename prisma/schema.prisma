@@ -173,7 +173,7 @@ model Order {
   store         Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
   userId        String
   user          User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  orderDate     DateTime?
+  orderDate     DateTime
   deliveryDate  DateTime?
   productsCost  Float
   paidAmount    Float @default(0)

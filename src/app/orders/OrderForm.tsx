@@ -85,6 +85,9 @@ const OrderForm: FC<OrderFormProps> = ({ isLoading, order, onSubmit }) => {
         formField="orderDate"
         readOnly={isReadOnly}
         maxDate={new Date()}
+        required
+        error={!!errors.orderDate}
+        errorMessage="La fecha de orden es obligatoria"
       />
       <FormRow
         title="Fecha aprox. de entrega"
