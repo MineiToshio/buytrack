@@ -22,7 +22,7 @@ const createOrder = async (data: OrderFormType) => {
     }),
     products: data.products.map((p) => ({
       productName: p.productName,
-      ...(p.price && { price: new Date(p.price) }),
+      ...(p.price && { price: p.price }),
     })),
   };
   return post<Order>(CREATE_ORDER, newOrder);
