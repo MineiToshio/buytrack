@@ -179,6 +179,8 @@ model Order {
   paidAmount    Float @default(0)
   delivered     Boolean @default(false)
   createdDate   DateTime @default(now())
+  currencyId    String
+  Currency      Currency @relation(fields: [currencyId], references: [id], onDelete: Cascade)
   minApproximateDeliveryDate DateTime?
   maxApproximateDeliveryDate DateTime?
   review        StoreReview?
@@ -188,6 +190,7 @@ model Order {
 
   @@index([storeId])
   @@index([userId])
+  @@index([currencyId])
 }
 
 model OrderProduct {
@@ -248,4 +251,10 @@ model Product {
   user  User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+}
+
+model Currency {
+  id     String  @id @default(cuid())
+  name   String  @unique
+  orders Order[]
 }
