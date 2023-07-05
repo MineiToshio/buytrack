@@ -40,7 +40,7 @@ const AddButton: FC<AddButtonProps> = ({ title, onAdd }) => {
 
   return (
     <>
-      <button className="group" onClick={handleClose}>
+      <button type="button" className="group" onClick={handleClose}>
         <Icons.Add className="text-primary group-hover:text-green-600" />
       </button>
       <Modal open={isOpen} onClose={toggleOpen}>
