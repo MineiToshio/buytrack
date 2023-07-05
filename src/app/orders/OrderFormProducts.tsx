@@ -61,6 +61,7 @@ const OrderFormProducts: FC<OrderFormProductsProps> = ({
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
+      e.preventDefault();
       addNewRow();
     } else if (e.ctrlKey) {
       const { index, attribute } = getInputData(e);
@@ -76,9 +77,15 @@ const OrderFormProducts: FC<OrderFormProductsProps> = ({
         }
       } else if (e.key === "ArrowDown") {
         e.preventDefault();
-
         if (index < fields.length) {
           setFocus(`products.${index + 1}.${attribute}`);
+        }
+      } else if (e.key === "Delete") {
+        if (fields.length > 1) {
+          e.preventDefault();
+          remove(index);
+          const currentIndex = fields.length === index + 1 ? index - 1: index;
+          setFocus(`products.${currentIndex}.${attribute}`);
         }
       }
     }
@@ -146,6 +153,9 @@ const OrderFormProducts: FC<OrderFormProductsProps> = ({
         </Typography>
         <Typography size="xs" color="muted">
           - Enter: Agrega una nueva fila de producto.
+        </Typography>
+        <Typography size="xs" color="muted">
+          - Control + Del: Eliminar la fila.
         </Typography>
         <Typography size="xs" color="muted">
           - Control + Una de las flechas: Moverse entre las celdas.
