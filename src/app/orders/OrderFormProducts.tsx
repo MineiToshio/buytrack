@@ -84,7 +84,7 @@ const OrderFormProducts: FC<OrderFormProductsProps> = ({
         if (fields.length > 1) {
           e.preventDefault();
           remove(index);
-          const currentIndex = fields.length === index + 1 ? index - 1: index;
+          const currentIndex = fields.length === index + 1 ? index - 1 : index;
           setFocus(`products.${currentIndex}.${attribute}`);
         }
       }

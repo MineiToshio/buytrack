@@ -142,7 +142,7 @@ const FormRow = <T extends FieldValues>(
             ref={ref}
           />
           {ButtonIcon && onButtonClick && (
-            <Button variant="text" onClick={onButtonClick}>
+            <Button variant="text" onClick={onButtonClick} className="p-0">
               <ButtonIcon />
             </Button>
           )}

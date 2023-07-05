@@ -17,6 +17,10 @@ import {
   Trash2,
   CircleDollarSign,
   Calculator,
+  ChevronDown,
+  ChevronRight,
+  Eye,
+  Coins,
 } from "lucide-react";
 
 export const Icons = {
@@ -38,6 +42,10 @@ export const Icons = {
   Delete: Trash2,
   Money: CircleDollarSign,
   Calculator,
+  ChevronDown,
+  ChevronRight,
+  View: Eye,
+  Coins,
 };
 
 export default Icons;

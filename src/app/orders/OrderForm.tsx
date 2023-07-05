@@ -2,12 +2,13 @@
 
 import Button from "@/components/core/Button";
 import Icons from "@/core/Icons";
-import { GET_STORE } from "@/helpers/apiUrls";
+import { CREATE_CURRENCY, GET_CURRENCY, GET_STORE } from "@/helpers/apiUrls";
 import useSelect from "@/hooks/useSelect";
 import FormRow from "@/modules/FormRow";
 import { FC, useState } from "react";
 import { useForm } from "react-hook-form";
 import OrderFormProducts from "./OrderFormProducts";
+import { Currency } from "@prisma/client";
 
 export type Product = {
   productName: string;
@@ -22,6 +23,7 @@ export type OrderFormType = {
     max: Date;
   };
   products: Product[];
+  currencyId: string;
   productsCost: number;
 };
 
@@ -34,6 +36,9 @@ type OrderFormProps = {
 const OrderForm: FC<OrderFormProps> = ({ isLoading, order, onSubmit }) => {
   const [isReadOnly, setIsReadOnly] = useState<boolean>(!!order);
   const { options: stores } = useSelect(["stores"], GET_STORE);
+
+  const { options: currencyOptions, addNewOption: addNewCurrency } =
+    useSelect<Currency>(["currencies"], GET_CURRENCY, CREATE_CURRENCY);
 
   const {
     control,
@@ -98,6 +103,21 @@ const OrderForm: FC<OrderFormProps> = ({ isLoading, order, onSubmit }) => {
         formField="approximateDeliveryDate"
         readOnly={isReadOnly}
         minDate={new Date()}
+      />
+      <FormRow
+        title="Moneda"
+        Icon={Icons.Coins}
+        placeholder="Elige el tipo de moneda"
+        type="select"
+        options={currencyOptions}
+        control={control}
+        formField="currencyId"
+        newModalTitle="Nueva moneda"
+        onAdd={addNewCurrency}
+        required
+        error={!!errors.currencyId}
+        errorMessage="La moneda es obligatoria"
+        readOnly={isReadOnly}
       />
       <FormRow
         title="Costo Total"

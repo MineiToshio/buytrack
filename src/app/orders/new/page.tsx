@@ -4,10 +4,14 @@ import { getQueryClient } from "@/helpers/reactQuery";
 import { dehydrate } from "@tanstack/react-query";
 import { getStores } from "@/queries/store";
 import NewOrderForm from "./NewOrderForm";
+import { getCurrencies } from "@/queries/currency";
 
 const page = async () => {
   const queryClient = getQueryClient();
-  await Promise.all([queryClient.prefetchQuery(["stores"], getStores)]);
+  await Promise.all([
+    queryClient.prefetchQuery(["stores"], getStores),
+    queryClient.prefetchQuery(["currencies"], getCurrencies),
+  ]);
   const dehydratedState = dehydrate(queryClient);
 
   return (

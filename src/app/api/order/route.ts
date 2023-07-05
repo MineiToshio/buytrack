@@ -6,10 +6,11 @@ import { z } from "zod";
 
 const reqPostSchema = z.object({
   storeId: z.string(),
-  orderDate: z.string().pipe(z.coerce.date()).optional(),
+  orderDate: z.string().pipe(z.coerce.date()),
   productsCost: z.number(),
   minApproximateDeliveryDate: z.string().pipe(z.coerce.date()).optional(),
   maxApproximateDeliveryDate: z.string().pipe(z.coerce.date()).optional(),
+  currencyId: z.string(),
   products: z.array(
     z.object({
       productName: z.string(),

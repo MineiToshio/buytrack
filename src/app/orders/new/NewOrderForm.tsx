@@ -20,6 +20,7 @@ const createOrder = async (data: OrderFormType) => {
     ...(data.approximateDeliveryDate?.max && {
       maxApproximateDeliveryDate: data.approximateDeliveryDate?.max,
     }),
+    currencyId: data.currencyId,
     products: data.products.map((p) => ({
       productName: p.productName,
       ...(p.price && { price: p.price }),
