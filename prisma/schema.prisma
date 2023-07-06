@@ -180,7 +180,7 @@ model Order {
   delivered     Boolean @default(false)
   createdDate   DateTime @default(now())
   currencyId    String
-  Currency      Currency @relation(fields: [currencyId], references: [id], onDelete: Cascade)
+  currency      Currency @relation(fields: [currencyId], references: [id], onDelete: Cascade)
   minApproximateDeliveryDate DateTime?
   maxApproximateDeliveryDate DateTime?
   review        StoreReview?

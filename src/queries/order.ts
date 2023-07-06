@@ -24,6 +24,7 @@ export const getOrdersByUser = (userId: string) =>
       orderNotes: { orderBy: { createdDate: "desc" } },
       orderPayments: { orderBy: { paymentDate: "desc" } },
       store: true,
+      currency: true,
     },
   });
 
