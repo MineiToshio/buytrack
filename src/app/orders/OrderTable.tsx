@@ -62,17 +62,20 @@ const columns = [
       header: () => <Typography>Tienda</Typography>,
     },
   ),
-  columnHelper.accessor((row) => ({ cost: row.productsCost, currency: row.currency.name }), {
-    id: "price",
-    size: 70,
-    cell: (info) => {
-      const price = info.getValue();
-      return (
-        <Typography className="text-center">{`${price.currency} ${price.cost}`}</Typography>
-      )
+  columnHelper.accessor(
+    (row) => ({ cost: row.productsCost, currency: row.currency.name }),
+    {
+      id: "price",
+      size: 70,
+      cell: (info) => {
+        const price = info.getValue();
+        return (
+          <Typography className="text-center">{`${price.currency} ${price.cost}`}</Typography>
+        );
+      },
+      header: () => <Typography>Precio</Typography>,
     },
-    header: () => <Typography>Precio</Typography>,
-  }),
+  ),
   columnHelper.accessor(
     (row) => ({
       start: row.minApproximateDeliveryDate,
@@ -120,7 +123,7 @@ const OrderTable: FC<Props> = ({ orders }) => {
   return (
     <>
       {orders && orders.length > 0 ? (
-        <div className="w-full rounded-md bg-slate-50 overflow-x-auto">
+        <div className="w-full overflow-x-auto rounded-md bg-slate-50">
           <table className="w-full table-fixed">
             <thead>
               {table.getHeaderGroups().map((headerGroup) => (

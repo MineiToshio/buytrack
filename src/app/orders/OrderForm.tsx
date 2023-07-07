@@ -5,10 +5,11 @@ import Icons from "@/core/Icons";
 import { CREATE_CURRENCY, GET_CURRENCY, GET_STORE } from "@/helpers/apiUrls";
 import useSelect from "@/hooks/useSelect";
 import FormRow from "@/modules/FormRow";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import OrderFormProducts from "./OrderFormProducts";
 import { Currency } from "@prisma/client";
+import { OrderFull } from "@/types/prisma";
 
 export type Product = {
   productName: string;
@@ -19,8 +20,8 @@ export type OrderFormType = {
   storeId: string;
   orderDate: Date;
   approximateDeliveryDate: {
-    min: Date;
-    max: Date;
+    min?: Date;
+    max?: Date;
   };
   products: Product[];
   currencyId: string;
@@ -28,7 +29,7 @@ export type OrderFormType = {
 };
 
 type OrderFormProps = {
-  order?: {};
+  order?: OrderFull | null;
   isLoading?: boolean;
   onSubmit: (data: OrderFormType) => void;
 };
@@ -50,6 +51,28 @@ const OrderForm: FC<OrderFormProps> = ({ isLoading, order, onSubmit }) => {
     clearErrors,
     formState: { errors },
   } = useForm<OrderFormType>();
+
+  useEffect(() => {
+    if (order) {
+      setValue("storeId", order.storeId);
+      setValue("orderDate", order.orderDate);
+      setValue("currencyId", order.currencyId);
+      setValue("productsCost", order.productsCost);
+      if (
+        order.minApproximateDeliveryDate &&
+        order.maxApproximateDeliveryDate
+      ) {
+        setValue("approximateDeliveryDate", {
+          min: order.minApproximateDeliveryDate,
+          max: order.maxApproximateDeliveryDate,
+        });
+      }
+      order.products.forEach((p, i) => {
+        setValue(`products.${i}.productName`, p.productName);
+        p.price && setValue(`products.${i}.price`, p.price);
+      });
+    }
+  }, [order, setValue]);
 
   const calculatePrice = () => {
     const values = getValues();
@@ -139,6 +162,7 @@ const OrderForm: FC<OrderFormProps> = ({ isLoading, order, onSubmit }) => {
         register={register}
         setFocus={setFocus}
         errors={errors.products}
+        readOnly={isReadOnly}
       />
       {!isReadOnly && (
         <Button type="submit" className="mt-5 w-fit" isLoading={isLoading}>

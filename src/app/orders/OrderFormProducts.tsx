@@ -22,6 +22,7 @@ type OrderFormProductsProps = {
   register: UseFormRegister<OrderFormType>;
   setFocus: UseFormSetFocus<OrderFormType>;
   errors?: ErrorArrayField<Product>;
+  readOnly: boolean;
 };
 
 type InputAttribute = "productName" | "price";
@@ -33,6 +34,7 @@ const OrderFormProducts: FC<OrderFormProductsProps> = ({
   formField,
   setFocus,
   errors,
+  readOnly,
 }) => {
   const { fields, append, remove } = useFieldArray({
     control,
@@ -96,14 +98,16 @@ const OrderFormProducts: FC<OrderFormProductsProps> = ({
       <div className="flex gap-4">
         <div className="flex w-[calc(75%-24px)] items-center">
           <Typography color="muted">Producto</Typography>
-          <Button
-            variant="text"
-            className="ml-2 p-0"
-            onClick={addNewRow}
-            title="Agregar producto"
-          >
-            <Icons.Add />
-          </Button>
+          {!readOnly && (
+            <Button
+              variant="text"
+              className="ml-2 p-0"
+              onClick={addNewRow}
+              title="Agregar producto"
+            >
+              <Icons.Add />
+            </Button>
+          )}
         </div>
         <div className="flex w-1/4 items-center">
           <Typography color="muted">Precio</Typography>
@@ -119,6 +123,7 @@ const OrderFormProducts: FC<OrderFormProductsProps> = ({
             })}
             placeholder="Producto"
             autoComplete="off"
+            readOnly={readOnly}
             onKeyDown={handleKeyDown}
             {...register(`products.${index}.productName`, { required: true })}
           />
@@ -129,13 +134,14 @@ const OrderFormProducts: FC<OrderFormProductsProps> = ({
             type="number"
             autoComplete="off"
             min={0}
+            readOnly={readOnly}
             onKeyDown={handleKeyDown}
             {...register(`products.${index}.price`, {
               min: 0,
               valueAsNumber: true,
             })}
           />
-          {fields.length > 1 && (
+          {fields.length > 1 && !readOnly && (
             <Button
               variant="text"
               className="w-[24px] p-0"
@@ -147,20 +153,22 @@ const OrderFormProducts: FC<OrderFormProductsProps> = ({
           )}
         </div>
       ))}
-      <div className="hidden flex-col sm:flex">
-        <Typography size="xs" color="muted">
-          * Puedes usar estos atajos de teclado:
-        </Typography>
-        <Typography size="xs" color="muted">
-          - Enter: Agrega una nueva fila de producto.
-        </Typography>
-        <Typography size="xs" color="muted">
-          - Control + Del: Eliminar la fila.
-        </Typography>
-        <Typography size="xs" color="muted">
-          - Control + Una de las flechas: Moverse entre las celdas.
-        </Typography>
-      </div>
+      {!readOnly && (
+        <div className="hidden flex-col sm:flex">
+          <Typography size="xs" color="muted">
+            * Puedes usar estos atajos de teclado:
+          </Typography>
+          <Typography size="xs" color="muted">
+            - Enter: Agrega una nueva fila de producto.
+          </Typography>
+          <Typography size="xs" color="muted">
+            - Control + Del: Eliminar la fila.
+          </Typography>
+          <Typography size="xs" color="muted">
+            - Control + Una de las flechas: Moverse entre las celdas.
+          </Typography>
+        </div>
+      )}
     </div>
   );
 };

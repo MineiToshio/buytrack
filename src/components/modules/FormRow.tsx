@@ -141,7 +141,7 @@ const FormRow = <T extends FieldValues>(
             {...props}
             ref={ref}
           />
-          {ButtonIcon && onButtonClick && (
+          {ButtonIcon && onButtonClick && !readOnly && (
             <Button variant="text" onClick={onButtonClick} className="p-0">
               <ButtonIcon />
             </Button>
@@ -212,16 +212,19 @@ const FormRow = <T extends FieldValues>(
           name={formField}
           control={control}
           rules={{ required }}
-          render={({ field }) => (
-            <DateRangePicker
-              placeholder={placeholder}
-              onChange={field.onChange}
-              value={field.value}
-              readOnly={readOnly}
-              minDate={minDate}
-              maxDate={maxDate}
-            />
-          )}
+          render={({ field }) => {
+            console.log(field);
+            return (
+              <DateRangePicker
+                placeholder={placeholder}
+                onChange={field.onChange}
+                value={field.value}
+                readOnly={readOnly}
+                minDate={minDate}
+                maxDate={maxDate}
+              />
+            );
+          }}
         />
       )}
       {error && (

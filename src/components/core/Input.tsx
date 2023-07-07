@@ -22,6 +22,11 @@ const inputVariants = cva("text-base sm:text-lg w-full p-2 outline-0", {
       class:
         "shadow-none cursor-default focus:outline-0 focus:drop-shadow-none hover:bg-transparent",
     },
+    {
+      variant: "standard",
+      status: "readOnly",
+      class: "cursor-default focus:outline-0 focus:drop-shadow-none",
+    },
   ],
   defaultVariants: {
     variant: "ghost",

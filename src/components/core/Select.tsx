@@ -170,7 +170,7 @@ const Select: FC<SelectProps> = ({
               </div>
             ) : (
               <>
-                {!(allowSearch && isOpen) && (
+                {(!(allowSearch && isOpen) || readOnly) && (
                   <Typography>{selectedOption[0].label}</Typography>
                 )}
               </>
@@ -193,7 +193,7 @@ const Select: FC<SelectProps> = ({
           onChange={(e) => setSearch(e.target.value)}
           onClick={(e) => e.stopPropagation()}
           className={cn("min-w-[100px] bg-transparent outline-0", {
-            hidden: !(allowSearch && isOpen),
+            hidden: !(allowSearch && isOpen) || readOnly,
             "mt-2": multiple && value && value?.length > 0,
           })}
         />
