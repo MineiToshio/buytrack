@@ -212,19 +212,16 @@ const FormRow = <T extends FieldValues>(
           name={formField}
           control={control}
           rules={{ required }}
-          render={({ field }) => {
-            console.log(field);
-            return (
-              <DateRangePicker
-                placeholder={placeholder}
-                onChange={field.onChange}
-                value={field.value}
-                readOnly={readOnly}
-                minDate={minDate}
-                maxDate={maxDate}
-              />
-            );
-          }}
+          render={({ field }) => (
+            <DateRangePicker
+              placeholder={placeholder}
+              onChange={field.onChange}
+              value={field.value}
+              readOnly={readOnly}
+              minDate={minDate}
+              maxDate={maxDate}
+            />
+          )}
         />
       )}
       {error && (

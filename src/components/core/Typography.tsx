@@ -5,6 +5,7 @@ import { HTMLAttributes, forwardRef } from "react";
 const typographyVariants = cva("", {
   variants: {
     size: {
+      "2xs": "text-xs, sm:text-xs",
       xs: "text-xs, sm:text-sm",
       sm: "text-sm, sm:text-base",
       md: "text-base sm:text-lg",

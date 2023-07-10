@@ -21,6 +21,7 @@ import {
   ChevronRight,
   Eye,
   Coins,
+  Send,
 } from "lucide-react";
 
 export const Icons = {
@@ -46,6 +47,7 @@ export const Icons = {
   ChevronRight,
   View: Eye,
   Coins,
+  Send,
 };
 
 export default Icons;

@@ -75,9 +75,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         type={type ?? "button"}
         {...props}
       >
-        {isLoading ? (
-          <Icons.Loader className="mr-2 h-4 w-4 animate-spin" />
-        ) : null}
+        {isLoading && <Icons.Loader className="mr-2 h-4 w-4 animate-spin" />}
         {children}
       </button>
     );

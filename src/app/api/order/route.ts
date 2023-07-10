@@ -1,3 +1,4 @@
+import { apiResponses } from "@/helpers/api";
 import { authOptions } from "@/helpers/auth";
 import { createOrder, getOrdersByUser } from "@/queries/order";
 import { getServerSession } from "next-auth";
@@ -24,18 +25,13 @@ export const GET = async () => {
     const user = await getServerSession(authOptions).then((res) => res?.user);
 
     if (!user) {
-      return NextResponse.json(
-        {
-          error: "Unauthorized to perform this action.",
-        },
-        { status: 401 },
-      );
+      return apiResponses().unauthorized;
     }
 
     const orders = await getOrdersByUser(user.id);
     return NextResponse.json(orders, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ error }, { status: 500 });
+    return apiResponses(error).error;
   }
 };
 
@@ -45,12 +41,7 @@ export const POST = async (req: NextRequest) => {
     const user = await getServerSession(authOptions).then((res) => res?.user);
 
     if (!user) {
-      return NextResponse.json(
-        {
-          error: "Unauthorized to perform this action.",
-        },
-        { status: 401 },
-      );
+      return apiResponses().unauthorized;
     }
 
     const { products, ...order } = reqPostSchema.parse(body);
@@ -64,9 +55,6 @@ export const POST = async (req: NextRequest) => {
     );
     return NextResponse.json(newOrder, { status: 200 });
   } catch (error) {
-    if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: error.issues }, { status: 400 });
-    }
-    return NextResponse.json({ error }, { status: 500 });
+    return apiResponses(error).error;
   }
 };

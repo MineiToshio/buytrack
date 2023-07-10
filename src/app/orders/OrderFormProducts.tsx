@@ -96,7 +96,12 @@ const OrderFormProducts: FC<OrderFormProductsProps> = ({
   return (
     <div className="mt-6 flex w-full max-w-xl flex-col gap-2">
       <div className="flex gap-4">
-        <div className="flex w-[calc(75%-24px)] items-center">
+        <div
+          className={cn("flex items-center", {
+            "w-[calc(75%-24px)]": fields.length > 1 && !readOnly,
+            "w-3/4": fields.length < 1 || readOnly,
+          })}
+        >
           <Typography color="muted">Producto</Typography>
           {!readOnly && (
             <Button
@@ -112,13 +117,15 @@ const OrderFormProducts: FC<OrderFormProductsProps> = ({
         <div className="flex w-1/4 items-center">
           <Typography color="muted">Precio</Typography>
         </div>
-        {fields.length > 1 && <div className={`w-[24px]`} />}
+        {fields.length > 1 && !readOnly && <div className="w-[24px]" />}
       </div>
       {fields.map((field, index) => (
         <div key={field.id} className="flex items-center gap-4">
           <Input
             variant="standard"
-            className={cn("w-[calc(75%-24px)]", {
+            className={cn({
+              "w-[calc(75%-24px)]": fields.length > 1 && !readOnly,
+              "w-3/4": fields.length < 1 || readOnly,
               "border-error": !!errors?.[index]?.productName,
             })}
             placeholder="Producto"
