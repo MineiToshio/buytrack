@@ -12,13 +12,19 @@ export const generateId = (length: number) => {
   return result;
 };
 
-export const formatDate = (date: Date, lang: Locale = "es") => {
-  const day = date.getDate().toString();
-  const month = (date.getMonth() + 1).toString();
-  const year = date.getFullYear().toString();
+export const addLeadingZeros = (number: number, lenght: number = 2) => {
+  const pad_char = "0";
+  const pad = new Array(1 + lenght).join(pad_char);
+  return (pad + number.toString()).slice(-pad.length);
+};
 
-  const formattedDay = `${day.length === 1 ? "0" : ""}${day}`;
-  const formattedMonth = `${month.length === 1 ? "0" : ""}${month}`;
+export const formatDate = (date: Date, lang: Locale = "es") => {
+  const day = date.getDate();
+  const month = date.getMonth() + 1;
+  const year = date.getFullYear();
+
+  const formattedDay = addLeadingZeros(day);
+  const formattedMonth = addLeadingZeros(month);
 
   switch (lang) {
     case "es":
@@ -28,3 +34,18 @@ export const formatDate = (date: Date, lang: Locale = "es") => {
       return `${formattedMonth}/${formattedDay}/${year}`;
   }
 };
+
+export const formatTime = (date: Date) => {
+  const hour = date.getHours();
+  const minutes = date.getMinutes();
+  const seconds = date.getSeconds();
+
+  const formattedHour = addLeadingZeros(hour);
+  const formattedMinutes = addLeadingZeros(minutes);
+  const formattedSeconds = addLeadingZeros(seconds);
+
+  return `${formattedHour}:${formattedMinutes}:${formattedSeconds}`;
+};
+
+export const formatDatetime = (date: Date, lang: Locale = "es") =>
+  `${formatDate(date, lang)} ${formatTime(date)}`;
