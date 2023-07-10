@@ -176,7 +176,7 @@ const OrderForm: FC<OrderFormProps> = ({ isLoading, order, onSubmit }) => {
         )}
       </form>
       {order && (
-        <div className="mt-6 h-80 w-full md:mt-0 md:w-2/5">
+        <div className="mt-6 h-80 w-full md:mt-1 md:w-2/5">
           <OrderNotes orderId={order.id} notes={order.orderNotes} />
         </div>
       )}
