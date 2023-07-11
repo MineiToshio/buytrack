@@ -23,11 +23,13 @@ const ConfirmModal: FC<ConfirmModalProps> = ({
   <Modal open={open} onClose={onCancel}>
     <div className="flex flex-col gap-y-4 p-4">
       <Typography>{message}</Typography>
-      <div className="flex gap-x-2 justify-end">
-        <Button onClick={onConfirm}>
-          {confirmText}
-        </Button>
-        <Button className="bg-muted hover:bg-gray-500" onClick={onCancel}>
+      <div className="flex justify-end gap-x-2">
+        <Button onClick={onConfirm}>{confirmText}</Button>
+        <Button
+          className="border-muted text-muted hover:bg-muted"
+          onClick={onCancel}
+          variant="outline"
+        >
           {cancelText}
         </Button>
       </div>
