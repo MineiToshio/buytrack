@@ -7,9 +7,12 @@ export const getNotesByOrder = (orderId: string) =>
     orderBy: { createdDate: "desc" },
   });
 
-export const createorderNote = (
+export const createOrderNote = (
   orderNote: Omit<OrderNote, "id" | "createdDate">,
 ) =>
   db.orderNote.create({
     data: orderNote,
   });
+
+export const deleteOrderNote = (id: string) =>
+  db.orderNote.delete({ where: { id } });

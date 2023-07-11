@@ -3,10 +3,13 @@ import { z } from "zod";
 
 export const apiResponses = (data?: unknown) => ({
   unauthorized: NextResponse.json(
-    {
-      error: "Unauthorized to perform this action.",
-    },
+    { error: "Unauthorized to perform this action." },
     { status: 401 },
+  ),
+  notFound: NextResponse.json({ error: data ?? "Not found." }, { status: 404 }),
+  badRequest: NextResponse.json(
+    { error: data ?? "Bad request." },
+    { status: 400 },
   ),
   error:
     data instanceof z.ZodError

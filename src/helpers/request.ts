@@ -24,4 +24,7 @@ const request = async <T>(
 export const post = <T>(url: string, data?: any) =>
   request<T>(url, getBody("POST", data));
 
+export const del = (url: string) =>
+  request<{ success: boolean }>(url, getBody("DELETE"));
+
 export const get = <T>(url: string) => request<T>(url);

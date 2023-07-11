@@ -11,3 +11,4 @@ export const GET_ORDER = "/api/order";
 export const CREATE_CURRENCY = "/api/currency";
 export const GET_CURRENCY = "/api/currency";
 export const CREATE_ORDER_NOTE = "/api/order-note";
+export const DELETE_ORDER_NOTE = "/api/order-note?id=";

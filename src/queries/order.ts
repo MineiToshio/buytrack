@@ -44,6 +44,14 @@ export const getOrderById = (id: string, userId: string) =>
     },
   });
 
+export const getOrderByOrderNote = (orderNoteId: string, userId: string) =>
+  db.order.findFirst({
+    where: {
+      userId,
+      orderNotes: { some: { id: orderNoteId } },
+    },
+  });
+
 export const createOrder = (order: OrderData, products: ProductCreate[]) =>
   db.order.create({
     data: {
