@@ -41,6 +41,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     <input
       ref={ref}
       readOnly={readOnly}
+      autoComplete="off"
       className={cn(
         inputVariants({
           variant,
