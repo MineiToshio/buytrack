@@ -15,6 +15,7 @@ export const buttonVariants = cva(
         ghost:
           "bg-transparent hover:bg-primary data-[state=open]:bg-transparent",
         text: "bg-transparent underline-offset-4 hover:underline text-primary hover:text-green-600",
+        icon: "bg-transparent text-primary p-0 hover:text-green-600",
       },
       size: {
         default: "h-10 py-2 px-4",
@@ -76,7 +77,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       >
         {isLoading && <Icons.Loader className="mr-2 h-4 w-4 animate-spin" />}
-        {children}
+        {(variant !== "icon" || (variant === "icon" && !isLoading)) && children}
       </button>
     );
   },

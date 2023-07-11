@@ -51,7 +51,9 @@ const OrderNotes: FC<OrderNotesProps> = ({ orderId, notes }) => {
 
   return (
     <div className="flex h-full w-full flex-col">
-      <Typography color="muted" className="mb-2">Notas</Typography>
+      <Typography color="muted" className="mb-2">
+        Notas
+      </Typography>
       <div className="flex h-full w-full flex-col overflow-y-auto rounded-md border p-2">
         {currentNotes && currentNotes.length > 1 ? (
           <>
@@ -90,7 +92,7 @@ const OrderNotes: FC<OrderNotesProps> = ({ orderId, notes }) => {
         />
         <Button
           type="submit"
-          variant="text"
+          variant="icon"
           title="Enviar"
           isLoading={isLoading}
         >

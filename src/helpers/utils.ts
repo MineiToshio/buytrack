@@ -18,10 +18,11 @@ export const addLeadingZeros = (number: number, lenght: number = 2) => {
   return (pad + number.toString()).slice(-pad.length);
 };
 
-export const formatDate = (date: Date, lang: Locale = "es") => {
-  const day = date.getDate();
-  const month = date.getMonth() + 1;
-  const year = date.getFullYear();
+export const formatDate = (date: Date | string, lang: Locale = "es") => {
+  const currentDate = new Date(date);
+  const day = currentDate.getDate();
+  const month = currentDate.getMonth() + 1;
+  const year = currentDate.getFullYear();
 
   const formattedDay = addLeadingZeros(day);
   const formattedMonth = addLeadingZeros(month);
@@ -35,10 +36,11 @@ export const formatDate = (date: Date, lang: Locale = "es") => {
   }
 };
 
-export const formatTime = (date: Date) => {
-  const hour = date.getHours();
-  const minutes = date.getMinutes();
-  const seconds = date.getSeconds();
+export const formatTime = (date: Date | string) => {
+  const currentDate = new Date(date);
+  const hour = currentDate.getHours();
+  const minutes = currentDate.getMinutes();
+  const seconds = currentDate.getSeconds();
 
   const formattedHour = addLeadingZeros(hour);
   const formattedMinutes = addLeadingZeros(minutes);
@@ -47,5 +49,5 @@ export const formatTime = (date: Date) => {
   return `${formattedHour}:${formattedMinutes}:${formattedSeconds}`;
 };
 
-export const formatDatetime = (date: Date, lang: Locale = "es") =>
+export const formatDatetime = (date: Date | string, lang: Locale = "es") =>
   `${formatDate(date, lang)} ${formatTime(date)}`;
