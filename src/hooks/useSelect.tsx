@@ -15,7 +15,11 @@ const useSelect = <T extends DataType>(
 ) => {
   const [options, setOptions] = useState<Option[]>([]);
 
-  const { data, isLoading, error } = useQuery(queryKey, () => get<T[]>(getUrl));
+  const { data, isLoading, error } = useQuery(
+    queryKey,
+    () => get<T[]>(getUrl),
+    { enabled: false },
+  );
 
   useEffect(() => {
     if (data) {
