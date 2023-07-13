@@ -119,7 +119,7 @@ const OrderNotes: FC<OrderNotesProps> = ({ orderId, notes }) => {
                       {format(note.createdDate, "es")}
                     </Typography>
                     <Button
-                      className="text-muted hover:text-gray-500"
+                      color="muted"
                       variant="icon"
                       isLoading={
                         isLoadingDeleteNote && note.id === deleteNoteId

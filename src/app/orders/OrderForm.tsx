@@ -11,6 +11,7 @@ import { FC, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import OrderFormProducts from "./OrderFormProducts";
 import OrderNotes from "./OrderNotes";
+import OrderPayments from "./OrderPayments";
 
 export type Product = {
   productName: string;
@@ -176,8 +177,14 @@ const OrderForm: FC<OrderFormProps> = ({ isLoading, order, onSubmit }) => {
         )}
       </form>
       {order && (
-        <div className="mt-6 h-80 w-full md:mt-1 md:w-2/5">
+        <div className="mt-6 flex h-80 w-full flex-col gap-y-6 md:mt-1 md:w-2/5">
           <OrderNotes orderId={order.id} notes={order.orderNotes} />
+          <OrderPayments
+            orderId={order.id}
+            payments={order.orderPayments}
+            productsCost={order.productsCost}
+            currency={order.currency.name}
+          />
         </div>
       )}
     </div>

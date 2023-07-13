@@ -39,7 +39,7 @@ type DatePickerProps = {
   value: Date | null;
   placeholder?: string;
   className?: string;
-} & ReactDatePickerProps &
+} & Omit<ReactDatePickerProps, "value"> &
   VariantProps<typeof datePickerVariants>;
 
 const DatePicker: FC<DatePickerProps> = ({

@@ -15,7 +15,7 @@ export const buttonVariants = cva(
         ghost:
           "bg-transparent hover:bg-primary data-[state=open]:bg-transparent",
         text: "bg-transparent underline-offset-4 hover:underline text-primary hover:text-green-600",
-        icon: "bg-transparent text-primary focus:ring-0 !p-0 !h-min hover:text-green-600",
+        icon: "bg-transparent text-primary !p-0 border-transparent focus:ring-0 focus:ring-transparent !h-min hover:text-green-600",
       },
       size: {
         default: "h-10 py-2 px-4",
@@ -29,6 +29,7 @@ export const buttonVariants = cva(
       color: {
         default: "",
         white: "",
+        muted: "",
       },
     },
     compoundVariants: [
@@ -36,6 +37,11 @@ export const buttonVariants = cva(
         variant: "default",
         color: "white",
         class: "bg-white text-primary hover:bg-slate-50",
+      },
+      {
+        variant: "icon",
+        color: "muted",
+        class: "text-muted hover:text-gray-500",
       },
     ],
     defaultVariants: {
