@@ -9,7 +9,7 @@ import Typography from "@/core/Typography";
 import { CREATE_ORDER_PAYMENT, DELETE_ORDER_PAYMENT } from "@/helpers/apiUrls";
 import { post } from "@/helpers/request";
 import { formatDate } from "@/helpers/utils";
-import useDelete from "@/hooks/useDeleteModal";
+import useDeleteModal from "@/hooks/useDeleteModal";
 import Modal from "@/modules/Modal";
 import { cn } from "@/styles/utils";
 import { OrderPayment } from "@prisma/client";
@@ -54,7 +54,7 @@ const OrderPayments: FC<OrderPaymentsProps> = ({
     deleteData: deletePayment,
     openDeleteModal,
     closeDeleteModal,
-  } = useDelete(DELETE_ORDER_PAYMENT, (success, currentDeleteId) => {
+  } = useDeleteModal(DELETE_ORDER_PAYMENT, (success, currentDeleteId) => {
     if (success) {
       setCurrentPayments((currPayments) =>
         currPayments.filter((p) => p.id !== currentDeleteId),

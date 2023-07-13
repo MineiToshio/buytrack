@@ -5,6 +5,7 @@ import Typography from "@/core/Typography";
 import { CREATE_ORDER_NOTE, DELETE_ORDER_NOTE } from "@/helpers/apiUrls";
 import { del, post } from "@/helpers/request";
 import { formatDatetime } from "@/helpers/utils";
+import useDeleteModal from "@/hooks/useDeleteModal";
 import ConfirmModal from "@/modules/ConfirmModal";
 import { cn } from "@/styles/utils";
 import { OrderNote } from "@prisma/client";
@@ -28,16 +29,23 @@ type Form = {
 const createNoteReq = async (data: Form, orderId: string) =>
   post<OrderNote>(CREATE_ORDER_NOTE, { note: data.text, orderId });
 
-const deleteNoteReq = async (orderNoteId: string | null) => {
-  if (orderNoteId) {
-    return del(DELETE_ORDER_NOTE + orderNoteId);
-  }
-};
-
 const OrderNotes: FC<OrderNotesProps> = ({ orderId, notes }) => {
   const [currentNotes, setCurrentNotes] = useState<OrderNote[]>(notes);
-  const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
-  const [deleteNoteId, setDeleteNoteId] = useState<string | null>(null);
+
+  const {
+    showDeleteModal,
+    deleteId: deleteNoteId,
+    isLoading: isLoadingDeleteNote,
+    deleteData: deleteNote,
+    openDeleteModal,
+    closeDeleteModal,
+  } = useDeleteModal(DELETE_ORDER_NOTE, (success, currentDeleteId) => {
+    if (success) {
+      setCurrentNotes((currNotes) =>
+        currNotes.filter((n) => n.id !== deleteNoteId),
+      );
+    }
+  });
 
   const {
     register,
@@ -58,34 +66,7 @@ const OrderNotes: FC<OrderNotesProps> = ({ orderId, notes }) => {
     },
   );
 
-  const { isLoading: isLoadingDeleteNote, mutate: deleteNoteMutate } =
-    useMutation({
-      mutationFn: () => deleteNoteReq(deleteNoteId),
-      onSuccess: (res) => {
-        setDeleteNoteId(null);
-        if (res && res?.success) {
-          setCurrentNotes((curNotes) =>
-            curNotes.filter((n) => n.id !== deleteNoteId),
-          );
-        }
-      },
-    });
-
   const submitNewNote = (data: Form) => createNoteMutate(data);
-
-  const closeDeleteModal = () => {
-    setDeleteNoteId(null);
-    setShowDeleteModal(false);
-  };
-  const openDeleteModal = (noteId: string) => {
-    setDeleteNoteId(noteId);
-    setShowDeleteModal(true);
-  };
-
-  const deleteNote = () => {
-    deleteNoteMutate();
-    setShowDeleteModal(false);
-  };
 
   return (
     <>

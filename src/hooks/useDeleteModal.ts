@@ -20,6 +20,7 @@ const useDelete = (
     onSuccess: (data) => {
       if (data && deleteId) {
         onSuccess(data.success, deleteId);
+        setDeleteId(null);
       }
     },
   });
