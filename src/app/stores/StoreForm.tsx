@@ -155,19 +155,21 @@ const StoreForm: FC<StoreFormProps> = ({ isLoading, store, onSubmit }) => {
         errorMessage="El tipo de producto es obligatorio"
         readOnly={isReadOnly}
       />
-      <FormRow
-        title="Países de importación"
-        Icon={Icons.CornerUpLeftArrow}
-        placeholder="Elige los países de importación"
-        type="select"
-        options={productsCountryOptions}
-        control={control}
-        formField="productsCountryIds"
-        newModalTitle="Nuevo país de importación"
-        onAdd={addNewProductsCountry}
-        multiple
-        readOnly={isReadOnly}
-      />
+      {!(isReadOnly && store?.productsCountry?.length === 0) && (
+        <FormRow
+          title="Países de importación"
+          Icon={Icons.CornerUpLeftArrow}
+          placeholder="Elige los países de importación"
+          type="select"
+          options={productsCountryOptions}
+          control={control}
+          formField="productsCountryIds"
+          newModalTitle="Nuevo país de importación"
+          onAdd={addNewProductsCountry}
+          multiple
+          readOnly={isReadOnly}
+        />
+      )}
       <FormRow
         title="País"
         Icon={Icons.Globe}
@@ -183,58 +185,70 @@ const StoreForm: FC<StoreFormProps> = ({ isLoading, store, onSubmit }) => {
         errorMessage="El país de la tienda es obligatorio"
         readOnly={isReadOnly}
       />
-      <FormRow
-        title="Whatsapp"
-        Icon={Icons.Message}
-        placeholder="987 654 321"
-        type="input"
-        readOnly={isReadOnly}
-        {...register("whatsapp")}
-      />
-      <FormRow
-        title="Facebook"
-        Icon={Icons.Facebook}
-        placeholder="https://fb.com/misitio"
-        type="input"
-        readOnly={isReadOnly}
-        {...register("facebook")}
-      />
-      <FormRow
-        title="Instagram"
-        Icon={Icons.Instagram}
-        placeholder="https://instagram.com/misitio"
-        type="input"
-        readOnly={isReadOnly}
-        {...register("instagram")}
-      />
-      <FormRow
-        title="Website"
-        Icon={Icons.Web}
-        placeholder="https://misitio.com"
-        type="input"
-        readOnly={isReadOnly}
-        {...register("website")}
-      />
-      <FormRow
-        title="Tiene stock"
-        Icon={Icons.ChevronSquareDown}
-        placeholder="si o no"
-        type="select"
-        options={YES_NO_OPTIONS}
-        control={control}
-        formField="hasStock"
-        readOnly={isReadOnly}
-      />
-      <FormRow
-        title="Recibe órdenes"
-        Icon={Icons.ChevronSquareDown}
-        placeholder="si o no"
-        type="select"
-        options={YES_NO_OPTIONS}
-        control={control}
-        formField="receiveOrders"
-        readOnly={isReadOnly}
-      />
+      {!(isReadOnly && store?.whatsapp?.length === 0) && (
+        <FormRow
+          title="Whatsapp"
+          Icon={Icons.Message}
+          placeholder="987 654 321"
+          type="input"
+          readOnly={isReadOnly}
+          {...register("whatsapp")}
+        />
+      )}
+      {!(isReadOnly && store?.facebook?.length === 0) && (
+        <FormRow
+          title="Facebook"
+          Icon={Icons.Facebook}
+          placeholder="https://fb.com/misitio"
+          type="input"
+          readOnly={isReadOnly}
+          {...register("facebook")}
+        />
+      )}
+      {!(isReadOnly && store?.instagram?.length === 0) && (
+        <FormRow
+          title="Instagram"
+          Icon={Icons.Instagram}
+          placeholder="https://instagram.com/misitio"
+          type="input"
+          readOnly={isReadOnly}
+          {...register("instagram")}
+        />
+      )}
+      {!(isReadOnly && store?.website?.length === 0) && (
+        <FormRow
+          title="Website"
+          Icon={Icons.Web}
+          placeholder="https://misitio.com"
+          type="input"
+          readOnly={isReadOnly}
+          {...register("website")}
+        />
+      )}
+      {!(isReadOnly && store?.hasStock == null) && (
+        <FormRow
+          title="Tiene stock"
+          Icon={Icons.ChevronSquareDown}
+          placeholder="si o no"
+          type="select"
+          options={YES_NO_OPTIONS}
+          control={control}
+          formField="hasStock"
+          readOnly={isReadOnly}
+        />
+      )}
+      {!(isReadOnly && store?.receiveOrders == null) && (
+        <FormRow
+          title="Recibe órdenes"
+          Icon={Icons.ChevronSquareDown}
+          placeholder="si o no"
+          type="select"
+          options={YES_NO_OPTIONS}
+          control={control}
+          formField="receiveOrders"
+          readOnly={isReadOnly}
+        />
+      )}
       {!isReadOnly && (
         <Button type="submit" className="mt-5 w-fit" isLoading={isLoading}>
           Guardar
