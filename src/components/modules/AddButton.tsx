@@ -1,6 +1,6 @@
 "use client";
 
-import { FC, useState } from "react";
+import { FC, FormEvent, useState } from "react";
 import Icons from "@/core/Icons";
 import Modal from "@/modules/Modal";
 import Typography from "../core/Typography";
@@ -38,13 +38,18 @@ const AddButton: FC<AddButtonProps> = ({ title, onAdd }) => {
     onAdd(value);
   };
 
+  const onBeforeSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.stopPropagation();
+    return handleSubmit(onSubmit)(e);
+  }
+
   return (
     <>
       <button type="button" className="group" onClick={handleClose}>
         <Icons.Add className="text-primary group-hover:text-green-600" />
       </button>
       <Modal open={isOpen} onClose={toggleOpen}>
-        <form className="p-4" onSubmit={handleSubmit(onSubmit)}>
+        <form className="p-4" onSubmit={onBeforeSubmit}>
           <Typography className="mb-4 font-semibold" size="lg">
             {title}
           </Typography>
