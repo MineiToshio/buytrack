@@ -2,7 +2,7 @@ import { apiResponses } from "@/helpers/api";
 import { authOptions } from "@/helpers/auth";
 import { createOrder, getOrdersByUser } from "@/queries/order";
 import { getServerSession } from "next-auth";
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { z } from "zod";
 
 const reqPostSchema = z.object({
@@ -29,7 +29,7 @@ export const GET = async () => {
     }
 
     const orders = await getOrdersByUser(user.id);
-    return NextResponse.json(orders, { status: 200 });
+    return apiResponses(orders).success;
   } catch (error) {
     return apiResponses(error).error;
   }
@@ -53,7 +53,7 @@ export const POST = async (req: NextRequest) => {
       },
       products,
     );
-    return NextResponse.json(newOrder, { status: 200 });
+    return apiResponses(newOrder).success;
   } catch (error) {
     return apiResponses(error).error;
   }

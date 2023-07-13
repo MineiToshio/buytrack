@@ -1,8 +1,9 @@
+import { apiResponses } from "@/helpers/api";
 import { authOptions } from "@/helpers/auth";
 import { createStore, getStores } from "@/queries/store";
 import { StoreType } from "@prisma/client";
 import { getServerSession } from "next-auth";
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { z } from "zod";
 
 const reqPostSchema = z.object({
@@ -23,9 +24,9 @@ const reqPostSchema = z.object({
 export const GET = async () => {
   try {
     const stores = await getStores();
-    return NextResponse.json(stores, { status: 200 });
+    return apiResponses(stores).success;
   } catch (error) {
-    return NextResponse.json({ error }, { status: 500 });
+    return apiResponses(error).error;
   }
 };
 
@@ -35,12 +36,7 @@ export const POST = async (req: NextRequest) => {
     const user = await getServerSession(authOptions).then((res) => res?.user);
 
     if (!user) {
-      return NextResponse.json(
-        {
-          error: "Unauthorized to perform this action.",
-        },
-        { status: 401 },
-      );
+      return apiResponses().unauthorized;
     }
 
     const { productsCountryIds, productTypeIds, ...country } =
@@ -51,11 +47,8 @@ export const POST = async (req: NextRequest) => {
       productsCountryIds,
       productTypeIds,
     );
-    return NextResponse.json(newStore, { status: 200 });
+    return apiResponses(newStore).success;
   } catch (error) {
-    if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: error.issues }, { status: 400 });
-    }
-    return NextResponse.json({ error }, { status: 500 });
+    return apiResponses(error).error;
   }
 };

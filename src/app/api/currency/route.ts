@@ -1,3 +1,4 @@
+import { apiResponses } from "@/helpers/api";
 import { authOptions } from "@/helpers/auth";
 import {
   createCurrency,
@@ -5,7 +6,7 @@ import {
   getCurrencyByName,
 } from "@/queries/currency";
 import { getServerSession } from "next-auth";
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { z } from "zod";
 
 const reqPostSchema = z.object({
@@ -15,9 +16,9 @@ const reqPostSchema = z.object({
 export const GET = async () => {
   try {
     const currencies = await getCurrencies();
-    return NextResponse.json(currencies, { status: 200 });
+    return apiResponses(currencies).success;
   } catch (error) {
-    return NextResponse.json({ error }, { status: 500 });
+    return apiResponses(error).error;
   }
 };
 
@@ -27,12 +28,7 @@ export const POST = async (req: NextRequest) => {
     const user = await getServerSession(authOptions).then((res) => res?.user);
 
     if (!user) {
-      return NextResponse.json(
-        {
-          error: "Unauthorized to perform this action.",
-        },
-        { status: 401 },
-      );
+      return apiResponses().unauthorized;
     }
 
     const { name } = reqPostSchema.parse(body);
@@ -40,17 +36,13 @@ export const POST = async (req: NextRequest) => {
     const existingCurrency = await getCurrencyByName(name);
 
     if (existingCurrency) {
-      return NextResponse.json(
-        {
-          error: `You already have a currency named ${name}.`,
-        },
-        { status: 400 },
-      );
+      return apiResponses(`You already have a currency named ${name}.`)
+        .badRequest;
     }
 
     const newCurrency = await createCurrency({ name });
-    return NextResponse.json(newCurrency, { status: 200 });
+    return apiResponses(newCurrency).success;
   } catch (error) {
-    return NextResponse.json({ error }, { status: 500 });
+    return apiResponses(error).error;
   }
 };

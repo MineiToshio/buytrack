@@ -1,3 +1,4 @@
+import { apiResponses } from "@/helpers/api";
 import { authOptions } from "@/helpers/auth";
 import {
   createCountry,
@@ -5,7 +6,7 @@ import {
   getCountryByName,
 } from "@/queries/country";
 import { getServerSession } from "next-auth";
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { z } from "zod";
 
 const reqPostSchema = z.object({
@@ -15,9 +16,9 @@ const reqPostSchema = z.object({
 export const GET = async () => {
   try {
     const countries = await getCountries();
-    return NextResponse.json(countries, { status: 200 });
+    return apiResponses(countries).success;
   } catch (error) {
-    return NextResponse.json({ error }, { status: 500 });
+    return apiResponses(error).error;
   }
 };
 
@@ -27,12 +28,7 @@ export const POST = async (req: NextRequest) => {
     const user = await getServerSession(authOptions).then((res) => res?.user);
 
     if (!user) {
-      return NextResponse.json(
-        {
-          error: "Unauthorized to perform this action.",
-        },
-        { status: 401 },
-      );
+      return apiResponses().unauthorized;
     }
 
     const { name } = reqPostSchema.parse(body);
@@ -40,17 +36,13 @@ export const POST = async (req: NextRequest) => {
     const existingCountry = await getCountryByName(name);
 
     if (existingCountry) {
-      return NextResponse.json(
-        {
-          error: `You already have a country named ${name}.`,
-        },
-        { status: 400 },
-      );
+      return apiResponses(`You already have a country named ${name}.`)
+        .badRequest;
     }
 
     const newCountry = await createCountry({ name });
-    return NextResponse.json(newCountry, { status: 200 });
+    return apiResponses(newCountry).success;
   } catch (error) {
-    return NextResponse.json({ error }, { status: 500 });
+    return apiResponses(error).error;
   }
 };
