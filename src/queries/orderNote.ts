@@ -1,7 +1,7 @@
 import { db } from "@/helpers/db";
 import { OrderNote } from "@prisma/client";
 
-export const getNotesByOrder = (orderId: string) =>
+export const getOrderNotesByOrder = (orderId: string) =>
   db.orderNote.findMany({
     where: { orderId },
     orderBy: { createdDate: "desc" },

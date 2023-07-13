@@ -52,6 +52,17 @@ export const getOrderByOrderNote = (orderNoteId: string, userId: string) =>
     },
   });
 
+export const getOrderByOrderPayment = (
+  orderPaymentId: string,
+  userId: string,
+) =>
+  db.order.findFirst({
+    where: {
+      userId,
+      orderPayments: { some: { id: orderPaymentId } },
+    },
+  });
+
 export const createOrder = (order: OrderData, products: ProductCreate[]) =>
   db.order.create({
     data: {

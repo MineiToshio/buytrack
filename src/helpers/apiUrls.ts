@@ -12,3 +12,5 @@ export const CREATE_CURRENCY = "/api/currency";
 export const GET_CURRENCY = "/api/currency";
 export const CREATE_ORDER_NOTE = "/api/order-note";
 export const DELETE_ORDER_NOTE = "/api/order-note?id=";
+export const CREATE_ORDER_PAYMENT = "/api/order-payment";
+export const DELETE_ORDER_PAYMENT = "/api/order-payment?id=";
