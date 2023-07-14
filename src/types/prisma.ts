@@ -29,4 +29,5 @@ export type OrderFull = Order & {
   orderPayments: OrderPayment[];
   store: Store;
   currency: Currency;
+  paidAmount: number;
 };

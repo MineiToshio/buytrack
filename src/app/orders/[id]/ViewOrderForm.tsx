@@ -5,7 +5,7 @@ import { FC } from "react";
 import OrderForm from "../OrderForm";
 
 type ViewOrderFormProps = {
-  order: OrderFull | null;
+  order?: OrderFull | null;
 };
 
 const ViewOrderForm: FC<ViewOrderFormProps> = ({ order }) => {

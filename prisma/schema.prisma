@@ -176,7 +176,6 @@ model Order {
   orderDate     DateTime
   deliveryDate  DateTime?
   productsCost  Float
-  paidAmount    Float @default(0)
   delivered     Boolean @default(false)
   createdDate   DateTime @default(now())
   currencyId    String

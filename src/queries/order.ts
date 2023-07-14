@@ -1,5 +1,12 @@
 import { db } from "@/helpers/db";
-import { OrderProduct, Prisma } from "@prisma/client";
+import { OrderFull } from "@/types/prisma";
+import {
+  Delivery,
+  Order,
+  OrderPayment,
+  OrderProduct,
+  Prisma,
+} from "@prisma/client";
 
 type OrderData =
   | (Prisma.Without<Prisma.OrderCreateInput, Prisma.OrderUncheckedCreateInput> &
@@ -12,8 +19,20 @@ type ProductCreate = {
   price?: number;
 };
 
-export const getOrdersByUser = (userId: string) =>
-  db.order.findMany({
+type OrderCompute = Order & {
+  products: (OrderProduct & {
+    delivery: Delivery | null;
+  })[];
+  orderPayments: OrderPayment[];
+};
+
+const computeOrder = <T extends OrderCompute>(order: T) => ({
+  ...order,
+  paidAmount: order.orderPayments.reduce((acc, curr) => acc + curr.amount, 0),
+});
+
+export const getOrdersByUser = async (userId: string) => {
+  const orders = await db.order.findMany({
     where: { userId },
     orderBy: { orderDate: "desc" },
     include: {
@@ -27,9 +46,11 @@ export const getOrdersByUser = (userId: string) =>
       currency: true,
     },
   });
+  return orders.map((o) => computeOrder(o));
+};
 
-export const getOrderById = (id: string, userId: string) =>
-  db.order.findFirst({
+export const getOrderById = async (id: string, userId: string) => {
+  const order = await db.order.findFirst({
     where: { userId, id },
     orderBy: { orderDate: "desc" },
     include: {
@@ -43,6 +64,8 @@ export const getOrderById = (id: string, userId: string) =>
       currency: true,
     },
   });
+  if (order) return computeOrder(order);
+};
 
 export const getOrderByOrderNote = (orderNoteId: string, userId: string) =>
   db.order.findFirst({
