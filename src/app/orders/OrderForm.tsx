@@ -123,7 +123,11 @@ const OrderForm: FC<OrderFormProps> = ({ isLoading, order, onSubmit }) => {
           error={!!errors.orderDate}
           errorMessage="La fecha de orden es obligatoria"
         />
-        {!(isReadOnly && (order?.maxApproximateDeliveryDate == null || order?.minApproximateDeliveryDate == null)) && (
+        {!(
+          isReadOnly &&
+          (order?.maxApproximateDeliveryDate == null ||
+            order?.minApproximateDeliveryDate == null)
+        ) && (
           <FormRow
             title="Fecha aprox. de entrega"
             Icon={Icons.CalendarDays}

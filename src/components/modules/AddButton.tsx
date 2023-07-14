@@ -41,7 +41,7 @@ const AddButton: FC<AddButtonProps> = ({ title, onAdd }) => {
   const onBeforeSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.stopPropagation();
     return handleSubmit(onSubmit)(e);
-  }
+  };
 
   return (
     <>
