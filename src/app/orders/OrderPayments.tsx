@@ -62,13 +62,9 @@ const OrderPayments: FC<OrderPaymentsProps> = ({
     }
   });
 
-  const remainingAmount = useMemo(() => {
-    const paidAmount = currentPayments.reduce(
-      (acc, curr) => acc + curr.amount,
-      0,
-    );
-    return productsCost - paidAmount;
-  }, [currentPayments, productsCost]);
+  const paidAmount = currentPayments.reduce((acc, curr) => acc + curr.amount, 0);
+
+  const remainingAmount = productsCost - paidAmount;
 
   const {
     register,
@@ -214,6 +210,24 @@ const OrderPayments: FC<OrderPaymentsProps> = ({
                 </tr>
               ))}
             </tbody>
+            <tfoot>
+              <tr className="border-t">
+                <td colSpan={2} className="pr-5 text-right">
+                  <Typography>Pago Total</Typography>
+                </td>
+                <td colSpan={2} className="text-left">
+                  <Typography>{`${currency} ${paidAmount}`}</Typography>
+                </td>
+              </tr>
+              <tr>
+                <td colSpan={2} className="pr-5 text-right">
+                  <Typography>Monto Restante</Typography>
+                </td>
+                <td colSpan={2} className="text-left">
+                  <Typography>{`${currency} ${remainingAmount}`}</Typography>
+                </td>
+              </tr>
+            </tfoot>
           </table>
         ) : (
           <Typography>No hay pagos registrados.</Typography>
