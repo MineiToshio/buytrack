@@ -1,21 +1,19 @@
 "use client";
 
 import DatePicker from "@/components/core/DatePicker";
-import ConfirmModal from "@/components/modules/ConfirmModal";
 import Button from "@/core/Button";
 import Icons from "@/core/Icons";
 import Input from "@/core/Input";
 import Typography from "@/core/Typography";
-import { CREATE_ORDER_PAYMENT, DELETE_ORDER_PAYMENT } from "@/helpers/apiUrls";
+import { CREATE_ORDER_PAYMENT } from "@/helpers/apiUrls";
 import { post } from "@/helpers/request";
-import { formatDate } from "@/helpers/utils";
-import useDeleteModal from "@/hooks/useDeleteModal";
 import Modal from "@/modules/Modal";
 import { cn } from "@/styles/utils";
 import { OrderPayment } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
-import { FC, useMemo, useState } from "react";
+import { FC, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import OrderPaymentsTable from "./OrderPaymentsTable";
 
 type Form = {
   paymentDate: Date;
@@ -42,27 +40,10 @@ const OrderPayments: FC<OrderPaymentsProps> = ({
     useState<OrderPayment[]>(payments);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState<boolean>(false);
 
-  const orderedPayments = currentPayments.sort(
-    (a, b) =>
-      new Date(b.paymentDate).getDate() - new Date(a.paymentDate).getDate(),
+  const paidAmount = currentPayments.reduce(
+    (acc, curr) => acc + curr.amount,
+    0,
   );
-
-  const {
-    showDeleteModal,
-    deleteId,
-    isLoading: isLoadingDeletePayment,
-    deleteData: deletePayment,
-    openDeleteModal,
-    closeDeleteModal,
-  } = useDeleteModal(DELETE_ORDER_PAYMENT, (success, currentDeleteId) => {
-    if (success) {
-      setCurrentPayments((currPayments) =>
-        currPayments.filter((p) => p.id !== currentDeleteId),
-      );
-    }
-  });
-
-  const paidAmount = currentPayments.reduce((acc, curr) => acc + curr.amount, 0);
 
   const remainingAmount = productsCost - paidAmount;
 
@@ -104,13 +85,6 @@ const OrderPayments: FC<OrderPaymentsProps> = ({
 
   return (
     <>
-      <ConfirmModal
-        message="¿Deseas eliminar este pago?"
-        confirmText="Eliminar"
-        open={showDeleteModal}
-        onCancel={closeDeleteModal}
-        onConfirm={deletePayment}
-      />
       <Modal open={isPaymentModalOpen} onClose={toggleOpenModal}>
         <form
           className="flex flex-col gap-y-4 p-4"
@@ -169,69 +143,12 @@ const OrderPayments: FC<OrderPaymentsProps> = ({
             </Button>
           )}
         </div>
-        {orderedPayments.length > 0 ? (
-          <table className="table-auto">
-            <thead>
-              <tr>
-                <th className="text-left">
-                  <Typography color="muted">#</Typography>
-                </th>
-                <th>
-                  <Typography color="muted">Fecha de Pago</Typography>
-                </th>
-                <th>
-                  <Typography color="muted">Monto</Typography>
-                </th>
-                <th />
-              </tr>
-            </thead>
-            <tbody>
-              {currentPayments.map((p, i) => (
-                <tr key={p.id}>
-                  <td className="pr-2 text-left">
-                    <Typography>{i + 1}</Typography>
-                  </td>
-                  <td className="text-center">
-                    <Typography>{formatDate(p.paymentDate)}</Typography>
-                  </td>
-                  <td>
-                    <Typography>{`${currency} ${p.amount}`}</Typography>
-                  </td>
-                  <td>
-                    <Button
-                      variant="icon"
-                      color="muted"
-                      isLoading={isLoadingDeletePayment && p.id === deleteId}
-                      onClick={() => openDeleteModal(p.id)}
-                    >
-                      <Icons.Delete size={15} />
-                    </Button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-            <tfoot>
-              <tr className="border-t">
-                <td colSpan={2} className="pr-5 text-right">
-                  <Typography>Pago Total</Typography>
-                </td>
-                <td colSpan={2} className="text-left">
-                  <Typography>{`${currency} ${paidAmount}`}</Typography>
-                </td>
-              </tr>
-              <tr>
-                <td colSpan={2} className="pr-5 text-right">
-                  <Typography>Monto Restante</Typography>
-                </td>
-                <td colSpan={2} className="text-left">
-                  <Typography>{`${currency} ${remainingAmount}`}</Typography>
-                </td>
-              </tr>
-            </tfoot>
-          </table>
-        ) : (
-          <Typography>No hay pagos registrados.</Typography>
-        )}
+        <OrderPaymentsTable
+          payments={currentPayments}
+          currency={currency}
+          productsCost={productsCost}
+          onPaymentsChange={setCurrentPayments}
+        />
       </div>
     </>
   );
