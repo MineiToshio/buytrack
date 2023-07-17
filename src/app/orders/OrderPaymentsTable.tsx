@@ -5,6 +5,7 @@ import { DELETE_ORDER_PAYMENT } from "@/helpers/apiUrls";
 import { formatDate } from "@/helpers/utils";
 import useDeleteModal from "@/hooks/useDeleteModal";
 import ConfirmModal from "@/modules/ConfirmModal";
+import { cn } from "@/styles/utils";
 import { OrderPayment } from "@prisma/client";
 import { Dispatch, FC, SetStateAction } from "react";
 
@@ -12,6 +13,7 @@ type OrderPaymentTableProps = {
   payments: OrderPayment[];
   currency: string;
   productsCost: number;
+  className?: string;
   onPaymentsChange?: Dispatch<SetStateAction<OrderPayment[]>>;
 };
 
@@ -19,6 +21,7 @@ const OrderPaymentTable: FC<OrderPaymentTableProps> = ({
   payments,
   currency,
   productsCost,
+  className,
   onPaymentsChange,
 }) => {
   const orderedPayments = payments.sort(
@@ -58,14 +61,14 @@ const OrderPaymentTable: FC<OrderPaymentTableProps> = ({
         onConfirm={deletePayment}
       />
       {orderedPayments.length > 0 ? (
-        <table className="table-auto">
+        <table className={cn("table-auto", className)}>
           <tbody>
             {orderedPayments.map((p, i) => (
               <tr key={p.id}>
-                <td className="pr-2 text-left">
+                <td className="pr-5 text-left">
                   <Typography>{i + 1}.</Typography>
                 </td>
-                <td className="text-center">
+                <td className="pr-5 text-center">
                   <Typography>{formatDate(p.paymentDate)}</Typography>
                 </td>
                 <td>

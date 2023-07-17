@@ -13,6 +13,7 @@ import {
 } from "@tanstack/react-table";
 import Link from "next/link";
 import { FC, Fragment } from "react";
+import OrderPaymentTable from "./OrderPaymentsTable";
 
 type Props = {
   orders: OrderFull[];
@@ -180,28 +181,45 @@ const OrderTable: FC<Props> = ({ orders }) => {
                         colSpan={row.getVisibleCells().length}
                         className="p-2"
                       >
-                        <Typography className="font-bold">Productos</Typography>
-                        <table className="table-auto">
-                          <tbody>
-                            {row.original.products.map((r, i) => (
-                              <tr key={r.id}>
-                                <td className="pr-5">
-                                  <Typography>{i + 1}.</Typography>
-                                </td>
-                                <td className="pr-5">
-                                  <Typography>{r.productName}</Typography>
-                                </td>
-                                <td>
-                                  <Typography>
-                                    {r.price
-                                      ? `${row.original.currency.name} ${r.price}`
-                                      : "-"}
-                                  </Typography>
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
+                        <div className="flex w-full flex-col md:flex-row">
+                          <div className="flex w-full flex-col">
+                            <Typography className="font-bold">
+                              Productos
+                            </Typography>
+                            <table className="w-fit table-auto">
+                              <tbody>
+                                {row.original.products.map((r, i) => (
+                                  <tr key={r.id}>
+                                    <td className="pr-5">
+                                      <Typography>{i + 1}.</Typography>
+                                    </td>
+                                    <td className="pr-5">
+                                      <Typography>{r.productName}</Typography>
+                                    </td>
+                                    <td>
+                                      <Typography>
+                                        {r.price
+                                          ? `${row.original.currency.name} ${r.price}`
+                                          : "-"}
+                                      </Typography>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                          <div className="mt-4 flex w-full flex-col md:mt-0">
+                            <Typography className="font-bold">
+                              Pagos Realizados
+                            </Typography>
+                            <OrderPaymentTable
+                              className="w-fit"
+                              currency={row.original.currency.name}
+                              payments={row.original.orderPayments}
+                              productsCost={row.original.productsCost}
+                            />
+                          </div>
+                        </div>
                       </td>
                     </tr>
                   )}
