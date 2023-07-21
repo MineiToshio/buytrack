@@ -99,7 +99,7 @@ const OrderFormProducts: FC<OrderFormProductsProps> = ({
         <div
           className={cn("flex items-center", {
             "w-[calc(75%-24px)]": fields.length > 1 && !readOnly,
-            "w-3/4": fields.length < 1 || readOnly,
+            "w-3/4": fields.length <= 1 || readOnly,
           })}
         >
           <Typography color="muted">Producto</Typography>
@@ -125,7 +125,7 @@ const OrderFormProducts: FC<OrderFormProductsProps> = ({
             variant="standard"
             className={cn({
               "w-[calc(75%-24px)]": fields.length > 1 && !readOnly,
-              "w-3/4": fields.length < 1 || readOnly,
+              "w-3/4": fields.length <= 1 || readOnly,
               "border-error": !!errors?.[index]?.productName,
             })}
             placeholder="Producto"
