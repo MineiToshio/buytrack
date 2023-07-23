@@ -23,6 +23,7 @@ type RowInputProps = {
   inputType?: HTMLInputTypeAttribute;
   ButtonIcon?: LucideIcon;
   onButtonClick?: () => void;
+  onChange?: (event: { target: any; type?: any }) => void;
 };
 
 type SelectInputProps<T extends FieldValues> = {
@@ -31,7 +32,6 @@ type SelectInputProps<T extends FieldValues> = {
   control: Control<T>;
   formField: Path<T>;
   newModalTitle?: string;
-  onAdd?: (value: string) => void;
   multiple?: boolean;
   searchPlaceholder?: string;
   minDate?: undefined;
@@ -39,6 +39,8 @@ type SelectInputProps<T extends FieldValues> = {
   inputType?: undefined;
   ButtonIcon?: undefined;
   onButtonClick?: undefined;
+  onAdd?: (value: string) => void;
+  onChange?: (value: any) => void;
 };
 
 type DatePickerProps<T extends FieldValues> = {
@@ -55,6 +57,7 @@ type DatePickerProps<T extends FieldValues> = {
   inputType?: undefined;
   ButtonIcon?: undefined;
   onButtonClick?: undefined;
+  onChange?: undefined;
 };
 
 type DateRangePickerProps<T extends FieldValues> = {
@@ -71,6 +74,7 @@ type DateRangePickerProps<T extends FieldValues> = {
   inputType?: undefined;
   ButtonIcon?: undefined;
   onButtonClick?: undefined;
+  onChange?: undefined;
 };
 
 type FormOptionValue = string | boolean | number | string[] | undefined;
@@ -120,6 +124,7 @@ const FormRow = <T extends FieldValues>(
     onAdd,
     ButtonIcon,
     onButtonClick,
+    onChange,
     ...props
   }: RowProps<T>,
   ref: Ref<HTMLInputElement>,
@@ -127,7 +132,12 @@ const FormRow = <T extends FieldValues>(
   <div className="mb-2 flex flex-col items-center md:flex-row">
     <div className="mr-3 mt-2 flex h-full w-full max-w-[220px] self-start">
       <Icon className="mr-2 text-muted" />
-      <Typography color="muted" className="block truncate" as="span">
+      <Typography
+        color="muted"
+        className="block truncate"
+        as="span"
+        title={title}
+      >
         {title}
       </Typography>
     </div>
@@ -138,6 +148,7 @@ const FormRow = <T extends FieldValues>(
             placeholder={placeholder}
             readOnly={readOnly}
             type={inputType}
+            onChange={onChange}
             {...props}
             ref={ref}
           />
@@ -161,7 +172,10 @@ const FormRow = <T extends FieldValues>(
                     placeholder={placeholder}
                     options={options}
                     multiple={true}
-                    onChange={field.onChange}
+                    onChange={(v) => {
+                      onChange && onChange(v);
+                      field.onChange(v);
+                    }}
                     value={field.value}
                     readOnly={readOnly}
                     allowSearch={allowSearch}
@@ -173,7 +187,10 @@ const FormRow = <T extends FieldValues>(
                       <Select
                         placeholder={placeholder}
                         options={options}
-                        onChange={field.onChange}
+                        onChange={(v) => {
+                          onChange && onChange(v);
+                          field.onChange(v);
+                        }}
                         value={field.value}
                         readOnly={readOnly}
                         allowSearch={allowSearch}

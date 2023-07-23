@@ -29,6 +29,19 @@ export const getStoreByUrl = (url: string) =>
     },
   });
 
+export const getStoreByAvailableOrders = (userId: string) =>
+  db.store.findMany({
+    where: {
+      orders: {
+        some: {
+          userId,
+          products: { some: { deliveryId: null } },
+        },
+      },
+    },
+    orderBy: { name: "asc" },
+  });
+
 export const createStore = (
   store: StoreData,
   productsCountryIds?: string[],

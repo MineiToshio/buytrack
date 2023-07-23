@@ -75,6 +75,30 @@ export const getOrderByOrderNote = (orderNoteId: string, userId: string) =>
     },
   });
 
+export const getOrdersWithoutDeliveredProducts = (userId: string) =>
+  db.order.findMany({
+    where: {
+      userId,
+      products: {
+        some: { deliveryId: null },
+      },
+    },
+    include: {
+      products: {
+        where: { deliveryId: null },
+        orderBy: { productName: "asc" },
+      },
+    },
+    orderBy: [
+      {
+        orderDate: "asc",
+      },
+      {
+        id: "asc",
+      },
+    ],
+  });
+
 export const getOrderByOrderPayment = (
   orderPaymentId: string,
   userId: string,

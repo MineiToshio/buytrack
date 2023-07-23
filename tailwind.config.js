@@ -1,5 +1,5 @@
-import { colors }  from "tailwindcss/defaultTheme";
-import appColors from "./src/styles/colors"
+import { colors } from "tailwindcss/defaultTheme";
+import appColors from "./src/styles/colors";
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {

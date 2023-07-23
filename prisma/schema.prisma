@@ -228,6 +228,8 @@ model OrderPayment {
 
 model Delivery {
   id                          String  @id @default(cuid())
+  currencyId                  String
+  currency                    Currency @relation(fields: [currencyId], references: [id], onDelete: Cascade)
   price                       Float
   delivered                   Boolean @default(false)
   deliveryDate                DateTime?
@@ -236,6 +238,8 @@ model Delivery {
   currier                     String?
   tracking                    String?
   orderProducts               OrderProduct[]
+
+  @@index([currencyId])
 }
 
 model Product {
@@ -253,7 +257,8 @@ model Product {
 }
 
 model Currency {
-  id     String  @id @default(cuid())
-  name   String  @unique
-  orders Order[]
+  id          String  @id @default(cuid())
+  name        String  @unique
+  orders      Order[]
+  deliveries  Delivery[]
 }

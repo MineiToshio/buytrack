@@ -22,6 +22,7 @@ import {
   Eye,
   Coins,
   Send,
+  Truck,
 } from "lucide-react";
 
 export const Icons = {
@@ -48,6 +49,7 @@ export const Icons = {
   View: Eye,
   Coins,
   Send,
+  Currier: Truck,
 };
 
 export default Icons;

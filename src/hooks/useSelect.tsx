@@ -8,6 +8,12 @@ type DataType = {
   name: string;
 };
 
+export const formatOptions = <T extends DataType>(data: T[]) =>
+  data.map((c) => ({
+    value: c.id,
+    label: c.name,
+  }));
+
 const useSelect = <T extends DataType>(
   queryKey: string[],
   getUrl: string,
@@ -23,10 +29,7 @@ const useSelect = <T extends DataType>(
 
   useEffect(() => {
     if (data) {
-      const formattedData = data.map((c) => ({
-        value: c.id,
-        label: c.name,
-      }));
+      const formattedData = formatOptions(data);
       setOptions(formattedData);
     }
   }, [data]);

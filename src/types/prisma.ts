@@ -31,3 +31,11 @@ export type OrderFull = Order & {
   currency: Currency;
   paidAmount: number;
 };
+
+export type OrderWithProducts = Order & {
+  products: OrderProduct[];
+};
+
+export type OrderProductFull = OrderProduct & {
+  order: Order;
+};
