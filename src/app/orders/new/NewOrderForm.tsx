@@ -1,15 +1,15 @@
 "use client";
 
-import { FC, useState } from "react";
-import OrderForm, { OrderFormType } from "../OrderForm";
-import { SubmitHandler } from "react-hook-form";
-import { Order } from "@prisma/client";
-import { post } from "@/helpers/request";
 import { CREATE_ORDER } from "@/helpers/apiUrls";
+import { post } from "@/helpers/request";
+import { Order } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { FC, useState } from "react";
+import { SubmitHandler } from "react-hook-form";
+import OrderForm, { OrderFormType } from "../OrderForm";
 
-const createOrder = async (data: OrderFormType) => {
+const createOrder = (data: OrderFormType) => {
   const newOrder = {
     storeId: data.storeId,
     productsCost: data.productsCost,

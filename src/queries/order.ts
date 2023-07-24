@@ -1,5 +1,4 @@
 import { db } from "@/helpers/db";
-import { OrderFull } from "@/types/prisma";
 import {
   Delivery,
   Order,
@@ -8,7 +7,7 @@ import {
   Prisma,
 } from "@prisma/client";
 
-type OrderData =
+type OrderCreate =
   | (Prisma.Without<Prisma.OrderCreateInput, Prisma.OrderUncheckedCreateInput> &
       Prisma.OrderUncheckedCreateInput)
   | (Prisma.Without<Prisma.OrderUncheckedCreateInput, Prisma.OrderCreateInput> &
@@ -110,7 +109,7 @@ export const getOrderByOrderPayment = (
     },
   });
 
-export const createOrder = (order: OrderData, products: ProductCreate[]) =>
+export const createOrder = (order: OrderCreate, products: ProductCreate[]) =>
   db.order.create({
     data: {
       ...order,
