@@ -39,3 +39,8 @@ export type OrderWithProducts = Order & {
 export type OrderProductFull = OrderProduct & {
   order: Order;
 };
+
+export type DeliveryFull = Delivery & {
+  orderProducts: OrderProduct[];
+  currency: Currency;
+};

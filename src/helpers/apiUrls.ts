@@ -15,3 +15,4 @@ export const DELETE_ORDER_NOTE = "/api/order-note?id=";
 export const CREATE_ORDER_PAYMENT = "/api/order-payment";
 export const DELETE_ORDER_PAYMENT = "/api/order-payment?id=";
 export const CREATE_DELIVERY = "/api/delivery";
+export const GET_DELIVERY = "/api/delivery";

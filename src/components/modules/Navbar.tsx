@@ -15,15 +15,21 @@ const LINKS = [
   },
   {
     id: 2,
+    text: "Tiendas",
+    href: "/stores",
+    isPublic: true,
+  },
+  {
+    id: 3,
     text: "Pedidos",
     href: "/orders",
     isPublic: false,
   },
   {
-    id: 3,
-    text: "Tiendas",
-    href: "/stores",
-    isPublic: true,
+    id: 4,
+    text: "Entregas",
+    href: "/deliveries",
+    isPublic: false,
   },
 ];
 

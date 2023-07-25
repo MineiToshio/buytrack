@@ -13,6 +13,18 @@ type DeliveryCreate =
     > &
       Prisma.DeliveryCreateInput);
 
+export const getDeliveries = (userId: string) =>
+  db.delivery.findMany({
+    where: { orderProducts: { some: { order: { userId } } } },
+    include: {
+      orderProducts: true,
+      currency: true,
+    },
+    orderBy: {
+      minApproximateDeliveryDate: "asc",
+    }
+  });
+
 export const createDelivery = (delivery: DeliveryCreate, products: string[]) =>
   db.$transaction(async (tx) => {
     const createdDelivery = await tx.delivery.create({
