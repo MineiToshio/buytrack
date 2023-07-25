@@ -22,7 +22,7 @@ export const getDeliveries = (userId: string) =>
     },
     orderBy: {
       minApproximateDeliveryDate: "asc",
-    }
+    },
   });
 
 export const createDelivery = (delivery: DeliveryCreate, products: string[]) =>
