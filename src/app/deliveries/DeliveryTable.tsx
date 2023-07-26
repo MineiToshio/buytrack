@@ -39,6 +39,18 @@ const columns = [
     ),
   }),
   columnHelper.accessor(
+    (row) => ({ name: row.store.name, url: row.store.url }),
+    {
+      id: "store",
+      size: 70,
+      cell: (info) => {
+        const store = info.getValue();
+        return <Link href={`/stores/${store.url}`}>{store.name}</Link>;
+      },
+      header: () => <Typography>Tienda</Typography>,
+    },
+  ),
+  columnHelper.accessor(
     (row) => ({
       start: row.minApproximateDeliveryDate,
       end: row.maxApproximateDeliveryDate,
