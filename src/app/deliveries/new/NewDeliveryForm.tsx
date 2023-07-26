@@ -18,8 +18,12 @@ type NewDeliveryFormProps = {
 const createDelivery = (data: DeliveryFormType) => {
   const delivery = {
     ...data,
-    minApproximateDeliveryDate: data.approximateDeliveryDate.min,
-    maxApproximateDeliveryDate: data.approximateDeliveryDate.max,
+    ...(data.approximateDeliveryDate?.min && {
+      minApproximateDeliveryDate: data.approximateDeliveryDate?.min,
+    }),
+    ...(data.approximateDeliveryDate?.max && {
+      maxApproximateDeliveryDate: data.approximateDeliveryDate?.max,
+    }),
   };
   return post<Delivery>(CREATE_DELIVERY, delivery);
 };
