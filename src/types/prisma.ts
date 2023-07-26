@@ -43,4 +43,5 @@ export type OrderProductFull = OrderProduct & {
 export type DeliveryFull = Delivery & {
   orderProducts: OrderProduct[];
   currency: Currency;
+  store: Store;
 };

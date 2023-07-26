@@ -87,6 +87,7 @@ model Store {
   addresses         StoreAddress[]
   storeReviews      StoreReview[]
   orders            Order[]
+  deliveries        Delivery[]
 
   @@index([countryId])
 }
@@ -237,9 +238,12 @@ model Delivery {
   maxApproximateDeliveryDate  DateTime?
   currier                     String?
   tracking                    String?
+  storeId                     String
+  store                       Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
   orderProducts               OrderProduct[]
 
   @@index([currencyId])
+  @@index([storeId])
 }
 
 model Product {

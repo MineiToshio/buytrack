@@ -1,5 +1,5 @@
 import { db } from "@/helpers/db";
-import { Prisma } from "@prisma/client";
+import { Order, OrderProduct, Prisma } from "@prisma/client";
 
 type DeliveryCreate =
   | (Prisma.Without<
@@ -19,9 +19,23 @@ export const getDeliveries = (userId: string) =>
     include: {
       orderProducts: true,
       currency: true,
+      store: true,
     },
     orderBy: {
       minApproximateDeliveryDate: "asc",
+    },
+  });
+
+export const getDeliveryById = (id: string, userId: string) =>
+  db.delivery.findFirst({
+    where: {
+      id,
+      orderProducts: { some: { order: { userId } } },
+    },
+    include: {
+      orderProducts: true,
+      currency: true,
+      store: true,
     },
   });
 

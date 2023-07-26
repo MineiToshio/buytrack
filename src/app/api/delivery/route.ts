@@ -6,6 +6,7 @@ import { NextRequest } from "next/server";
 import { z } from "zod";
 
 const reqPostSchema = z.object({
+  storeId: z.string(),
   currencyId: z.string(),
   price: z.number(),
   currier: z.string().optional(),
