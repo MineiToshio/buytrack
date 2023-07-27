@@ -5,7 +5,7 @@ import { post } from "@/helpers/request";
 import { OrderWithProducts } from "@/types/prisma";
 import { Delivery, Store } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { FC, useState } from "react";
 import { SubmitHandler } from "react-hook-form";
 import DeliveryForm, { DeliveryFormType } from "../DeliveryForm";
@@ -29,8 +29,12 @@ const createDelivery = (data: DeliveryFormType) => {
 };
 
 const NewDeliveryForm: FC<NewDeliveryFormProps> = ({ stores, orders }) => {
+  const searchParams = useSearchParams();
   const router = useRouter();
   const [isPending, setIsPending] = useState<boolean>(false);
+
+  const storeId = searchParams.get("storeId");
+  const orderId = searchParams.get("orderId");
 
   const { isLoading, mutate } = useMutation({
     mutationFn: (data: DeliveryFormType) => createDelivery(data),
@@ -48,6 +52,10 @@ const NewDeliveryForm: FC<NewDeliveryFormProps> = ({ stores, orders }) => {
 
   return (
     <DeliveryForm
+      defaults={{
+        storeId,
+        orderId,
+      }}
       stores={stores}
       orders={orders}
       onSubmit={handleSubmit}

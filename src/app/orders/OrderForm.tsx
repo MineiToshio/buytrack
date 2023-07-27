@@ -12,6 +12,7 @@ import { useForm } from "react-hook-form";
 import OrderFormProducts from "./OrderFormProducts";
 import OrderNotes from "./OrderNotes";
 import OrderPayments from "./OrderPayments";
+import { useRouter } from "next/navigation";
 
 export type Product = {
   productName: string;
@@ -37,11 +38,15 @@ type OrderFormProps = {
 };
 
 const OrderForm: FC<OrderFormProps> = ({ isLoading, order, onSubmit }) => {
+  const router = useRouter();
   const [isReadOnly, setIsReadOnly] = useState<boolean>(!!order);
   const { options: stores } = useSelect(["stores"], GET_STORE);
 
   const { options: currencyOptions, addNewOption: addNewCurrency } =
     useSelect<Currency>(["currencies"], GET_CURRENCY, CREATE_CURRENCY);
+
+  const isDeliveryAvailable =
+    (order?.products?.filter((p) => p.deliveryId == null)?.length ?? 0) > 0;
 
   const {
     control,
@@ -86,6 +91,14 @@ const OrderForm: FC<OrderFormProps> = ({ isLoading, order, onSubmit }) => {
     if (productsCost >= 0) {
       setValue("productsCost", productsCost);
       clearErrors("productsCost");
+    }
+  };
+
+  const registerDelivery = () => {
+    if (order) {
+      router.push(
+        `/deliveries/new?storeId=${order.storeId}&orderId=${order.id}`,
+      );
     }
   };
 
@@ -176,11 +189,22 @@ const OrderForm: FC<OrderFormProps> = ({ isLoading, order, onSubmit }) => {
           errors={errors.products}
           readOnly={isReadOnly}
         />
-        {!isReadOnly && (
-          <Button type="submit" className="mt-5 w-fit" isLoading={isLoading}>
-            Guardar
-          </Button>
-        )}
+        <div className="flex gap-x-4">
+          {!isReadOnly && (
+            <Button type="submit" className="mt-5 w-fit" isLoading={isLoading}>
+              Guardar
+            </Button>
+          )}
+          {isReadOnly && isDeliveryAvailable && (
+            <Button
+              type="button"
+              className="mt-5 w-fit"
+              onClick={registerDelivery}
+            >
+              Registrar Entrega
+            </Button>
+          )}
+        </div>
       </form>
       {order && (
         <div className="mt-6 flex h-80 w-full flex-col gap-y-6 md:mt-1 md:w-2/5">

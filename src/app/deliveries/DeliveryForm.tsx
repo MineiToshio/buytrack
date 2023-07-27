@@ -8,7 +8,7 @@ import FormRow from "@/modules/FormRow";
 import { cn } from "@/styles/utils";
 import { DeliveryFull, OrderWithProducts } from "@/types/prisma";
 import { Currency, Store } from "@prisma/client";
-import { FC, useEffect, useState } from "react";
+import { FC, useCallback, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import DeliveryProducts from "./DeliveryProducts";
 import Typography from "@/components/core/Typography";
@@ -27,6 +27,10 @@ export type DeliveryFormType = {
 };
 
 type DeliveryFormProps = {
+  defaults?: {
+    storeId?: string | null;
+    orderId?: string | null;
+  };
   stores: Store[];
   orders: OrderWithProducts[];
   delivery?: DeliveryFull | null;
@@ -35,6 +39,7 @@ type DeliveryFormProps = {
 };
 
 const DeliveryForm: FC<DeliveryFormProps> = ({
+  defaults,
   stores,
   orders,
   delivery,
@@ -59,6 +64,14 @@ const DeliveryForm: FC<DeliveryFormProps> = ({
     formState: { errors },
   } = useForm<DeliveryFormType>();
 
+  const setProductsByStore = useCallback(
+    (storeId: string) => {
+      const currentOrders = orders.filter((p) => p.storeId === storeId);
+      setOrdersWithProducts(currentOrders);
+    },
+    [orders],
+  );
+
   useEffect(() => {
     if (delivery) {
       setValue("storeId", delivery.storeId);
@@ -80,12 +93,29 @@ const DeliveryForm: FC<DeliveryFormProps> = ({
           "products",
           delivery.orderProducts.map((o) => o.id),
         );
+    } else if (defaults) {
+      if (defaults.storeId) {
+        const storeExists = stores.find((s) => s.id === defaults.storeId);
+        if (storeExists) {
+          setValue("storeId", defaults.storeId);
+          setProductsByStore(defaults.storeId);
+        }
+      }
+
+      if (defaults.orderId) {
+        const orderExists = orders.find(
+          (o) => o.storeId === defaults.storeId && o.id === defaults.orderId,
+        );
+        if (orderExists) {
+          const products = orderExists.products.map((p) => p.id);
+          setValue("products", products);
+        }
+      }
     }
-  }, [delivery, setValue]);
+  }, [delivery, defaults, setValue, stores, orders, setProductsByStore]);
 
   const handleStoreChange = (storeId: string) => {
-    const currentOrders = orders.filter((p) => p.storeId === storeId);
-    setOrdersWithProducts(currentOrders);
+    setProductsByStore(storeId);
     setValue("products", []);
   };
 
