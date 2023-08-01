@@ -31,11 +31,22 @@ export const getStoreByUrl = (url: string) =>
 
 export const getStoreByAvailableOrders = (userId: string) =>
   db.store.findMany({
+    include: {
+      orders: {
+        include: { products: true },
+        where: {
+            userId,
+            products: { some: { deliveryId: null } },
+            status: { in: ["Open", "In_Route"] },
+        },
+      },
+    },
     where: {
       orders: {
         some: {
           userId,
           products: { some: { deliveryId: null } },
+          status: { in: ["Open", "In_Route", "Partial_Delivered", "Partial_In_Route"] },
         },
       },
     },

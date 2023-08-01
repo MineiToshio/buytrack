@@ -1,6 +1,12 @@
 import { apiResponses } from "@/helpers/api";
 import { authOptions } from "@/helpers/auth";
-import { createOrder, getOrdersByUser } from "@/queries/order";
+import {
+  createOrder,
+  getOrderById,
+  getOrdersByUser,
+  updateOrder,
+} from "@/queries/order";
+import { OrderStatus } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { NextRequest } from "next/server";
 import { z } from "zod";
@@ -18,6 +24,26 @@ const reqPostSchema = z.object({
       price: z.number().optional(),
     }),
   ),
+});
+
+const reqPutSchema = z.object({
+  orderId: z.string(),
+  storeId: z.string().optional(),
+  orderDate: z.string().pipe(z.coerce.date()).optional(),
+  productsCost: z.number().optional(),
+  minApproximateDeliveryDate: z.string().pipe(z.coerce.date()).optional(),
+  maxApproximateDeliveryDate: z.string().pipe(z.coerce.date()).optional(),
+  currencyId: z.string().optional(),
+  status: z
+    .enum([
+      OrderStatus.Canceled,
+      OrderStatus.Delivered,
+      OrderStatus.In_Route,
+      OrderStatus.Open,
+      OrderStatus.Partial_Delivered,
+      OrderStatus.Partial_In_Route,
+    ])
+    .optional(),
 });
 
 export const GET = async () => {
@@ -54,6 +80,30 @@ export const POST = async (req: NextRequest) => {
       products,
     );
     return apiResponses(newOrder).success;
+  } catch (error) {
+    return apiResponses(error).error;
+  }
+};
+
+export const PUT = async (req: NextRequest) => {
+  try {
+    const body = await req.json();
+    const user = await getServerSession(authOptions).then((res) => res?.user);
+
+    if (!user) {
+      return apiResponses().unauthorized;
+    }
+
+    const { orderId, ...orderData } = reqPutSchema.parse(body);
+
+    const order = getOrderById(orderId, user.id);
+
+    if (!order) {
+      return apiResponses().unauthorized;
+    }
+
+    const updatedOrder = await updateOrder(orderId, user.id, orderData);
+    return apiResponses(updatedOrder).success;
   } catch (error) {
     return apiResponses(error).error;
   }

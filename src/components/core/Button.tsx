@@ -5,7 +5,7 @@ import { ButtonHTMLAttributes, forwardRef } from "react";
 import Icons from "./Icons";
 
 export const buttonVariants = cva(
-  "active:scale-95 inline-flex items-center justify-center rounded-md text-base font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none",
+  "active:scale-95 inline-flex items-center justify-center rounded-md text-base font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none",
   {
     variants: {
       variant: {
@@ -30,6 +30,7 @@ export const buttonVariants = cva(
         default: "",
         white: "",
         muted: "",
+        error: "",
       },
     },
     compoundVariants: [
@@ -42,6 +43,16 @@ export const buttonVariants = cva(
         variant: "icon",
         color: "muted",
         class: "text-muted hover:text-gray-500",
+      },
+      {
+        variant: "outline",
+        color: "error",
+        class: "border-error text-error hover:bg-error focus:ring-error",
+      },
+      {
+        variant: "outline",
+        color: "muted",
+        class: "border-muted text-muted hover:bg-muted focus:ring-muted",
       },
     ],
     defaultVariants: {

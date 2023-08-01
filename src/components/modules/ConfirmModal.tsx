@@ -25,11 +25,7 @@ const ConfirmModal: FC<ConfirmModalProps> = ({
       <Typography>{message}</Typography>
       <div className="flex justify-end gap-x-2">
         <Button onClick={onConfirm}>{confirmText}</Button>
-        <Button
-          className="border-muted text-muted hover:bg-muted"
-          onClick={onCancel}
-          variant="outline"
-        >
+        <Button color="muted" onClick={onCancel} variant="outline">
           {cancelText}
         </Button>
       </div>

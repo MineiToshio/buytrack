@@ -16,6 +16,15 @@ enum StoreType {
   Person
 }
 
+enum OrderStatus {
+  Open
+  In_Route
+  Delivered
+  Canceled
+  Partial_In_Route
+  Partial_Delivered
+}
+
 model Account {
   id                 String  @id @default(cuid())
   userId             String
@@ -181,6 +190,7 @@ model Order {
   createdDate   DateTime @default(now())
   currencyId    String
   currency      Currency @relation(fields: [currencyId], references: [id], onDelete: Cascade)
+  status        OrderStatus @default(Open)
   minApproximateDeliveryDate DateTime?
   maxApproximateDeliveryDate DateTime?
   review        StoreReview?

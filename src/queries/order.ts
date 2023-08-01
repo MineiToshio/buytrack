@@ -77,6 +77,7 @@ export const getOrderByOrderNote = (orderNoteId: string, userId: string) =>
 export const getOrdersWithoutDeliveredProducts = (userId: string) =>
   db.order.findMany({
     where: {
+      status: { in: ["Open", "In_Route", "Partial_Delivered", "Partial_In_Route"] },
       userId,
       products: {
         some: { deliveryId: null },
@@ -116,5 +117,18 @@ export const createOrder = (order: OrderCreate, products: ProductCreate[]) =>
       products: {
         create: products,
       },
+    },
+  });
+
+export const updateOrder = (
+  orderId: string,
+  userId: string,
+  order: Partial<Order>,
+) =>
+  db.order.update({
+    data: order,
+    where: {
+      id: orderId,
+      userId,
     },
   });
