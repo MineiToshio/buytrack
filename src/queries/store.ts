@@ -35,9 +35,9 @@ export const getStoreByAvailableOrders = (userId: string) =>
       orders: {
         include: { products: true },
         where: {
-            userId,
-            products: { some: { deliveryId: null } },
-            status: { in: ["Open", "In_Route"] },
+          userId,
+          products: { some: { deliveryId: null } },
+          status: { in: ["Open", "In_Route"] },
         },
       },
     },
@@ -46,7 +46,9 @@ export const getStoreByAvailableOrders = (userId: string) =>
         some: {
           userId,
           products: { some: { deliveryId: null } },
-          status: { in: ["Open", "In_Route", "Partial_Delivered", "Partial_In_Route"] },
+          status: {
+            in: ["Open", "In_Route", "Partial_Delivered", "Partial_In_Route"],
+          },
         },
       },
     },
