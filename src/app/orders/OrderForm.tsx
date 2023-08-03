@@ -21,6 +21,7 @@ import { useRouter } from "next/navigation";
 import ConfirmModal from "@/components/modules/ConfirmModal";
 import { put } from "@/helpers/request";
 import { useMutation } from "@tanstack/react-query";
+import { orderStatusColor, orderStatusLabel } from "@/helpers/constants";
 
 export type Product = {
   productName: string;
@@ -155,6 +156,15 @@ const OrderForm: FC<OrderFormProps> = ({ isLoading, order, onSubmit }) => {
           className="flex w-full flex-col md:w-3/5"
           onSubmit={handleSubmit(onSubmit)}
         >
+          {isReadOnly && order?.status != null && (
+            <FormRow
+              title="Estado"
+              Icon={Icons.Store}
+              type="chip"
+              label={orderStatusLabel[order.status]}
+              className={orderStatusColor[order.status]}
+            />
+          )}
           <FormRow
             title="Tienda"
             Icon={Icons.Store}

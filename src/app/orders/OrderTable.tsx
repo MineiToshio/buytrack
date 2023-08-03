@@ -14,6 +14,8 @@ import {
 import Link from "next/link";
 import { FC, Fragment } from "react";
 import OrderPaymentTable from "./OrderPaymentsTable";
+import Chip from "@/components/core/Chip";
+import { orderStatusColor, orderStatusLabel } from "@/helpers/constants";
 
 type Props = {
   orders: OrderFull[];
@@ -63,6 +65,20 @@ const columns = [
       header: () => <Typography>Tienda</Typography>,
     },
   ),
+  columnHelper.accessor((row) => row.status, {
+    id: "status",
+    size: 150,
+    cell: (info) => {
+      const status = info.getValue();
+      return (
+        <Chip
+          label={orderStatusLabel[status]}
+          color={orderStatusColor[status]}
+        />
+      );
+    },
+    header: () => <Typography>Estado</Typography>,
+  }),
   columnHelper.accessor(
     (row) => ({ cost: row.productsCost, currency: row.currency.name }),
     {

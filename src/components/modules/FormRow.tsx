@@ -8,6 +8,7 @@ import { Control, Controller, FieldValues, Path } from "react-hook-form";
 import DatePicker from "../core/DatePicker";
 import DateRangePicker from "../core/DateRangePicker";
 import Button from "../core/Button";
+import Chip from "../core/Chip";
 
 type RowInputProps = {
   type: "input";
@@ -24,6 +25,7 @@ type RowInputProps = {
   ButtonIcon?: LucideIcon;
   onButtonClick?: () => void;
   onChange?: (event: { target: any; type?: any }) => void;
+  label?: undefined;
 };
 
 type SelectInputProps<T extends FieldValues> = {
@@ -41,6 +43,7 @@ type SelectInputProps<T extends FieldValues> = {
   onButtonClick?: undefined;
   onAdd?: (value: string) => void;
   onChange?: (value: any) => void;
+  label?: undefined;
 };
 
 type DatePickerProps<T extends FieldValues> = {
@@ -58,6 +61,7 @@ type DatePickerProps<T extends FieldValues> = {
   ButtonIcon?: undefined;
   onButtonClick?: undefined;
   onChange?: undefined;
+  label?: undefined;
 };
 
 type DateRangePickerProps<T extends FieldValues> = {
@@ -75,6 +79,25 @@ type DateRangePickerProps<T extends FieldValues> = {
   ButtonIcon?: undefined;
   onButtonClick?: undefined;
   onChange?: undefined;
+  label?: undefined;
+};
+
+type ChipProps = {
+  type: "chip";
+  options?: undefined;
+  control?: undefined;
+  formField?: undefined;
+  newModalTitle?: undefined;
+  onAdd?: undefined;
+  multiple?: undefined;
+  searchPlaceholder?: undefined;
+  minDate?: undefined;
+  maxDate?: undefined;
+  inputType?: undefined;
+  ButtonIcon?: undefined;
+  onButtonClick?: undefined;
+  onChange?: undefined;
+  label: string;
 };
 
 type FormOptionValue = string | boolean | number | string[] | undefined;
@@ -94,11 +117,13 @@ type RowProps<T extends FieldValues> = {
   errorMessage?: string;
   readOnly?: boolean;
   allowSearch?: boolean;
+  className?: string;
 } & (
   | RowInputProps
   | SelectInputProps<T>
   | DatePickerProps<T>
   | DateRangePickerProps<T>
+  | ChipProps
 );
 
 const FormRow = <T extends FieldValues>(
@@ -121,6 +146,8 @@ const FormRow = <T extends FieldValues>(
     minDate,
     maxDate,
     inputType,
+    label,
+    className,
     onAdd,
     ButtonIcon,
     onButtonClick,
@@ -240,6 +267,9 @@ const FormRow = <T extends FieldValues>(
             />
           )}
         />
+      )}
+      {type === "chip" && (
+        <Chip label={label} readOnly className={className} {...props} />
       )}
       {error && (
         <Typography size="xs" className="ml-2 text-error">

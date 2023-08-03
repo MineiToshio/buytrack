@@ -4,13 +4,19 @@ import { VariantProps, cva } from "class-variance-authority";
 import { FC, MouseEvent } from "react";
 import Icons from "./Icons";
 
-const chipVariants = cva("flex items-center rounded-3xl bg-gray-300", {
+const chipVariants = cva("flex items-center rounded-3xl bg-gray-300 w-fit", {
   variants: {
     size: {
       lg: "px-3 py-1",
       md: "px-3 py-1",
       sm: "px-2 py-1",
       xs: "px-1 py-1",
+    },
+    color: {
+      error: "bg-error",
+      primary: "bg-primary",
+      secondary: "bg-secondary",
+      muted: "bg-muted",
     },
   },
   defaultVariants: {
@@ -31,6 +37,7 @@ const Chip: FC<ChipProps> = ({
   onDelete,
   className,
   size,
+  color,
   title,
   readOnly,
 }) => {
@@ -40,7 +47,7 @@ const Chip: FC<ChipProps> = ({
   };
 
   return (
-    <div className={cn(chipVariants({ size, className }))} title={title}>
+    <div className={cn(chipVariants({ size, color, className }))} title={title}>
       <Typography className="text-white" size={size}>
         {label}
       </Typography>
