@@ -1,6 +1,11 @@
 import { apiResponses } from "@/helpers/api";
 import { authOptions } from "@/helpers/auth";
-import { createDelivery, getDeliveries } from "@/queries/delivery";
+import {
+  createDelivery,
+  deleteDelivery,
+  getDeliveries,
+  getDeliveryById,
+} from "@/queries/delivery";
 import { getServerSession } from "next-auth";
 import { NextRequest } from "next/server";
 import { z } from "zod";
@@ -44,6 +49,33 @@ export const POST = async (req: NextRequest) => {
 
     const newDelivery = await createDelivery(deliveryData, products);
     return apiResponses(newDelivery).success;
+  } catch (error) {
+    return apiResponses(error).error;
+  }
+};
+
+export const DELETE = async (req: NextRequest) => {
+  try {
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get("id");
+    const user = await getServerSession(authOptions).then((res) => res?.user);
+
+    if (!user) {
+      return apiResponses().unauthorized;
+    }
+
+    if (id == null || id?.trim() === "") {
+      return apiResponses("The id is missing.").badRequest;
+    }
+
+    const delivery = getDeliveryById(id, user.id);
+
+    if (!delivery) {
+      return apiResponses().unauthorized;
+    }
+
+    await deleteDelivery(id);
+    return apiResponses({ success: true }).success;
   } catch (error) {
     return apiResponses(error).error;
   }

@@ -6,10 +6,15 @@ import {
   OrderNote,
   OrderPayment,
   OrderProduct,
+  PrismaClient,
   ProductType,
   ProductsCountry,
   Store,
 } from "@prisma/client";
+import {
+  DefaultArgs,
+  PrismaClientOptions,
+} from "@prisma/client/runtime/library";
 
 export type StoreFull = Store & {
   country: Country;
@@ -45,3 +50,8 @@ export type DeliveryFull = Delivery & {
   currency: Currency;
   store: Store;
 };
+
+export type Transaction = Omit<
+  PrismaClient<PrismaClientOptions, never, DefaultArgs>,
+  "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+>;

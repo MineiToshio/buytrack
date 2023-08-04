@@ -120,7 +120,10 @@ const columns = [
     size: 24,
     cell: (info) => (
       <div className="flex w-full justify-center">
-        <Link href={`/orders/${info.getValue()}`}>
+        <Link
+          href={`/orders/${info.getValue()}`}
+          className="hover:text-gray-500"
+        >
           <Icons.View />
         </Link>
       </div>

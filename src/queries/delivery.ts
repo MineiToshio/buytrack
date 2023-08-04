@@ -1,5 +1,10 @@
 import { db } from "@/helpers/db";
-import { Order, OrderProduct, Prisma } from "@prisma/client";
+import { Prisma } from "@prisma/client";
+import {
+  updateOrderStatusToInRoute,
+  updateOrderStatusToOpen,
+  updateOrderStatusToPartialInRoute,
+} from "./order";
 
 type DeliveryCreate =
   | (Prisma.Without<
@@ -48,5 +53,22 @@ export const createDelivery = (delivery: DeliveryCreate, products: string[]) =>
       data: { deliveryId: createdDelivery.id },
       where: { id: { in: products } },
     });
+    await updateOrderStatusToInRoute(tx);
+    await updateOrderStatusToPartialInRoute(tx);
     return createdDelivery;
+  });
+
+export const deleteDelivery = (deliveryId: string) =>
+  db.$transaction(async (tx) => {
+    await tx.orderProduct.updateMany({
+      data: { deliveryId: null },
+      where: { deliveryId: deliveryId },
+    });
+    await updateOrderStatusToOpen(tx);
+    await updateOrderStatusToPartialInRoute(tx);
+    return await tx.delivery.delete({
+      where: {
+        id: deliveryId,
+      },
+    });
   });

@@ -1,10 +1,15 @@
 "use client";
 
+import Button from "@/components/core/Button";
 import Icons from "@/components/core/Icons";
 import Typography from "@/components/core/Typography";
+import ConfirmModal from "@/components/modules/ConfirmModal";
+import { DELETE_DELIVERY } from "@/helpers/apiUrls";
+import { del } from "@/helpers/request";
 import { formatDate } from "@/helpers/utils";
 import { cn } from "@/styles/utils";
 import { DeliveryFull } from "@/types/prisma";
+import { useMutation } from "@tanstack/react-query";
 import {
   createColumnHelper,
   flexRender,
@@ -12,118 +17,174 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import Link from "next/link";
-import { FC, Fragment } from "react";
+import { FC, Fragment, useCallback, useMemo, useState } from "react";
 
 type Props = {
   deliveries: DeliveryFull[];
 };
 
+const deleteDelivery = (deliveryId: string) =>
+  del(`${DELETE_DELIVERY}${deliveryId}`);
+
 const columnHelper = createColumnHelper<DeliveryFull>();
 
-const columns = [
-  columnHelper.accessor((row) => row, {
-    id: "expander",
-    size: 24,
-    header: () => null,
-    cell: ({ row }) => (
-      <div className="flex w-full justify-start">
-        <button
-          {...{
-            onClick: row.getToggleExpandedHandler(),
-            style: { cursor: "pointer" },
-          }}
-        >
-          {row.getIsExpanded() ? <Icons.ChevronDown /> : <Icons.ChevronRight />}
-        </button>
-      </div>
-    ),
-  }),
-  columnHelper.accessor(
-    (row) => ({ name: row.store.name, url: row.store.url }),
-    {
-      id: "store",
-      size: 70,
-      cell: (info) => {
-        const store = info.getValue();
-        return <Link href={`/stores/${store.url}`}>{store.name}</Link>;
-      },
-      header: () => <Typography>Tienda</Typography>,
-    },
-  ),
-  columnHelper.accessor(
-    (row) => ({
-      start: row.minApproximateDeliveryDate,
-      end: row.maxApproximateDeliveryDate,
-    }),
-    {
-      id: "approximateDeliveryDate",
-      cell: (info) => {
-        const date = info.getValue();
-        if (date.start && date.end)
-          return (
-            <Typography className="text-center">{`${formatDate(
-              date.start,
-            )} - ${formatDate(date.end)}`}</Typography>
-          );
-        else {
-          return <Typography className="text-center">-</Typography>;
-        }
-      },
-      header: () => <Typography>Fecha aprox. de entrega</Typography>,
-    },
-  ),
-  columnHelper.accessor((row) => row.currier, {
-    id: "currier",
-    size: 70,
-    cell: (info) => {
-      const currier = info.getValue();
-      return (
-        <Typography className="text-center">
-          {currier != null && currier.length > 0 ? currier : "-"}
-        </Typography>
-      );
-    },
-    header: () => <Typography>Currier</Typography>,
-  }),
-  columnHelper.accessor(
-    (row) => ({ cost: row.price, currency: row.currency.name }),
-    {
-      id: "price",
-      size: 70,
-      cell: (info) => {
-        const price = info.getValue();
-        return (
-          <Typography className="text-center">{`${price.currency} ${price.cost}`}</Typography>
-        );
-      },
-      header: () => <Typography>Precio</Typography>,
-    },
-  ),
-  columnHelper.accessor((row) => row.id, {
-    id: "deliveryUrl",
-    size: 24,
-    cell: (info) => (
-      <div className="flex w-full justify-center">
-        <Link href={`/deliveries/${info.getValue()}`}>
-          <Icons.View />
-        </Link>
-      </div>
-    ),
-    header: () => null,
-  }),
-];
-
 const DeliveryTable: FC<Props> = ({ deliveries }) => {
+  const [currentDeliveries, setCurrentDeliveries] =
+    useState<DeliveryFull[]>(deliveries);
+  const [isDeleteMessageShowing, setIsDeleteMessageShowing] =
+    useState<boolean>(false);
+  const [deleteDeliveryId, setDeleteDeliveryId] = useState<string | null>(null);
+
+  const { isLoading, mutate } = useMutation({
+    mutationFn: (deliveryId: string) => deleteDelivery(deliveryId),
+  });
+
+  const toggleDeleteMessage = () => setIsDeleteMessageShowing((s) => !s);
+
+  const showDeleteMessage = useCallback((deliveryId: string) => {
+    toggleDeleteMessage();
+    setDeleteDeliveryId(deliveryId);
+  }, []);
+
+  const columns = useMemo(
+    () => [
+      columnHelper.accessor((row) => row, {
+        id: "expander",
+        size: 24,
+        header: () => null,
+        cell: ({ row }) => (
+          <div className="flex w-full justify-start">
+            <button
+              {...{
+                onClick: row.getToggleExpandedHandler(),
+                style: { cursor: "pointer" },
+              }}
+            >
+              {row.getIsExpanded() ? (
+                <Icons.ChevronDown />
+              ) : (
+                <Icons.ChevronRight />
+              )}
+            </button>
+          </div>
+        ),
+      }),
+      columnHelper.accessor(
+        (row) => ({ name: row.store.name, url: row.store.url }),
+        {
+          id: "store",
+          size: 70,
+          cell: (info) => {
+            const store = info.getValue();
+            return <Link href={`/stores/${store.url}`}>{store.name}</Link>;
+          },
+          header: () => <Typography>Tienda</Typography>,
+        },
+      ),
+      columnHelper.accessor(
+        (row) => ({
+          start: row.minApproximateDeliveryDate,
+          end: row.maxApproximateDeliveryDate,
+        }),
+        {
+          id: "approximateDeliveryDate",
+          cell: (info) => {
+            const date = info.getValue();
+            if (date.start && date.end)
+              return (
+                <Typography className="text-center">{`${formatDate(
+                  date.start,
+                )} - ${formatDate(date.end)}`}</Typography>
+              );
+            else {
+              return <Typography className="text-center">-</Typography>;
+            }
+          },
+          header: () => <Typography>Fecha aprox. de entrega</Typography>,
+        },
+      ),
+      columnHelper.accessor((row) => row.currier, {
+        id: "currier",
+        size: 70,
+        cell: (info) => {
+          const currier = info.getValue();
+          return (
+            <Typography className="text-center">
+              {currier != null && currier.length > 0 ? currier : "-"}
+            </Typography>
+          );
+        },
+        header: () => <Typography>Currier</Typography>,
+      }),
+      columnHelper.accessor(
+        (row) => ({ cost: row.price, currency: row.currency.name }),
+        {
+          id: "price",
+          size: 70,
+          cell: (info) => {
+            const price = info.getValue();
+            return (
+              <Typography className="text-center">{`${price.currency} ${price.cost}`}</Typography>
+            );
+          },
+          header: () => <Typography>Precio</Typography>,
+        },
+      ),
+      columnHelper.accessor((row) => row.id, {
+        id: "deliveryUrl",
+        size: 24,
+        cell: (info) => {
+          const deliveryId = info.getValue();
+          return (
+            <div className="flex w-full justify-center">
+              <Link
+                href={`/deliveries/${deliveryId}`}
+                className="hover:text-gray-500"
+              >
+                <Icons.View />
+              </Link>
+              <Button
+                variant="icon"
+                className="ml-2 text-black hover:text-gray-500"
+                onClick={() => showDeleteMessage(deliveryId)}
+              >
+                <Icons.Delete />
+              </Button>
+            </div>
+          );
+        },
+        header: () => null,
+      }),
+    ],
+    [showDeleteMessage],
+  );
+
   const table = useReactTable({
-    data: deliveries,
+    data: currentDeliveries,
     columns,
     getRowCanExpand: () => true,
     getCoreRowModel: getCoreRowModel(),
   });
 
+  const confirmDelete = () => {
+    if (deleteDeliveryId) {
+      toggleDeleteMessage();
+      mutate(deleteDeliveryId);
+      setCurrentDeliveries((delivery) =>
+        delivery.filter((d) => d.id !== deleteDeliveryId),
+      );
+    }
+  };
+
   return (
     <>
-      {deliveries && deliveries.length > 0 ? (
+      <ConfirmModal
+        open={isDeleteMessageShowing}
+        message="¿Estás seguro de eliminar la entrega? Esta acción es permanente."
+        onCancel={toggleDeleteMessage}
+        onConfirm={confirmDelete}
+      />
+      {currentDeliveries && currentDeliveries.length > 0 ? (
         <div className="w-full overflow-x-auto rounded-md bg-slate-50">
           <table className="w-full table-fixed">
             <thead>

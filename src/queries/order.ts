@@ -1,9 +1,11 @@
 import { db } from "@/helpers/db";
+import { Transaction } from "@/types/prisma";
 import {
   Delivery,
   Order,
   OrderPayment,
   OrderProduct,
+  OrderStatus,
   Prisma,
 } from "@prisma/client";
 
@@ -132,5 +134,41 @@ export const updateOrder = (
     where: {
       id: orderId,
       userId,
+    },
+  });
+
+export const updateOrderStatusToInRoute = (tx: Transaction) =>
+  tx.order.updateMany({
+    data: {
+      status: OrderStatus.In_Route,
+    },
+    where: {
+      status: { notIn: ["Canceled", "In_Route"] },
+      products: { every: { NOT: { deliveryId: null } } },
+    },
+  });
+
+export const updateOrderStatusToPartialInRoute = (tx: Transaction) =>
+  tx.order.updateMany({
+    data: {
+      status: OrderStatus.Partial_In_Route,
+    },
+    where: {
+      status: { notIn: ["Canceled", "Partial_In_Route"] },
+      AND: [
+        { products: { some: { NOT: { deliveryId: null } } } },
+        { products: { some: { deliveryId: null } } },
+      ],
+    },
+  });
+
+export const updateOrderStatusToOpen = (tx: Transaction) =>
+  tx.order.updateMany({
+    data: {
+      status: OrderStatus.Open,
+    },
+    where: {
+      status: { notIn: ["Canceled", "Open"] },
+      products: { every: { deliveryId: null } },
     },
   });
