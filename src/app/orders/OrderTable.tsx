@@ -219,7 +219,7 @@ const OrderTable: FC<Props> = ({ orders }) => {
                                       <Typography>
                                         {r.price
                                           ? `${row.original.currency.name} ${r.price}`
-                                          : "-"}
+                                          : `${row.original.currency.name} -`}
                                       </Typography>
                                     </td>
                                   </tr>

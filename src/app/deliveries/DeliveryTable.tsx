@@ -261,7 +261,7 @@ const DeliveryTable: FC<Props> = ({ deliveries }) => {
                                       <Typography>
                                         {r.price
                                           ? `${row.original.currency.name} ${r.price}`
-                                          : "-"}
+                                          : `${row.original.currency.name} -`}
                                       </Typography>
                                     </td>
                                   </tr>
