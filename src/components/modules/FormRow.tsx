@@ -26,6 +26,7 @@ type RowInputProps = {
   onButtonClick?: () => void;
   onChange?: (event: { target: any; type?: any }) => void;
   label?: undefined;
+  color?: undefined;
 };
 
 type SelectInputProps<T extends FieldValues> = {
@@ -44,6 +45,7 @@ type SelectInputProps<T extends FieldValues> = {
   onAdd?: (value: string) => void;
   onChange?: (value: any) => void;
   label?: undefined;
+  color?: undefined;
 };
 
 type DatePickerProps<T extends FieldValues> = {
@@ -62,6 +64,7 @@ type DatePickerProps<T extends FieldValues> = {
   onButtonClick?: undefined;
   onChange?: undefined;
   label?: undefined;
+  color?: undefined;
 };
 
 type DateRangePickerProps<T extends FieldValues> = {
@@ -80,6 +83,7 @@ type DateRangePickerProps<T extends FieldValues> = {
   onButtonClick?: undefined;
   onChange?: undefined;
   label?: undefined;
+  color?: undefined;
 };
 
 type ChipProps = {
@@ -98,6 +102,7 @@ type ChipProps = {
   onButtonClick?: undefined;
   onChange?: undefined;
   label: string;
+  color?: "error" | "primary" | "secondary" | "muted";
 };
 
 type FormOptionValue = string | boolean | number | string[] | undefined;
@@ -148,6 +153,7 @@ const FormRow = <T extends FieldValues>(
     inputType,
     label,
     className,
+    color,
     onAdd,
     ButtonIcon,
     onButtonClick,
@@ -269,7 +275,13 @@ const FormRow = <T extends FieldValues>(
         />
       )}
       {type === "chip" && (
-        <Chip label={label} readOnly className={className} {...props} />
+        <Chip
+          label={label}
+          readOnly
+          className={className}
+          color={color}
+          {...props}
+        />
       )}
       {error && (
         <Typography size="xs" className="ml-2 text-error">

@@ -162,7 +162,7 @@ const OrderForm: FC<OrderFormProps> = ({ isLoading, order, onSubmit }) => {
               Icon={Icons.Store}
               type="chip"
               label={orderStatusLabel[order.status]}
-              className={orderStatusColor[order.status]}
+              color={orderStatusColor[order.status]}
             />
           )}
           <FormRow
