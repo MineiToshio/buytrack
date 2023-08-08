@@ -1,8 +1,10 @@
 import { db } from "@/helpers/db";
-import { Prisma } from "@prisma/client";
+import { Delivery, Prisma } from "@prisma/client";
 import {
+  updateOrderStatusToDelivered,
   updateOrderStatusToInRoute,
   updateOrderStatusToOpen,
+  updateOrderStatusToPartialDelivered,
   updateOrderStatusToPartialInRoute,
 } from "./order";
 
@@ -56,6 +58,25 @@ export const createDelivery = (delivery: DeliveryCreate, products: string[]) =>
     await updateOrderStatusToInRoute(tx);
     await updateOrderStatusToPartialInRoute(tx);
     return createdDelivery;
+  });
+
+export const updateDelivery = (
+  deliveryId: string,
+  userId: string,
+  delivery: Partial<Delivery>,
+) =>
+  db.$transaction(async (tx) => {
+    await tx.delivery.update({
+      data: delivery,
+      where: {
+        id: deliveryId,
+        orderProducts: { some: { order: { userId } } },
+      },
+    });
+    await updateOrderStatusToInRoute(tx);
+    await updateOrderStatusToDelivered(tx);
+    await updateOrderStatusToPartialInRoute(tx);
+    await updateOrderStatusToPartialDelivered(tx);
   });
 
 export const deleteDelivery = (deliveryId: string) =>

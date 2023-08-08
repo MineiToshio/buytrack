@@ -137,31 +137,7 @@ export const updateOrder = (
     },
   });
 
-export const updateOrderStatusToInRoute = (tx: Transaction) =>
-  tx.order.updateMany({
-    data: {
-      status: OrderStatus.In_Route,
-    },
-    where: {
-      status: { notIn: ["Canceled", "In_Route"] },
-      products: { every: { NOT: { deliveryId: null } } },
-    },
-  });
-
-export const updateOrderStatusToPartialInRoute = (tx: Transaction) =>
-  tx.order.updateMany({
-    data: {
-      status: OrderStatus.Partial_In_Route,
-    },
-    where: {
-      status: { notIn: ["Canceled", "Partial_In_Route"] },
-      AND: [
-        { products: { some: { NOT: { deliveryId: null } } } },
-        { products: { some: { deliveryId: null } } },
-      ],
-    },
-  });
-
+// No product has a scheduled delivery
 export const updateOrderStatusToOpen = (tx: Transaction) =>
   tx.order.updateMany({
     data: {
@@ -170,5 +146,63 @@ export const updateOrderStatusToOpen = (tx: Transaction) =>
     where: {
       status: { notIn: ["Canceled", "Open"] },
       products: { every: { deliveryId: null } },
+    },
+  });
+
+// All products have a scheduled delivery, but not all have been delivered.
+export const updateOrderStatusToInRoute = (tx: Transaction) =>
+  tx.order.updateMany({
+    data: {
+      status: OrderStatus.In_Route,
+    },
+    where: {
+      status: { notIn: ["Canceled", "In_Route"] },
+      AND: [
+        { products: { every: { NOT: { deliveryId: null } } } },
+        { products: { some: { delivery: { delivered: false } } } },
+      ],
+    },
+  });
+
+// All products have been delivered
+export const updateOrderStatusToDelivered = (tx: Transaction) =>
+  tx.order.updateMany({
+    data: {
+      status: OrderStatus.Delivered,
+    },
+    where: {
+      status: { notIn: ["Canceled", "Delivered"] },
+      products: { every: { delivery: { delivered: true } } },
+    },
+  });
+
+// Some products have scheduled delivery and some have no delivery schedured
+export const updateOrderStatusToPartialInRoute = (tx: Transaction) =>
+  tx.order.updateMany({
+    data: {
+      status: OrderStatus.Partial_In_Route,
+    },
+    where: {
+      status: { notIn: ["Canceled", "Partial_In_Route"] },
+      AND: [
+        { products: { some: { delivery: { delivered: false } } } },
+        { products: { some: { deliveryId: null } } },
+      ],
+    },
+  });
+
+// Some products have been delivered and all other products have no delivery scheduled
+export const updateOrderStatusToPartialDelivered = (tx: Transaction) =>
+  tx.order.updateMany({
+    data: {
+      status: OrderStatus.Partial_Delivered,
+    },
+    where: {
+      status: { notIn: ["Canceled", "Partial_Delivered"] },
+      AND: [
+        { products: { some: { delivery: { delivered: true } } } },
+        { products: { none: { delivery: { delivered: false } } } },
+        { products: { some: { deliveryId: null } } },
+      ],
     },
   });

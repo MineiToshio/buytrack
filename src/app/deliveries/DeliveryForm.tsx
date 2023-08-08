@@ -1,17 +1,20 @@
 "use client";
 
-import Typography from "@/components/core/Typography";
-import ConfirmModal from "@/components/modules/ConfirmModal";
 import Button from "@/core/Button";
+import DatePicker from "@/core/DatePicker";
 import Icons from "@/core/Icons";
+import Typography from "@/core/Typography";
 import {
   CREATE_CURRENCY,
   DELETE_DELIVERY,
   GET_CURRENCY,
+  UPDATE_DELIVERY,
 } from "@/helpers/apiUrls";
-import { del } from "@/helpers/request";
+import { del, put } from "@/helpers/request";
 import useSelect, { formatOptions } from "@/hooks/useSelect";
+import ConfirmModal from "@/modules/ConfirmModal";
 import FormRow from "@/modules/FormRow";
+import Modal from "@/modules/Modal";
 import { cn } from "@/styles/utils";
 import { DeliveryFull, OrderWithProducts } from "@/types/prisma";
 import { Currency, Store } from "@prisma/client";
@@ -20,6 +23,23 @@ import { useRouter } from "next/navigation";
 import { FC, useCallback, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import DeliveryProducts from "./DeliveryProducts";
+import { formatDate } from "@/helpers/utils";
+
+const DEFAULT_DELIVERY_DATE = {
+  value: new Date(),
+  error: false,
+};
+
+const DELIVERED_CHIP_DATA = Object.freeze({
+  1: Object.freeze({
+    label: "Entregado",
+    color: "primary",
+  }),
+  2: Object.freeze({
+    label: "En Camino",
+    color: "muted",
+  }),
+});
 
 export type DeliveryFormType = {
   storeId: string;
@@ -49,6 +69,9 @@ type DeliveryFormProps = {
 const deleteDelivery = (deliveryId: string) =>
   del(`${DELETE_DELIVERY}${deliveryId}`);
 
+const updateToDelivered = (deliveryId: string, deliveryDate: Date) =>
+  put(UPDATE_DELIVERY, { deliveryId, delivered: true, deliveryDate });
+
 const DeliveryForm: FC<DeliveryFormProps> = ({
   defaults,
   stores,
@@ -58,15 +81,24 @@ const DeliveryForm: FC<DeliveryFormProps> = ({
   onSubmit,
 }) => {
   const router = useRouter();
+  const [isDelivered, setIsDelivered] = useState<boolean | undefined>(
+    delivery?.delivered,
+  );
   const [isPending, setIsPending] = useState<boolean>(false);
   const [isDeleteMessageShowing, setIsDeleteMessageShowing] =
     useState<boolean>(false);
+  const [showDeliveredMessage, setShowDeliveredMessage] =
+    useState<boolean>(false);
+  const [deliveryDate, setDeliveryDate] = useState<{
+    value: Date | null;
+    error: boolean;
+  }>(DEFAULT_DELIVERY_DATE);
   const [isReadOnly, setIsReadOnly] = useState<boolean>(!!delivery);
   const [ordersWithProducts, setOrdersWithProducts] = useState<
     OrderWithProducts[]
   >([]);
 
-  const { isLoading: isDeleting, mutate } = useMutation({
+  const { isLoading: isDeleting, mutate: mutateDelete } = useMutation({
     mutationFn: (deliveryId: string) => deleteDelivery(deliveryId),
     onSuccess: () => {
       setIsPending(true);
@@ -74,6 +106,16 @@ const DeliveryForm: FC<DeliveryFormProps> = ({
       // This refresh is to force the await in /deliveries page
       router.refresh();
     },
+  });
+
+  const { mutate: mutateSetAdDelivered } = useMutation({
+    mutationFn: ({
+      deliveryId,
+      deliveryDate,
+    }: {
+      deliveryId: string;
+      deliveryDate: Date;
+    }) => updateToDelivered(deliveryId, deliveryDate),
   });
 
   const storeOptions = formatOptions(stores);
@@ -153,12 +195,60 @@ const DeliveryForm: FC<DeliveryFormProps> = ({
   const confirmDelete = () => {
     if (delivery) {
       toggleDeleteMessage();
-      mutate(delivery.id);
+      mutateDelete(delivery.id);
+    }
+  };
+
+  const toggleDeliveryMessage = () => setShowDeliveredMessage((s) => !s);
+
+  const openDeliveryMessage = () => {
+    toggleDeliveryMessage();
+    setDeliveryDate(DEFAULT_DELIVERY_DATE);
+  };
+
+  const onDeliveryDayChange = (value: Date | null) => {
+    if (value) {
+      setDeliveryDate({ value, error: false });
+    } else {
+      setDeliveryDate({ value, error: true });
+    }
+  };
+
+  const confirmDelivery = () => {
+    if (delivery && deliveryDate.value) {
+      mutateSetAdDelivered({
+        deliveryId: delivery.id,
+        deliveryDate: deliveryDate.value,
+      });
+      setIsDelivered(true);
+      toggleDeliveryMessage();
     }
   };
 
   return (
     <>
+      <Modal open={showDeliveredMessage} onClose={toggleDeliveryMessage}>
+        <div className="flex flex-col gap-y-4 p-4">
+          <Typography>Selecciona la fecha de delivery</Typography>
+          <DatePicker
+            variant="standard"
+            onChange={onDeliveryDayChange}
+            value={deliveryDate.value}
+            maxDate={new Date()}
+            className={cn({ "border-error": deliveryDate.error })}
+          />
+          <div className="flex justify-end gap-x-2">
+            <Button onClick={confirmDelivery}>Confirmar</Button>
+            <Button
+              color="muted"
+              onClick={toggleDeliveryMessage}
+              variant="outline"
+            >
+              Cancelar
+            </Button>
+          </div>
+        </div>
+      </Modal>
       <ConfirmModal
         open={isDeleteMessageShowing}
         message="¿Estás seguro de eliminar la entrega? Esta acción es permanente."
@@ -172,6 +262,27 @@ const DeliveryForm: FC<DeliveryFormProps> = ({
         >
           <div className="flex w-full flex-col gap-x-4 md:flex-row">
             <div className="flex w-full flex-col md:w-3/5">
+              {isDelivered != null && (
+                <>
+                  <FormRow
+                    title="Estado"
+                    Icon={Icons.Tag}
+                    type="chip"
+                    label={DELIVERED_CHIP_DATA[isDelivered ? "1" : "2"].label}
+                    color={DELIVERED_CHIP_DATA[isDelivered ? "1" : "2"].color}
+                  />
+                  {isDelivered && (
+                    <FormRow
+                      title="Fecha de Entrega"
+                      Icon={Icons.Calendar}
+                      type="label"
+                      label={formatDate(
+                        delivery?.deliveryDate ?? deliveryDate.value ?? "",
+                      )}
+                    />
+                  )}
+                </>
+              )}
               <FormRow
                 title="Tienda"
                 Icon={Icons.Store}
@@ -296,6 +407,15 @@ const DeliveryForm: FC<DeliveryFormProps> = ({
             )}
             {isReadOnly && (
               <>
+                {!isDelivered && (
+                  <Button
+                    className="w-fit"
+                    isLoading={isDeleting || isPending}
+                    onClick={openDeliveryMessage}
+                  >
+                    Marcar como entregado
+                  </Button>
+                )}
                 <Button
                   variant="outline"
                   color="error"

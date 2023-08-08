@@ -156,13 +156,13 @@ const OrderForm: FC<OrderFormProps> = ({ isLoading, order, onSubmit }) => {
           className="flex w-full flex-col md:w-3/5"
           onSubmit={handleSubmit(onSubmit)}
         >
-          {isReadOnly && order?.status != null && (
+          {isReadOnly && status != null && (
             <FormRow
               title="Estado"
-              Icon={Icons.Store}
+              Icon={Icons.Tag}
               type="chip"
-              label={orderStatusLabel[order.status]}
-              color={orderStatusColor[order.status]}
+              label={orderStatusLabel[status]}
+              color={orderStatusColor[status]}
             />
           )}
           <FormRow

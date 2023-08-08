@@ -23,6 +23,7 @@ import {
   Coins,
   Send,
   Truck,
+  Tag,
 } from "lucide-react";
 
 export const Icons = {
@@ -50,6 +51,7 @@ export const Icons = {
   Coins,
   Send,
   Currier: Truck,
+  Tag,
 };
 
 export default Icons;

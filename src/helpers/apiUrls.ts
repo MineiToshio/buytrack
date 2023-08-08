@@ -17,4 +17,5 @@ export const CREATE_ORDER_PAYMENT = "/api/order-payment";
 export const DELETE_ORDER_PAYMENT = "/api/order-payment?id=";
 export const CREATE_DELIVERY = "/api/delivery";
 export const GET_DELIVERY = "/api/delivery";
+export const UPDATE_DELIVERY = "/api/delivery";
 export const DELETE_DELIVERY = "/api/delivery?id=";

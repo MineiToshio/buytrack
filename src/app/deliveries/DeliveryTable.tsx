@@ -35,7 +35,7 @@ const DeliveryTable: FC<Props> = ({ deliveries }) => {
     useState<boolean>(false);
   const [deleteDeliveryId, setDeleteDeliveryId] = useState<string | null>(null);
 
-  const { isLoading, mutate } = useMutation({
+  const { mutate } = useMutation({
     mutationFn: (deliveryId: string) => deleteDelivery(deliveryId),
   });
 

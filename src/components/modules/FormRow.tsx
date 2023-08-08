@@ -9,6 +9,7 @@ import DatePicker from "../core/DatePicker";
 import DateRangePicker from "../core/DateRangePicker";
 import Button from "../core/Button";
 import Chip from "../core/Chip";
+import { cn } from "@/styles/utils";
 
 type RowInputProps = {
   type: "input";
@@ -105,6 +106,25 @@ type ChipProps = {
   color?: "error" | "primary" | "secondary" | "muted";
 };
 
+type LabelProps = {
+  type: "label";
+  options?: undefined;
+  control?: undefined;
+  formField?: undefined;
+  newModalTitle?: undefined;
+  onAdd?: undefined;
+  multiple?: undefined;
+  searchPlaceholder?: undefined;
+  minDate?: undefined;
+  maxDate?: undefined;
+  inputType?: undefined;
+  ButtonIcon?: undefined;
+  onButtonClick?: undefined;
+  onChange?: undefined;
+  label: string;
+  color?: undefined;
+};
+
 type FormOptionValue = string | boolean | number | string[] | undefined;
 
 const isMultipleValue = (value: FormOptionValue): value is string[] =>
@@ -129,6 +149,7 @@ type RowProps<T extends FieldValues> = {
   | DatePickerProps<T>
   | DateRangePickerProps<T>
   | ChipProps
+  | LabelProps
 );
 
 const FormRow = <T extends FieldValues>(
@@ -282,6 +303,9 @@ const FormRow = <T extends FieldValues>(
           color={color}
           {...props}
         />
+      )}
+      {type === "label" && (
+        <Typography className={cn("ml-2 mt-2", className)}>{label}</Typography>
       )}
       {error && (
         <Typography size="xs" className="ml-2 text-error">
