@@ -4,6 +4,10 @@ import Button from "@/core/Button";
 import Icons from "@/core/Icons";
 import Input from "@/core/Input";
 import Typography from "@/core/Typography";
+import { cn } from "@/styles/utils";
+import { OrderFullProduct } from "@/types/prisma";
+import { ErrorArrayField } from "@/types/reactHookForms";
+import { FC, KeyboardEvent, useCallback, useEffect } from "react";
 import {
   ArrayPath,
   Control,
@@ -12,9 +16,8 @@ import {
   useFieldArray,
 } from "react-hook-form";
 import { OrderFormType, Product } from "./OrderForm";
-import { FC, KeyboardEvent, useCallback, useEffect } from "react";
-import { cn } from "@/styles/utils";
-import { ErrorArrayField } from "@/types/reactHookForms";
+import ProductStatusDot from "./ProductStatusDot";
+import StatusLegend from "./StatusLegend";
 
 type OrderFormProductsProps = {
   control: Control<OrderFormType>;
@@ -23,6 +26,7 @@ type OrderFormProductsProps = {
   setFocus: UseFormSetFocus<OrderFormType>;
   errors?: ErrorArrayField<Product>;
   readOnly: boolean;
+  products?: OrderFullProduct[];
 };
 
 type InputAttribute = "productName" | "price";
@@ -35,6 +39,7 @@ const OrderFormProducts: FC<OrderFormProductsProps> = ({
   setFocus,
   errors,
   readOnly,
+  products,
 }) => {
   const { fields, append, remove } = useFieldArray({
     control,
@@ -95,6 +100,7 @@ const OrderFormProducts: FC<OrderFormProductsProps> = ({
 
   return (
     <div className="mt-6 flex w-full max-w-xl flex-col gap-2">
+      {products != null && <StatusLegend className="self-end" />}
       <div className="flex gap-4">
         <div
           className={cn("flex items-center", {
@@ -121,19 +127,30 @@ const OrderFormProducts: FC<OrderFormProductsProps> = ({
       </div>
       {fields.map((field, index) => (
         <div key={field.id} className="flex items-center gap-4">
-          <Input
-            variant="standard"
-            className={cn({
+          <div
+            className={cn("flex w-full items-center", {
               "w-[calc(75%-24px)]": fields.length > 1 && !readOnly,
               "w-3/4": fields.length <= 1 || readOnly,
-              "border-error": !!errors?.[index]?.productName,
             })}
-            placeholder="Producto"
-            autoComplete="off"
-            readOnly={readOnly}
-            onKeyDown={handleKeyDown}
-            {...register(`products.${index}.productName`, { required: true })}
-          />
+          >
+            {products && (
+              <ProductStatusDot
+                isDelivered={products[index].delivery?.delivered}
+                className="mr-2"
+              />
+            )}
+            <Input
+              variant="standard"
+              className={cn({
+                "border-error": !!errors?.[index]?.productName,
+              })}
+              placeholder="Producto"
+              autoComplete="off"
+              readOnly={readOnly}
+              onKeyDown={handleKeyDown}
+              {...register(`products.${index}.productName`, { required: true })}
+            />
+          </div>
           <Input
             variant="standard"
             className="w-1/4"

@@ -26,10 +26,12 @@ export type StoreFull = Store & {
   }[];
 };
 
+export type OrderFullProduct = OrderProduct & {
+  delivery: Delivery | null;
+};
+
 export type OrderFull = Order & {
-  products: (OrderProduct & {
-    delivery: Delivery | null;
-  })[];
+  products: OrderFullProduct[];
   orderNotes: OrderNote[];
   orderPayments: OrderPayment[];
   store: Store;

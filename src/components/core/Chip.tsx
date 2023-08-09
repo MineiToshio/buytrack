@@ -4,25 +4,28 @@ import { VariantProps, cva } from "class-variance-authority";
 import { FC, MouseEvent } from "react";
 import Icons from "./Icons";
 
-const chipVariants = cva("flex items-center rounded-3xl bg-gray-300 w-fit", {
-  variants: {
-    size: {
-      lg: "px-3 py-1",
-      md: "px-3 py-1",
-      sm: "px-2 py-1",
-      xs: "px-1 py-1",
+const chipVariants = cva(
+  "flex items-center rounded-3xl bg-gray-300 w-fit drop-shadow-md",
+  {
+    variants: {
+      size: {
+        lg: "px-3 py-1",
+        md: "px-3 py-1",
+        sm: "px-2 py-1",
+        xs: "px-1 py-1",
+      },
+      color: {
+        error: "bg-error",
+        primary: "bg-primary",
+        secondary: "bg-secondary",
+        muted: "bg-muted",
+      },
     },
-    color: {
-      error: "bg-error",
-      primary: "bg-primary",
-      secondary: "bg-secondary",
-      muted: "bg-muted",
+    defaultVariants: {
+      size: "md",
     },
   },
-  defaultVariants: {
-    size: "md",
-  },
-});
+);
 
 type ChipProps = VariantProps<typeof chipVariants> & {
   label: string;

@@ -29,3 +29,18 @@ export const orderStatusColor = Object.freeze({
   [OrderStatus.Partial_Delivered]: "secondary",
   [OrderStatus.Partial_In_Route]: "secondary",
 });
+
+export const deliveryStatusData = Object.freeze({
+  0: Object.freeze({
+    label: "Sin Entrega",
+    color: "muted",
+  }),
+  1: Object.freeze({
+    label: "Entregado",
+    color: "primary",
+  }),
+  2: Object.freeze({
+    label: "En Camino",
+    color: "secondary",
+  }),
+});

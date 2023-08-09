@@ -1,7 +1,9 @@
 "use client";
 
+import Chip from "@/components/core/Chip";
 import Icons from "@/components/core/Icons";
 import Typography from "@/components/core/Typography";
+import { orderStatusColor, orderStatusLabel } from "@/helpers/constants";
 import { formatDate } from "@/helpers/utils";
 import { cn } from "@/styles/utils";
 import { OrderFull } from "@/types/prisma";
@@ -14,8 +16,7 @@ import {
 import Link from "next/link";
 import { FC, Fragment } from "react";
 import OrderPaymentTable from "./OrderPaymentsTable";
-import Chip from "@/components/core/Chip";
-import { orderStatusColor, orderStatusLabel } from "@/helpers/constants";
+import ProductStatusDot from "./ProductStatusDot";
 
 type Props = {
   orders: OrderFull[];
@@ -211,6 +212,11 @@ const OrderTable: FC<Props> = ({ orders }) => {
                                   <tr key={r.id}>
                                     <td className="pr-5">
                                       <Typography>{i + 1}.</Typography>
+                                    </td>
+                                    <td className="pr-2">
+                                      <ProductStatusDot
+                                        isDelivered={r.delivery?.delivered}
+                                      />
                                     </td>
                                     <td className="pr-5">
                                       <Typography>{r.productName}</Typography>

@@ -6,6 +6,7 @@ import { getServerSession } from "next-auth";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import OrderTable from "./OrderTable";
+import StatusLegend from "./StatusLegend";
 
 const page = async () => {
   const session = await getServerSession(authOptions);
@@ -18,8 +19,9 @@ const page = async () => {
       <Heading size="sm" className="mb-5">
         Pedidos
       </Heading>
-      <div className="mb-5 flex w-full justify-end">
-        <Link href="/orders/new">
+      <div className="mb-5 flex w-full flex-col-reverse justify-between md:flex-row">
+        <StatusLegend />
+        <Link href="/orders/new" className="mb-4 self-end md:mb-0">
           <Button>Agregar Pedido</Button>
         </Link>
       </div>

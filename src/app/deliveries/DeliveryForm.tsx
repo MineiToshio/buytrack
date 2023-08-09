@@ -10,7 +10,9 @@ import {
   GET_CURRENCY,
   UPDATE_DELIVERY,
 } from "@/helpers/apiUrls";
+import { deliveryStatusData } from "@/helpers/constants";
 import { del, put } from "@/helpers/request";
+import { formatDate } from "@/helpers/utils";
 import useSelect, { formatOptions } from "@/hooks/useSelect";
 import ConfirmModal from "@/modules/ConfirmModal";
 import FormRow from "@/modules/FormRow";
@@ -23,23 +25,11 @@ import { useRouter } from "next/navigation";
 import { FC, useCallback, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import DeliveryProducts from "./DeliveryProducts";
-import { formatDate } from "@/helpers/utils";
 
 const DEFAULT_DELIVERY_DATE = {
   value: new Date(),
   error: false,
 };
-
-const DELIVERED_CHIP_DATA = Object.freeze({
-  1: Object.freeze({
-    label: "Entregado",
-    color: "primary",
-  }),
-  2: Object.freeze({
-    label: "En Camino",
-    color: "muted",
-  }),
-});
 
 export type DeliveryFormType = {
   storeId: string;
@@ -268,8 +258,8 @@ const DeliveryForm: FC<DeliveryFormProps> = ({
                     title="Estado"
                     Icon={Icons.Tag}
                     type="chip"
-                    label={DELIVERED_CHIP_DATA[isDelivered ? "1" : "2"].label}
-                    color={DELIVERED_CHIP_DATA[isDelivered ? "1" : "2"].color}
+                    label={deliveryStatusData[isDelivered ? "1" : "2"].label}
+                    color={deliveryStatusData[isDelivered ? "1" : "2"].color}
                   />
                   {isDelivered && (
                     <FormRow

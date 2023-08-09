@@ -1,5 +1,6 @@
 "use client";
 
+import ConfirmModal from "@/components/modules/ConfirmModal";
 import Button from "@/core/Button";
 import Icons from "@/core/Icons";
 import {
@@ -8,20 +9,19 @@ import {
   GET_STORE,
   UPDATE_ORDER,
 } from "@/helpers/apiUrls";
+import { orderStatusColor, orderStatusLabel } from "@/helpers/constants";
+import { put } from "@/helpers/request";
 import useSelect from "@/hooks/useSelect";
 import FormRow from "@/modules/FormRow";
 import { OrderFull } from "@/types/prisma";
 import { Currency, Order, OrderStatus } from "@prisma/client";
+import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import { FC, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import OrderFormProducts from "./OrderFormProducts";
 import OrderNotes from "./OrderNotes";
 import OrderPayments from "./OrderPayments";
-import { useRouter } from "next/navigation";
-import ConfirmModal from "@/components/modules/ConfirmModal";
-import { put } from "@/helpers/request";
-import { useMutation } from "@tanstack/react-query";
-import { orderStatusColor, orderStatusLabel } from "@/helpers/constants";
 
 export type Product = {
   productName: string;
@@ -248,6 +248,7 @@ const OrderForm: FC<OrderFormProps> = ({ isLoading, order, onSubmit }) => {
             setFocus={setFocus}
             errors={errors.products}
             readOnly={isReadOnly}
+            products={order?.products}
           />
           {status !== OrderStatus.Canceled && (
             <div className="flex gap-x-4">
