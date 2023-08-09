@@ -38,7 +38,7 @@ export const getOrdersByUser = async (userId: string) => {
     orderBy: { orderDate: "desc" },
     include: {
       products: {
-        orderBy: { productName: "desc" },
+        orderBy: { productName: "asc" },
         include: { delivery: true },
       },
       orderNotes: { orderBy: { createdDate: "desc" } },
@@ -56,7 +56,7 @@ export const getOrderById = async (id: string, userId: string) => {
     orderBy: { orderDate: "desc" },
     include: {
       products: {
-        orderBy: { productName: "desc" },
+        orderBy: { productName: "asc" },
         include: { delivery: true },
       },
       orderNotes: { orderBy: { createdDate: "desc" } },
