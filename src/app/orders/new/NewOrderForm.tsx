@@ -2,9 +2,9 @@
 
 import { CREATE_ORDER } from "@/helpers/apiUrls";
 import { post } from "@/helpers/request";
+import useRouter from "@/hooks/useRouter";
 import { Order } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
 import { FC, useState } from "react";
 import { SubmitHandler } from "react-hook-form";
 import OrderForm, { OrderFormType } from "../OrderForm";

@@ -3,9 +3,9 @@
 import { CREATE_STORE } from "@/helpers/apiUrls";
 import { post } from "@/helpers/request";
 import { generateId } from "@/helpers/utils";
+import useRouter from "@/hooks/useRouter";
 import { Store } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
 import { FC, useState } from "react";
 import { SubmitHandler } from "react-hook-form";
 import slugify from "slugify";
