@@ -136,6 +136,7 @@ const OrderFormProducts: FC<OrderFormProductsProps> = ({
             {products && (
               <ProductStatusDot
                 isDelivered={products[index].delivery?.delivered}
+                deliveryId={products[index].deliveryId}
                 className="mr-2"
               />
             )}

@@ -215,6 +215,7 @@ const OrderTable: FC<Props> = ({ orders }) => {
                                     </td>
                                     <td className="pr-2">
                                       <ProductStatusDot
+                                        deliveryId={r.deliveryId}
                                         isDelivered={r.delivery?.delivered}
                                       />
                                     </td>

@@ -2,7 +2,8 @@ import Typography from "@/components/core/Typography";
 import { deliveryStatusData } from "@/helpers/constants";
 import { cn } from "@/styles/utils";
 import { FC } from "react";
-import ProductStatusDot, { getStatusAttribute } from "./ProductStatusDot";
+import ProductStatusDot from "./ProductStatusDot";
+import { getStatusAttribute } from "./utils";
 
 type StatusProps = {
   isDelivered?: boolean;
