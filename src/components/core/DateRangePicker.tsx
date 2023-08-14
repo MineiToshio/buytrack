@@ -46,7 +46,7 @@ type DateRangePickerProps = {
   placeholder?: string;
   className?: string;
   onChange: (params: { min: Date; max: Date }) => void;
-} & ReactDatePickerProps &
+} & Omit<ReactDatePickerProps, "value"> &
   VariantProps<typeof dateRangePickerVariants>;
 
 const DateRangePicker: FC<DateRangePickerProps> = ({
