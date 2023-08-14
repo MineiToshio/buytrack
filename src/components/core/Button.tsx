@@ -1,7 +1,9 @@
+"use client";
+
 import { regularFont, secondaryFont } from "@/styles/fonts";
 import { cn } from "@/styles/utils";
 import { VariantProps, cva } from "class-variance-authority";
-import { ButtonHTMLAttributes, forwardRef } from "react";
+import { ButtonHTMLAttributes, MouseEvent, forwardRef } from "react";
 import Icons from "./Icons";
 
 export const buttonVariants = cva(
@@ -79,10 +81,18 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       isLoading,
       size,
       type,
+      onClick,
       ...props
     },
     ref,
   ) => {
+    const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
+      e.stopPropagation();
+      if (onClick) {
+        onClick(e);
+      }
+    };
+
     return (
       <button
         className={cn(
@@ -91,6 +101,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         disabled={isLoading}
         type={type ?? "button"}
+        onClick={handleClick}
         {...props}
       >
         {isLoading && (
