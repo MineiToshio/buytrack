@@ -7,36 +7,41 @@ import { VariantProps, cva } from "class-variance-authority";
 import { FC, useMemo, useRef, useState } from "react";
 import Typography from "./Typography";
 import Input from "./Input";
+import Icons from "./Icons";
+import Button from "./Button";
 
-const selectVariants = cva("relative w-full cursor-pointer rounded-md p-2", {
-  variants: {
-    variant: {
-      standard:
-        "border border-solid after:absolute after:right-2 after:top-2 after:text-gray-900 after:content-['⏷']",
-      ghost: "border border-solid border-transparent hover:bg-slate-100",
+const selectVariants = cva(
+  "relative w-full cursor-pointer rounded-md p-2 h-[45px]",
+  {
+    variants: {
+      variant: {
+        standard:
+          "border border-solid after:absolute after:right-2 after:top-2 after:text-gray-900 after:content-['⏷']",
+        ghost: "border border-solid border-transparent hover:bg-slate-100",
+      },
+      status: {
+        open: "shadow-md",
+        close: "",
+        readOnly: "",
+      },
     },
-    status: {
-      open: "shadow-md",
-      close: "",
-      readOnly: "",
+    compoundVariants: [
+      {
+        variant: "ghost",
+        status: "open",
+        class: "border-gray-200 hover:bg-white",
+      },
+      {
+        variant: "ghost",
+        status: "readOnly",
+        class: "shadow-none hover:bg-transparent cursor-default",
+      },
+    ],
+    defaultVariants: {
+      variant: "ghost",
     },
   },
-  compoundVariants: [
-    {
-      variant: "ghost",
-      status: "open",
-      class: "border-gray-200 hover:bg-white",
-    },
-    {
-      variant: "ghost",
-      status: "readOnly",
-      class: "shadow-none hover:bg-transparent cursor-default",
-    },
-  ],
-  defaultVariants: {
-    variant: "ghost",
-  },
-});
+);
 
 export type OptionValue = string | number | boolean;
 
@@ -48,12 +53,14 @@ export type Option = {
 type SingleOption = {
   multiple?: false;
   value: OptionValue | undefined;
-  onChange: (value: OptionValue) => void;
+  clearValue?: boolean;
+  onChange: (value: OptionValue | undefined) => void;
 };
 
 type MultipleOption = {
   multiple: true;
   value: OptionValue[] | undefined;
+  clearValue?: undefined;
   onChange: (value: OptionValue[]) => void;
 };
 
@@ -77,6 +84,7 @@ const Select: FC<SelectProps> = ({
   multiple,
   readOnly,
   allowSearch,
+  clearValue,
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [search, setSearch] = useState<string>("");
@@ -133,6 +141,12 @@ const Select: FC<SelectProps> = ({
     setTimeout(() => searchRef?.current?.focus(), 100);
   };
 
+  const handleClear = () => {
+    if (clearValue) {
+      onChange(undefined);
+    }
+  };
+
   return (
     <div
       className={cn(
@@ -171,7 +185,21 @@ const Select: FC<SelectProps> = ({
             ) : (
               <>
                 {(!(allowSearch && isOpen) || readOnly) && (
-                  <Typography>{selectedOption[0].label}</Typography>
+                  <div className="flex w-full justify-between pr-5">
+                    <Typography>{selectedOption[0].label}</Typography>
+                    {clearValue && (
+                      <div className="flex items-center">
+                        <Button
+                          variant="icon"
+                          color="muted"
+                          onClick={handleClear}
+                        >
+                          <Icons.CancelCircle size={20} />
+                        </Button>
+                        <div className="my-1 ml-1 w-[1px] self-stretch bg-muted" />
+                      </div>
+                    )}
+                  </div>
                 )}
               </>
             )}
