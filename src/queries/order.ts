@@ -142,6 +142,7 @@ export const updateOrderStatusToOpen = (tx: Transaction) =>
   tx.order.updateMany({
     data: {
       status: OrderStatus.Open,
+      deliveryDate: null,
     },
     where: {
       status: { notIn: ["Canceled", "Open"] },
@@ -154,6 +155,7 @@ export const updateOrderStatusToInRoute = (tx: Transaction) =>
   tx.order.updateMany({
     data: {
       status: OrderStatus.In_Route,
+      deliveryDate: null,
     },
     where: {
       status: { notIn: ["Canceled", "In_Route"] },
@@ -169,6 +171,7 @@ export const updateOrderStatusToDelivered = (tx: Transaction) =>
   tx.order.updateMany({
     data: {
       status: OrderStatus.Delivered,
+      deliveryDate: new Date(),
     },
     where: {
       status: { notIn: ["Canceled", "Delivered"] },
@@ -181,6 +184,7 @@ export const updateOrderStatusToPartialInRoute = (tx: Transaction) =>
   tx.order.updateMany({
     data: {
       status: OrderStatus.Partial_In_Route,
+      deliveryDate: null,
     },
     where: {
       status: { notIn: ["Canceled", "Partial_In_Route"] },
@@ -196,6 +200,7 @@ export const updateOrderStatusToPartialDelivered = (tx: Transaction) =>
   tx.order.updateMany({
     data: {
       status: OrderStatus.Partial_Delivered,
+      deliveryDate: null,
     },
     where: {
       status: { notIn: ["Canceled", "Partial_Delivered"] },
