@@ -6,6 +6,7 @@ import {
   OrderNote,
   OrderPayment,
   OrderProduct,
+  OrderStatus,
   PrismaClient,
   ProductType,
   ProductsCountry,
@@ -15,6 +16,9 @@ import {
   DefaultArgs,
   PrismaClientOptions,
 } from "@prisma/client/runtime/library";
+
+export const isOrderStatus = (value: string): value is OrderStatus =>
+  Object.keys(OrderStatus).includes(value);
 
 export type StoreFull = Store & {
   country: Country;

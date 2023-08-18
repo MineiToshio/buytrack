@@ -2,10 +2,11 @@ import { apiResponses } from "@/helpers/api";
 import { authOptions } from "@/helpers/auth";
 import {
   createOrder,
+  filterOrdersByUser,
   getOrderById,
-  getOrdersByUser,
   updateOrder,
 } from "@/queries/order";
+import { isOrderStatus } from "@/types/prisma";
 import { OrderStatus } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { NextRequest } from "next/server";
@@ -46,7 +47,7 @@ const reqPutSchema = z.object({
     .optional(),
 });
 
-export const GET = async () => {
+export const GET = async (req: NextRequest) => {
   try {
     const user = await getServerSession(authOptions).then((res) => res?.user);
 
@@ -54,7 +55,31 @@ export const GET = async () => {
       return apiResponses().unauthorized;
     }
 
-    const orders = await getOrdersByUser(user.id);
+    const { searchParams } = new URL(req.url);
+    const orderDate = searchParams.get("orderDate")?.split(",");
+    const storeId = searchParams.get("storeId") ?? undefined;
+    const status = searchParams.get("status")?.split(",");
+
+    const orderDateFilter = orderDate
+      ? {
+          min: new Date(orderDate[0]),
+          max: new Date(orderDate[1]),
+        }
+      : undefined;
+
+    const statusFilter = status?.reduce((acc: OrderStatus[], curr) => {
+      if (isOrderStatus(curr)) {
+        acc.push(curr);
+      }
+      return acc;
+    }, []);
+
+    const orders = await filterOrdersByUser(
+      user.id,
+      orderDateFilter,
+      storeId, 
+      statusFilter,
+    );
     return apiResponses(orders).success;
   } catch (error) {
     return apiResponses(error).error;

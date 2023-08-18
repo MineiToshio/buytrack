@@ -1,5 +1,6 @@
 import { db } from "@/helpers/db";
 import { Transaction } from "@/types/prisma";
+import { DateRange } from "@/types/types";
 import {
   Delivery,
   Order,
@@ -35,6 +36,39 @@ const computeOrder = <T extends OrderCompute>(order: T) => ({
 export const getOrdersByUser = async (userId: string) => {
   const orders = await db.order.findMany({
     where: { userId },
+    orderBy: { orderDate: "desc" },
+    include: {
+      products: {
+        orderBy: { productName: "asc" },
+        include: { delivery: true },
+      },
+      orderNotes: { orderBy: { createdDate: "desc" } },
+      orderPayments: { orderBy: { paymentDate: "desc" } },
+      store: true,
+      currency: true,
+    },
+  });
+  return orders.map((o) => computeOrder(o));
+};
+
+export const filterOrdersByUser = async (
+  userId: string,
+  orderDate?: DateRange,
+  storeId?: string,
+  status?: OrderStatus[],
+) => {
+  const orders = await db.order.findMany({
+    where: {
+      userId,
+      ...(orderDate && {
+        orderDate: {
+          gte: orderDate.min,
+          lte: orderDate.max,
+        },
+      }),
+      ...(storeId && { storeId }),
+      ...(status && { status: { in: status } }),
+    },
     orderBy: { orderDate: "desc" },
     include: {
       products: {
