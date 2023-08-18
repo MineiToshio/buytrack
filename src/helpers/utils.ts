@@ -51,3 +51,6 @@ export const formatTime = (date: Date | string) => {
 
 export const formatDatetime = (date: Date | string, lang: Locale = "es") =>
   `${formatDate(date, lang)} ${formatTime(date)}`;
+
+export const pushState = (params: string) =>
+  window.history.pushState({}, "", window.location.pathname + "?" + params);
