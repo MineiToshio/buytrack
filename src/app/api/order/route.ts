@@ -77,7 +77,7 @@ export const GET = async (req: NextRequest) => {
     const orders = await filterOrdersByUser(
       user.id,
       orderDateFilter,
-      storeId, 
+      storeId,
       statusFilter,
     );
     return apiResponses(orders).success;

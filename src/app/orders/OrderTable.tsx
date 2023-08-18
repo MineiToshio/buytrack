@@ -19,7 +19,8 @@ import OrderPaymentTable from "./OrderPaymentsTable";
 import ProductStatusDot from "./ProductStatusDot";
 
 type Props = {
-  orders: OrderFull[];
+  orders?: OrderFull[];
+  hasFilters: boolean;
 };
 
 const columnHelper = createColumnHelper<OrderFull>();
@@ -133,9 +134,9 @@ const columns = [
   }),
 ];
 
-const OrderTable: FC<Props> = ({ orders }) => {
+const OrderTable: FC<Props> = ({ orders, hasFilters }) => {
   const table = useReactTable({
-    data: orders,
+    data: orders ?? [],
     columns,
     getRowCanExpand: () => true,
     getCoreRowModel: getCoreRowModel(),
@@ -256,16 +257,22 @@ const OrderTable: FC<Props> = ({ orders }) => {
         </div>
       ) : (
         <div className="mt-4 text-center">
-          <Typography>
-            Aún no tienes órdenes. Puedes agregar una desde{" "}
-            <Link
-              href="/orders/new"
-              className="text-primary hover:text-green-600"
-            >
-              aquí
-            </Link>
-            .
-          </Typography>
+          {hasFilters ? (
+            <Typography>
+              No se encontraron resultados con los filtros seleccionados.
+            </Typography>
+          ) : (
+            <Typography>
+              Aún no tienes órdenes. Puedes agregar una desde{" "}
+              <Link
+                href="/orders/new"
+                className="text-primary hover:text-green-600"
+              >
+                aquí
+              </Link>
+              .
+            </Typography>
+          )}
         </div>
       )}
     </>

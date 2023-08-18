@@ -5,14 +5,18 @@ import Icons from "@/components/core/Icons";
 import { GET_ORDER } from "@/helpers/apiUrls";
 import { get } from "@/helpers/request";
 import { usePushStateListener } from "@/hooks/usePushStateListener";
-import { OrderFull } from "@/types/prisma";
+import { OrderFull, isOrderStatus } from "@/types/prisma";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
-import { FC, useState } from "react";
+import { FC, useMemo, useState } from "react";
 import OrderSearchBar from "./OrderSearchBar";
 import OrderTable from "./OrderTable";
 import StatusLegend from "./StatusLegend";
+import Typography from "@/components/core/Typography";
+import { formatDate } from "@/helpers/utils";
+import { cn } from "@/styles/utils";
+import { orderStatusLabel } from "@/helpers/constants";
 
 type FilterParams = {
   orderDate?: string;
@@ -25,7 +29,7 @@ type OrdersListProps = {
 };
 
 const getOrders = (params: FilterParams) => {
-  const searchParams: string[] = []
+  const searchParams: string[] = [];
   if (params.orderDate) {
     searchParams.push(`orderDate=${params.orderDate}`);
   }
@@ -38,9 +42,7 @@ const getOrders = (params: FilterParams) => {
   return get<OrderFull[]>(`${GET_ORDER}?${searchParams.join("&")}`);
 };
 
-const getFilterParams = (
-  params: URLSearchParams | ReadonlyURLSearchParams,
-) => {
+const getFilterParams = (params: URLSearchParams | ReadonlyURLSearchParams) => {
   const orderDate = params.get("orderDate") ?? undefined;
   const storeId = params.get("storeId") ?? undefined;
   const status = params.get("status") ?? undefined;
@@ -73,9 +75,46 @@ const OrdersList: FC<OrdersListProps> = ({ orders }) => {
     () => getOrders(filterParams),
   );
 
+  const filtersDescription = useMemo(() => {
+    const filters: string[] = [];
+    if (filterParams.orderDate) {
+      const dates = filterParams.orderDate.split(",");
+      filters.push(
+        `Fecha de Pedido: ${formatDate(dates[0])} - ${formatDate(dates[1])}`,
+      );
+    }
+    if (filterParams.storeId) {
+      const storeOrder = orders.find((s) => s.storeId === filterParams.storeId);
+      filters.push(`Tienda: ${storeOrder?.store.name}`);
+    }
+    if (filterParams.status) {
+      const status = filterParams.status.split(",");
+      const labelStatus = status.map((s) => {
+        if (isOrderStatus(s)) {
+          return orderStatusLabel[s];
+        }
+        return s;
+      });
+      filters.push(`Status: ${labelStatus.join(", ")}`);
+    }
+    return filters.join(" | ");
+  }, [
+    filterParams.orderDate,
+    filterParams.status,
+    filterParams.storeId,
+    orders,
+  ]);
+
   return (
     <>
-      <div className="mb-5 flex w-full flex-col-reverse justify-between md:flex-row">
+      <div
+        className={cn(
+          "flex w-full flex-col-reverse justify-between md:flex-row",
+          {
+            "mb-5": !filtersDescription,
+          },
+        )}
+      >
         <StatusLegend className="mr-2 justify-center md:justify-normal" />
         <div className="flex gap-2">
           <OrderSearchBar
@@ -91,12 +130,22 @@ const OrdersList: FC<OrdersListProps> = ({ orders }) => {
           </Link>
         </div>
       </div>
+      {filtersDescription && (
+        <div className="mb-5 mt-2 flex w-full justify-center md:justify-normal">
+          <Typography color="muted" size="sm">
+            {filtersDescription}
+          </Typography>
+        </div>
+      )}
       {isLoading ? (
         <div className="flex w-full justify-center">
           <Icons.Loader className="animate-spin text-muted" size={40} />
         </div>
       ) : (
-        <OrderTable orders={filteredOrders ?? []} />
+        <OrderTable
+          orders={filteredOrders}
+          hasFilters={filtersDescription.length > 0}
+        />
       )}
     </>
   );
