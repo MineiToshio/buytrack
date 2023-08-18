@@ -76,11 +76,18 @@ const OrdersList: FC<OrdersListProps> = ({ orders }) => {
   return (
     <>
       <div className="mb-5 flex w-full flex-col-reverse justify-between md:flex-row">
-        <OrderSearchBar orders={orders} isLoading={isLoading} />
-        <div className="flex">
-          <StatusLegend className="mr-2" />
-          <Link href="/orders/new" className="mb-4 self-end md:mb-0">
-            <Button>Agregar Pedido</Button>
+        <StatusLegend className="mr-2 justify-center md:justify-normal" />
+        <div className="flex gap-2">
+          <OrderSearchBar
+            orders={orders}
+            isLoading={isLoading}
+            className="w-1/2 md:w-fit"
+          />
+          <Link
+            href="/orders/new"
+            className="mb-4 w-1/2 self-end md:mb-0 md:w-fit"
+          >
+            <Button className="w-full md:w-fit">Agregar Pedido</Button>
           </Link>
         </div>
       </div>

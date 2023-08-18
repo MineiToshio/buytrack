@@ -19,6 +19,7 @@ import { Controller, UseFormSetValue, useForm } from "react-hook-form";
 type OrderSearchBarProps = {
   orders: OrderFull[];
   isLoading: boolean;
+  className?: string;
 };
 
 type SearchFormType = {
@@ -48,7 +49,11 @@ const setFilterValues = (
   status ? setValue("status", status) : setValue("status", undefined);
 };
 
-const OrderSearchBar: FC<OrderSearchBarProps> = ({ orders, isLoading }) => {
+const OrderSearchBar: FC<OrderSearchBarProps> = ({
+  orders,
+  isLoading,
+  className,
+}) => {
   const [showBar, setShowBar] = useState<boolean>(false);
   const params = useSearchParams();
 
@@ -185,8 +190,7 @@ const OrderSearchBar: FC<OrderSearchBarProps> = ({ orders, isLoading }) => {
               />
             </div>
           </div>
-          <Button type="submit">
-            <Icons.Search size={16} className="mr-2" />
+          <Button type="submit" StartIcon={Icons.Search}>
             Buscar
           </Button>
           <Button variant="outline" onClick={clear} className="mt-2">
@@ -194,8 +198,13 @@ const OrderSearchBar: FC<OrderSearchBarProps> = ({ orders, isLoading }) => {
           </Button>
         </form>
       </div>
-      <Button variant="outline" onClick={toggleBar} isLoading={isLoading}>
-        <Icons.Search size={16} className="mr-2" />
+      <Button
+        variant="outline"
+        onClick={toggleBar}
+        isLoading={isLoading}
+        className={className}
+        StartIcon={Icons.Search}
+      >
         Buscar
       </Button>
     </>

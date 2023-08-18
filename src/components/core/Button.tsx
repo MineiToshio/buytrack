@@ -5,6 +5,7 @@ import { cn } from "@/styles/utils";
 import { VariantProps, cva } from "class-variance-authority";
 import { ButtonHTMLAttributes, MouseEvent, forwardRef } from "react";
 import Icons from "./Icons";
+import { LucideIcon } from "lucide-react";
 
 export const buttonVariants = cva(
   "active:scale-95 inline-flex items-center justify-center rounded-md text-base font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none",
@@ -68,6 +69,7 @@ export const buttonVariants = cva(
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
   VariantProps<typeof buttonVariants> & {
     isLoading?: boolean;
+    StartIcon?: LucideIcon;
   };
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
@@ -82,6 +84,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       size,
       type,
       onClick,
+      StartIcon,
       ...props
     },
     ref,
@@ -104,12 +107,14 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         onClick={handleClick}
         {...props}
       >
-        {isLoading && (
+        {isLoading ? (
           <Icons.Loader
             className={cn("h-4 w-4 animate-spin", {
               "mr-2": variant !== "icon",
             })}
           />
+        ) : (
+          <>{StartIcon && <StartIcon size={16} className="mr-2" />}</>
         )}
         {(variant !== "icon" || (variant === "icon" && !isLoading)) && children}
       </button>
