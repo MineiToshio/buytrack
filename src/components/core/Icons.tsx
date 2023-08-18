@@ -24,6 +24,8 @@ import {
   Send,
   Truck,
   Tag,
+  Search,
+  XCircle,
 } from "lucide-react";
 
 export const Icons = {
@@ -52,6 +54,8 @@ export const Icons = {
   Send,
   Currier: Truck,
   Tag,
+  Search,
+  CancelCircle: XCircle,
 };
 
 export default Icons;

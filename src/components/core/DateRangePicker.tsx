@@ -7,6 +7,7 @@ import ReactDatePicker, {
 } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import es from "date-fns/locale/es";
+import { DateRange } from "@/types/types";
 
 registerLocale("es", es);
 
@@ -39,10 +40,7 @@ const dateRangePickerVariants = cva(
 );
 
 type DateRangePickerProps = {
-  value: null | {
-    min: Date;
-    max: Date;
-  };
+  value: DateRange;
   placeholder?: string;
   className?: string;
   onChange: (params: { min: Date; max: Date }) => void;
