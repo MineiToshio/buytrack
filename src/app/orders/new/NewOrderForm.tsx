@@ -35,11 +35,9 @@ const NewOrderForm: FC = () => {
 
   const { isLoading, mutate } = useMutation({
     mutationFn: (data: OrderFormType) => createOrder(data),
-    onSuccess: () => {
+    onSuccess: (newOrder) => {
       setIsPending(true);
-      router.push("/orders");
-      // This refresh is to force the await in /orders page
-      router.refresh();
+      router.push(`/orders/${newOrder?.id}`);
     },
   });
 

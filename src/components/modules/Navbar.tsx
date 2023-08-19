@@ -5,6 +5,7 @@ import { getServerSession } from "next-auth";
 import Link from "next/link";
 import GoogleAuthButton from "./GoogleAuthButton";
 import { authOptions } from "@/helpers/auth";
+import { OrderStatus } from "@prisma/client";
 
 const LINKS = [
   {
@@ -22,7 +23,7 @@ const LINKS = [
   {
     id: 3,
     text: "Pedidos",
-    href: "/orders",
+    href: `/orders?status=${OrderStatus.Open},${OrderStatus.In_Route},${OrderStatus.Partial_In_Route},${OrderStatus.Partial_Delivered}`,
     isPublic: false,
   },
   {
