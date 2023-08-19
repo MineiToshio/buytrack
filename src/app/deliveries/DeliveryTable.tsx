@@ -1,10 +1,12 @@
 "use client";
 
 import Button from "@/components/core/Button";
+import Chip from "@/components/core/Chip";
 import Icons from "@/components/core/Icons";
 import Typography from "@/components/core/Typography";
 import ConfirmModal from "@/components/modules/ConfirmModal";
 import { DELETE_DELIVERY } from "@/helpers/apiUrls";
+import { deliveryStatusData } from "@/helpers/constants";
 import { del } from "@/helpers/request";
 import { formatDate } from "@/helpers/utils";
 import { cn } from "@/styles/utils";
@@ -73,7 +75,6 @@ const DeliveryTable: FC<Props> = ({ deliveries }) => {
         (row) => ({ name: row.store.name, url: row.store.url }),
         {
           id: "store",
-          size: 70,
           cell: (info) => {
             const store = info.getValue();
             return <Link href={`/stores/${store.url}`}>{store.name}</Link>;
@@ -81,6 +82,22 @@ const DeliveryTable: FC<Props> = ({ deliveries }) => {
           header: () => <Typography>Tienda</Typography>,
         },
       ),
+      columnHelper.accessor((row) => row.delivered, {
+        id: "delivered",
+        size: 150,
+        cell: (info) => {
+          const delivered = info.getValue();
+          return (
+            <div className="flex w-full justify-center">
+              <Chip
+                label={deliveryStatusData[delivered ? "1" : "2"].label}
+                color={deliveryStatusData[delivered ? "1" : "2"].color}
+              />
+            </div>
+          );
+        },
+        header: () => <Typography>Estado</Typography>,
+      }),
       columnHelper.accessor(
         (row) => ({
           start: row.minApproximateDeliveryDate,
@@ -100,12 +117,12 @@ const DeliveryTable: FC<Props> = ({ deliveries }) => {
               return <Typography className="text-center">-</Typography>;
             }
           },
-          header: () => <Typography>Fecha aprox. de entrega</Typography>,
+          header: () => <Typography>Entrega aprox.</Typography>,
         },
       ),
       columnHelper.accessor((row) => row.currier, {
         id: "currier",
-        size: 70,
+        size: 100,
         cell: (info) => {
           const currier = info.getValue();
           return (
@@ -120,7 +137,7 @@ const DeliveryTable: FC<Props> = ({ deliveries }) => {
         (row) => ({ cost: row.price, currency: row.currency.name }),
         {
           id: "price",
-          size: 70,
+          size: 100,
           cell: (info) => {
             const price = info.getValue();
             return (
@@ -186,7 +203,7 @@ const DeliveryTable: FC<Props> = ({ deliveries }) => {
       />
       {currentDeliveries && currentDeliveries.length > 0 ? (
         <div className="w-full overflow-x-auto rounded-md bg-slate-50">
-          <table className="w-full table-fixed">
+          <table className="w-full">
             <thead>
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id} className="border-b">

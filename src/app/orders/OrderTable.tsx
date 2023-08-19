@@ -114,7 +114,7 @@ const columns = [
           return <Typography className="text-center">-</Typography>;
         }
       },
-      header: () => <Typography>Fecha aprox. de entrega</Typography>,
+      header: () => <Typography>Entrega aprox.</Typography>,
     },
   ),
   columnHelper.accessor((row) => row.id, {
