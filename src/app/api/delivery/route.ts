@@ -1,5 +1,6 @@
 import { apiResponses } from "@/helpers/api";
 import { authOptions } from "@/helpers/auth";
+import { deliveryStatus } from "@/helpers/constants";
 import {
   createDelivery,
   deleteDelivery,
@@ -64,7 +65,7 @@ export const GET = async (req: NextRequest) => {
     const deliveredFilter =
       deliveredArray?.length !== 1
         ? undefined
-        : deliveredArray.includes("2")
+        : deliveredArray.includes(deliveryStatus.inRoute)
         ? false
         : true;
 

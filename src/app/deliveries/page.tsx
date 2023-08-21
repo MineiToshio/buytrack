@@ -7,6 +7,7 @@ import { getServerSession } from "next-auth";
 import { notFound } from "next/navigation";
 import DeliveriesList from "./DeliveriesList";
 import { isDeliveryStatus } from "@/types/prisma";
+import { deliveryStatus } from "@/helpers/constants";
 
 type SearchParams = {
   approximateDeliveryDate?: string;
@@ -35,7 +36,7 @@ const getFilterData = (searchParams: SearchParams) => {
   const deliveredFilter =
     deliveredArray?.length !== 1
       ? undefined
-      : deliveredArray.includes("2")
+      : deliveredArray.includes(deliveryStatus.delivered)
       ? false
       : true;
 

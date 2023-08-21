@@ -10,7 +10,7 @@ import {
   GET_CURRENCY,
   UPDATE_DELIVERY,
 } from "@/helpers/apiUrls";
-import { deliveryStatusData } from "@/helpers/constants";
+import { deliveryStatus, deliveryStatusData } from "@/helpers/constants";
 import { del, put } from "@/helpers/request";
 import { formatDate } from "@/helpers/utils";
 import useRouter from "@/hooks/useRouter";
@@ -258,8 +258,20 @@ const DeliveryForm: FC<DeliveryFormProps> = ({
                     title="Estado"
                     Icon={Icons.Tag}
                     type="chip"
-                    label={deliveryStatusData[isDelivered ? "1" : "2"].label}
-                    color={deliveryStatusData[isDelivered ? "1" : "2"].color}
+                    label={
+                      deliveryStatusData[
+                        isDelivered
+                          ? deliveryStatus.delivered
+                          : deliveryStatus.inRoute
+                      ].label
+                    }
+                    color={
+                      deliveryStatusData[
+                        isDelivered
+                          ? deliveryStatus.delivered
+                          : deliveryStatus.inRoute
+                      ].color
+                    }
                   />
                   {isDelivered && (
                     <FormRow

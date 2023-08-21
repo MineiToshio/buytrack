@@ -6,7 +6,7 @@ import Icons from "@/components/core/Icons";
 import Typography from "@/components/core/Typography";
 import ConfirmModal from "@/components/modules/ConfirmModal";
 import { DELETE_DELIVERY } from "@/helpers/apiUrls";
-import { deliveryStatusData } from "@/helpers/constants";
+import { deliveryStatus, deliveryStatusData } from "@/helpers/constants";
 import { del } from "@/helpers/request";
 import { formatDate } from "@/helpers/utils";
 import { cn } from "@/styles/utils";
@@ -98,8 +98,20 @@ const DeliveryTable: FC<Props> = ({ deliveries, onChange, hasFilters }) => {
           return (
             <div className="flex w-full">
               <Chip
-                label={deliveryStatusData[delivered ? "1" : "2"].label}
-                color={deliveryStatusData[delivered ? "1" : "2"].color}
+                label={
+                  deliveryStatusData[
+                    delivered
+                      ? deliveryStatus.delivered
+                      : deliveryStatus.inRoute
+                  ].label
+                }
+                color={
+                  deliveryStatusData[
+                    delivered
+                      ? deliveryStatus.delivered
+                      : deliveryStatus.inRoute
+                  ].color
+                }
               />
             </div>
           );
