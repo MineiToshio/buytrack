@@ -6,6 +6,7 @@ import Link from "next/link";
 import GoogleAuthButton from "./GoogleAuthButton";
 import { authOptions } from "@/helpers/auth";
 import { OrderStatus } from "@prisma/client";
+import { deliveryStatus } from "@/helpers/constants";
 
 const LINKS = [
   {
@@ -29,7 +30,7 @@ const LINKS = [
   {
     id: 4,
     text: "Entregas",
-    href: "/deliveries",
+    href: `/deliveries?status=${deliveryStatus.inRoute}`,
     isPublic: false,
   },
 ];
