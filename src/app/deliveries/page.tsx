@@ -36,7 +36,7 @@ const getFilterData = (searchParams: SearchParams) => {
   const deliveredFilter =
     deliveredArray?.length !== 1
       ? undefined
-      : deliveredArray.includes(deliveryStatus.delivered)
+      : deliveredArray.includes(deliveryStatus.inRoute)
       ? false
       : true;
 
