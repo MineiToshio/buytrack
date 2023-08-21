@@ -48,13 +48,11 @@ const columns = [
     size: 150,
     cell: (info) => {
       const date = info.getValue();
-      return (
-        <Typography className="text-center">
-          {date != null ? formatDate(date) : "-"}
-        </Typography>
-      );
+      return <Typography>{date != null ? formatDate(date) : "-"}</Typography>;
     },
-    header: () => <Typography>Fecha de Pedido</Typography>,
+    header: () => (
+      <Typography className="text-left">Fecha de Pedido</Typography>
+    ),
   }),
   columnHelper.accessor(
     (row) => ({ name: row.store.name, url: row.store.url }),
@@ -64,7 +62,7 @@ const columns = [
         const store = info.getValue();
         return <Link href={`/stores/${store.url}`}>{store.name}</Link>;
       },
-      header: () => <Typography>Tienda</Typography>,
+      header: () => <Typography className="text-left">Tienda</Typography>,
     },
   ),
   columnHelper.accessor((row) => row.status, {
@@ -79,7 +77,7 @@ const columns = [
         />
       );
     },
-    header: () => <Typography>Estado</Typography>,
+    header: () => <Typography className="text-left">Estado</Typography>,
   }),
   columnHelper.accessor(
     (row) => ({ cost: row.productsCost, currency: row.currency.name }),
@@ -89,10 +87,10 @@ const columns = [
       cell: (info) => {
         const price = info.getValue();
         return (
-          <Typography className="text-center">{`${price.currency} ${price.cost}`}</Typography>
+          <Typography className="text-left">{`${price.currency} ${price.cost}`}</Typography>
         );
       },
-      header: () => <Typography>Precio</Typography>,
+      header: () => <Typography className="text-left">Precio</Typography>,
     },
   ),
   columnHelper.accessor(
@@ -106,15 +104,17 @@ const columns = [
         const date = info.getValue();
         if (date.start && date.end)
           return (
-            <Typography className="text-center">{`${formatDate(
-              date.start,
-            )} - ${formatDate(date.end)}`}</Typography>
+            <Typography>{`${formatDate(date.start)} - ${formatDate(
+              date.end,
+            )}`}</Typography>
           );
         else {
-          return <Typography className="text-center">-</Typography>;
+          return <Typography>-</Typography>;
         }
       },
-      header: () => <Typography>Entrega aprox.</Typography>,
+      header: () => (
+        <Typography className="text-left">Entrega aprox.</Typography>
+      ),
     },
   ),
   columnHelper.accessor((row) => row.id, {

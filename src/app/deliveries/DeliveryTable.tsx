@@ -87,7 +87,7 @@ const DeliveryTable: FC<Props> = ({ deliveries, onChange, hasFilters }) => {
             const store = info.getValue();
             return <Link href={`/stores/${store.url}`}>{store.name}</Link>;
           },
-          header: () => <Typography>Tienda</Typography>,
+          header: () => <Typography className="text-left">Tienda</Typography>,
         },
       ),
       columnHelper.accessor((row) => row.delivered, {
@@ -96,7 +96,7 @@ const DeliveryTable: FC<Props> = ({ deliveries, onChange, hasFilters }) => {
         cell: (info) => {
           const delivered = info.getValue();
           return (
-            <div className="flex w-full justify-center">
+            <div className="flex w-full">
               <Chip
                 label={deliveryStatusData[delivered ? "1" : "2"].label}
                 color={deliveryStatusData[delivered ? "1" : "2"].color}
@@ -104,7 +104,7 @@ const DeliveryTable: FC<Props> = ({ deliveries, onChange, hasFilters }) => {
             </div>
           );
         },
-        header: () => <Typography>Estado</Typography>,
+        header: () => <Typography className="text-left">Estado</Typography>,
       }),
       columnHelper.accessor(
         (row) => ({
@@ -117,15 +117,17 @@ const DeliveryTable: FC<Props> = ({ deliveries, onChange, hasFilters }) => {
             const date = info.getValue();
             if (date.start && date.end)
               return (
-                <Typography className="text-center">{`${formatDate(
-                  date.start,
-                )} - ${formatDate(date.end)}`}</Typography>
+                <Typography>{`${formatDate(date.start)} - ${formatDate(
+                  date.end,
+                )}`}</Typography>
               );
             else {
-              return <Typography className="text-center">-</Typography>;
+              return <Typography>-</Typography>;
             }
           },
-          header: () => <Typography>Entrega aprox.</Typography>,
+          header: () => (
+            <Typography className="text-left">Entrega aprox.</Typography>
+          ),
         },
       ),
       columnHelper.accessor((row) => row.currier, {
@@ -134,12 +136,12 @@ const DeliveryTable: FC<Props> = ({ deliveries, onChange, hasFilters }) => {
         cell: (info) => {
           const currier = info.getValue();
           return (
-            <Typography className="text-center">
+            <Typography>
               {currier != null && currier.length > 0 ? currier : "-"}
             </Typography>
           );
         },
-        header: () => <Typography>Currier</Typography>,
+        header: () => <Typography className="text-left">Currier</Typography>,
       }),
       columnHelper.accessor(
         (row) => ({ cost: row.price, currency: row.currency.name }),
@@ -148,11 +150,9 @@ const DeliveryTable: FC<Props> = ({ deliveries, onChange, hasFilters }) => {
           size: 100,
           cell: (info) => {
             const price = info.getValue();
-            return (
-              <Typography className="text-center">{`${price.currency} ${price.cost}`}</Typography>
-            );
+            return <Typography>{`${price.currency} ${price.cost}`}</Typography>;
           },
-          header: () => <Typography>Precio</Typography>,
+          header: () => <Typography className="text-left">Precio</Typography>,
         },
       ),
       columnHelper.accessor((row) => row.id, {
@@ -161,7 +161,7 @@ const DeliveryTable: FC<Props> = ({ deliveries, onChange, hasFilters }) => {
         cell: (info) => {
           const deliveryId = info.getValue();
           return (
-            <div className="flex w-full justify-center">
+            <div className="flex w-full">
               <Link
                 href={`/deliveries/${deliveryId}`}
                 className="hover:text-gray-500"
