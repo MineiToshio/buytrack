@@ -1,3 +1,4 @@
+import { deliveryStatus } from "@/helpers/constants";
 import {
   Country,
   Currency,
@@ -65,4 +66,4 @@ export const isOrderStatus = (value: string): value is OrderStatus =>
   Object.keys(OrderStatus).includes(value);
 
 export const isDeliveryStatus = (value: string): value is DeliveryStatus =>
-  value === "1" || value === "2";
+  value === deliveryStatus.inRoute || value === deliveryStatus.delivered;
