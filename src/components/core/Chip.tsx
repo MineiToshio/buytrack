@@ -17,7 +17,9 @@ const chipVariants = cva(
       color: {
         error: "bg-error",
         primary: "bg-primary",
+        "primary-alt": "bg-primary-alt",
         secondary: "bg-secondary",
+        "secondary-alt": "bg-secondary-alt",
         muted: "bg-muted",
       },
     },

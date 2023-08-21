@@ -4,8 +4,8 @@ const colors = {
     DEFAULT: "#22c55e",
   },
   "primary-alt": {
-    light: "#22C55F",
-    DEFAULT: "#22C55F",
+    light: "#6EDF98",
+    DEFAULT: "#6EDF98",
   },
   secondary: {
     light: "#06759F",

@@ -26,8 +26,8 @@ export const orderStatusColor = Object.freeze({
   [OrderStatus.Delivered]: "primary",
   [OrderStatus.In_Route]: "secondary",
   [OrderStatus.Open]: "muted",
-  [OrderStatus.Partial_Delivered]: "secondary",
-  [OrderStatus.Partial_In_Route]: "secondary",
+  [OrderStatus.Partial_Delivered]: "primary-alt",
+  [OrderStatus.Partial_In_Route]: "secondary-alt",
 });
 
 export const deliveryStatus = {
