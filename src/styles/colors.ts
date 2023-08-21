@@ -3,17 +3,25 @@ const colors = {
     light: "#22c55e",
     DEFAULT: "#22c55e",
   },
+  "primary-alt": {
+    light: "#22C55F",
+    DEFAULT: "#22C55F",
+  },
   secondary: {
-    light: "#1e3a8a",
-    DEFAULT: "#1e3a8a",
+    light: "#06759F",
+    DEFAULT: "#06759F",
+  },
+  "secondary-alt": {
+    light: "#449DBF",
+    DEFAULT: "#449DBF",
   },
   muted: {
     light: "#a1a1aa",
     DEFAULT: "#a1a1aa",
   },
   error: {
-    light: "#ef4444",
-    DEFAULT: "#ef4444",
+    light: "#FD2C00",
+    DEFAULT: "#FD2C00",
   },
 };
 
