@@ -358,7 +358,7 @@ const DeliveryForm: FC<DeliveryFormProps> = ({
               </Typography>
               <div
                 className={cn(
-                  "flex h-full w-full flex-col overflow-y-auto rounded-md border p-2",
+                  "flex h-full max-h-72 w-full flex-col overflow-y-auto rounded-md border p-2",
                   { "border-error": !!errors.products },
                 )}
               >
