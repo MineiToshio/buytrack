@@ -3,10 +3,12 @@ import { authOptions } from "@/helpers/auth";
 import {
   createDelivery,
   deleteDelivery,
+  filterDeliveries,
   getDeliveries,
   getDeliveryById,
   updateDelivery,
 } from "@/queries/delivery";
+import { isDeliveryStatus } from "@/types/prisma";
 import { getServerSession } from "next-auth";
 import { NextRequest } from "next/server";
 import { z } from "zod";
@@ -35,7 +37,7 @@ const reqPutSchema = z.object({
   deliveryDate: z.string().pipe(z.coerce.date()).optional(),
 });
 
-export const GET = async () => {
+export const GET = async (req: NextRequest) => {
   try {
     const user = await getServerSession(authOptions).then((res) => res?.user);
 
@@ -43,7 +45,35 @@ export const GET = async () => {
       return apiResponses().unauthorized;
     }
 
-    const deliveries = await getDeliveries(user.id);
+    const { searchParams } = new URL(req.url);
+    const approximateDeliveryDate = searchParams
+      .get("approximateDeliveryDate")
+      ?.split(",");
+    const storeId = searchParams.get("storeId") ?? undefined;
+    const status = searchParams.get("status")?.split(",");
+
+    const approximateDeliveryDateFilter = approximateDeliveryDate
+      ? {
+          min: new Date(approximateDeliveryDate[0]),
+          max: new Date(approximateDeliveryDate[1]),
+        }
+      : undefined;
+
+    const deliveredArray = status?.filter((s) => isDeliveryStatus(s));
+
+    const deliveredFilter =
+      deliveredArray?.length !== 1
+        ? undefined
+        : deliveredArray.includes("2")
+        ? false
+        : true;
+
+    const deliveries = await filterDeliveries(
+      user.id,
+      approximateDeliveryDateFilter,
+      storeId,
+      deliveredFilter,
+    );
     return apiResponses(deliveries).success;
   } catch (error) {
     return apiResponses(error).error;

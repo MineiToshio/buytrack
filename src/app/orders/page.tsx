@@ -14,6 +14,7 @@ type SearchParams = {
   storeId?: string;
   status?: string;
 };
+
 type Props = {
   searchParams: SearchParams;
 };

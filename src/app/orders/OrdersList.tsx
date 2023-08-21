@@ -95,7 +95,7 @@ const OrdersList: FC<OrdersListProps> = ({ orders }) => {
         }
         return s;
       });
-      filters.push(`Status: ${labelStatus.join(", ")}`);
+      filters.push(`Estado: ${labelStatus.join(", ")}`);
     }
     return filters.join(" | ");
   }, [

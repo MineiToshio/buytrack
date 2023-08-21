@@ -7,6 +7,7 @@ import {
   updateOrderStatusToPartialDelivered,
   updateOrderStatusToPartialInRoute,
 } from "./order";
+import { DateRange } from "@/types/types";
 
 type DeliveryCreate =
   | (Prisma.Without<
@@ -23,6 +24,34 @@ type DeliveryCreate =
 export const getDeliveries = (userId: string) =>
   db.delivery.findMany({
     where: { orderProducts: { some: { order: { userId } } } },
+    include: {
+      orderProducts: true,
+      currency: true,
+      store: true,
+    },
+    orderBy: {
+      minApproximateDeliveryDate: "asc",
+    },
+  });
+
+export const filterDeliveries = (
+  userId: string,
+  approximateDeliveryDate?: DateRange,
+  storeId?: string,
+  delivered?: boolean,
+) =>
+  db.delivery.findMany({
+    where: {
+      orderProducts: { some: { order: { userId } } },
+      ...(approximateDeliveryDate && {
+        minApproximateDeliveryDate: {
+          gte: approximateDeliveryDate.min,
+          lte: approximateDeliveryDate.max,
+        },
+      }),
+      ...(storeId && { storeId }),
+      ...(delivered != null && { delivered }),
+    },
     include: {
       orderProducts: true,
       currency: true,

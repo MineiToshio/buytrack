@@ -1,15 +1,74 @@
 import Heading from "@/core/Heading";
-import Button from "@/core/Button";
-import Link from "next/link";
-import { getServerSession } from "next-auth";
 import { authOptions } from "@/helpers/auth";
+import { getQueryClient } from "@/helpers/reactQuery";
+import { filterDeliveries, getDeliveries } from "@/queries/delivery";
+import { Hydrate, dehydrate } from "@tanstack/react-query";
+import { getServerSession } from "next-auth";
 import { notFound } from "next/navigation";
-import { getDeliveries } from "@/queries/delivery";
-import DeliveryTable from "./DeliveryTable";
+import DeliveriesList from "./DeliveriesList";
+import { isDeliveryStatus } from "@/types/prisma";
 
-const page = async () => {
+type SearchParams = {
+  approximateDeliveryDate?: string;
+  storeId?: string;
+  status?: string;
+};
+
+type Props = {
+  searchParams: SearchParams;
+};
+
+const getFilterData = (searchParams: SearchParams) => {
+  const approximateDeliveryDate =
+    searchParams.approximateDeliveryDate?.split(",");
+  const status = searchParams.status?.split(",");
+
+  const approximateDeliveryDateFilter = approximateDeliveryDate
+    ? {
+        min: new Date(approximateDeliveryDate[0]),
+        max: new Date(approximateDeliveryDate[1]),
+      }
+    : undefined;
+
+  const deliveredArray = status?.filter((s) => isDeliveryStatus(s));
+
+  const deliveredFilter =
+    deliveredArray?.length !== 1
+      ? undefined
+      : deliveredArray.includes("2")
+      ? false
+      : true;
+
+  return {
+    approximateDeliveryDate: approximateDeliveryDateFilter,
+    status: deliveredFilter,
+    storeId: searchParams.storeId,
+  };
+};
+
+const page = async ({ searchParams }: Props) => {
   const session = await getServerSession(authOptions);
   if (!session) return notFound();
+
+  const filterData = getFilterData(searchParams);
+
+  const queryClient = getQueryClient();
+  await queryClient.prefetchQuery(
+    [
+      "deliveries",
+      searchParams.approximateDeliveryDate,
+      searchParams.status,
+      searchParams.storeId,
+    ],
+    () =>
+      filterDeliveries(
+        session.user.id,
+        filterData.approximateDeliveryDate,
+        filterData.storeId,
+        filterData.status,
+      ),
+  );
+  const dehydratedState = dehydrate(queryClient);
 
   const deliveries = await getDeliveries(session.user.id);
 
@@ -18,12 +77,9 @@ const page = async () => {
       <Heading size="sm" className="mb-5">
         Entregas
       </Heading>
-      <div className="mb-5 flex w-full justify-end">
-        <Link href="/deliveries/new">
-          <Button>Nueva Entrega</Button>
-        </Link>
-      </div>
-      <DeliveryTable deliveries={deliveries} />
+      <Hydrate state={dehydratedState}>
+        <DeliveriesList deliveries={deliveries} />
+      </Hydrate>
     </div>
   );
 };

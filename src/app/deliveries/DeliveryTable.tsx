@@ -19,10 +19,20 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import Link from "next/link";
-import { FC, Fragment, useCallback, useMemo, useState } from "react";
+import {
+  type Dispatch,
+  FC,
+  Fragment,
+  type SetStateAction,
+  useCallback,
+  useMemo,
+  useState,
+} from "react";
 
 type Props = {
-  deliveries: DeliveryFull[];
+  deliveries?: DeliveryFull[];
+  onChange: Dispatch<SetStateAction<DeliveryFull[] | undefined>>;
+  hasFilters: boolean;
 };
 
 const deleteDelivery = (deliveryId: string) =>
@@ -30,9 +40,7 @@ const deleteDelivery = (deliveryId: string) =>
 
 const columnHelper = createColumnHelper<DeliveryFull>();
 
-const DeliveryTable: FC<Props> = ({ deliveries }) => {
-  const [currentDeliveries, setCurrentDeliveries] =
-    useState<DeliveryFull[]>(deliveries);
+const DeliveryTable: FC<Props> = ({ deliveries, onChange, hasFilters }) => {
   const [isDeleteMessageShowing, setIsDeleteMessageShowing] =
     useState<boolean>(false);
   const [deleteDeliveryId, setDeleteDeliveryId] = useState<string | null>(null);
@@ -177,7 +185,7 @@ const DeliveryTable: FC<Props> = ({ deliveries }) => {
   );
 
   const table = useReactTable({
-    data: currentDeliveries,
+    data: deliveries ?? [],
     columns,
     getRowCanExpand: () => true,
     getCoreRowModel: getCoreRowModel(),
@@ -187,8 +195,8 @@ const DeliveryTable: FC<Props> = ({ deliveries }) => {
     if (deleteDeliveryId) {
       toggleDeleteMessage();
       mutate(deleteDeliveryId);
-      setCurrentDeliveries((delivery) =>
-        delivery.filter((d) => d.id !== deleteDeliveryId),
+      onChange((delivery) =>
+        delivery?.filter((d) => d.id !== deleteDeliveryId),
       );
     }
   };
@@ -201,7 +209,7 @@ const DeliveryTable: FC<Props> = ({ deliveries }) => {
         onCancel={toggleDeleteMessage}
         onConfirm={confirmDelete}
       />
-      {currentDeliveries && currentDeliveries.length > 0 ? (
+      {deliveries && deliveries.length > 0 ? (
         <div className="w-full overflow-x-auto rounded-md bg-slate-50">
           <table className="w-full">
             <thead>
@@ -297,16 +305,22 @@ const DeliveryTable: FC<Props> = ({ deliveries }) => {
         </div>
       ) : (
         <div className="mt-4 text-center">
-          <Typography>
-            Aún no tienes entregas programadas. Puedes agregar una desde{" "}
-            <Link
-              href="/deliveries/new"
-              className="text-primary hover:text-green-600"
-            >
-              aquí
-            </Link>
-            .
-          </Typography>
+          {hasFilters ? (
+            <Typography>
+              No se encontraron resultados con los filtros seleccionados.
+            </Typography>
+          ) : (
+            <Typography>
+              Aún no tienes entregas programadas. Puedes agregar una desde{" "}
+              <Link
+                href="/deliveries/new"
+                className="text-primary hover:text-green-600"
+              >
+                aquí
+              </Link>
+              .
+            </Typography>
+          )}
         </div>
       )}
     </>

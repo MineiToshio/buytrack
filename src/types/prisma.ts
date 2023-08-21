@@ -17,9 +17,6 @@ import {
   PrismaClientOptions,
 } from "@prisma/client/runtime/library";
 
-export const isOrderStatus = (value: string): value is OrderStatus =>
-  Object.keys(OrderStatus).includes(value);
-
 export type StoreFull = Store & {
   country: Country;
   productTypes?: {
@@ -57,7 +54,15 @@ export type DeliveryFull = Delivery & {
   store: Store;
 };
 
+export type DeliveryStatus = "1" | "2";
+
 export type Transaction = Omit<
   PrismaClient<PrismaClientOptions, never, DefaultArgs>,
   "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
 >;
+
+export const isOrderStatus = (value: string): value is OrderStatus =>
+  Object.keys(OrderStatus).includes(value);
+
+export const isDeliveryStatus = (value: string): value is DeliveryStatus =>
+  value === "1" || value === "2";
