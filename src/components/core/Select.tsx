@@ -99,7 +99,9 @@ const Select: FC<SelectProps> = ({
 
   const filteredOptions = useMemo(() => {
     if (search.trim() === "") return options;
-    return options?.filter((o) => o.label.includes(search.trim()));
+    return options?.filter((o) =>
+      o.label.toLowerCase().includes(search.toLowerCase().trim()),
+    );
   }, [options, search]);
 
   const selectedOption = useMemo(() => {
