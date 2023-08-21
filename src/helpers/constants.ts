@@ -46,7 +46,7 @@ export const deliveryStatusData = Object.freeze({
     color: "primary",
   }),
   [deliveryStatus.inRoute]: Object.freeze({
-    label: "En Camino",
+    label: "En Ruta",
     color: "secondary",
   }),
 });
