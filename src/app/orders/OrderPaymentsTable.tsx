@@ -65,11 +65,10 @@ const OrderPaymentTable: FC<OrderPaymentTableProps> = ({
           <tbody>
             {orderedPayments.map((p, i) => (
               <tr key={p.id}>
-                <td className="pr-5 text-left">
-                  <Typography>{i + 1}.</Typography>
-                </td>
                 <td className="pr-5 text-center">
-                  <Typography>{formatDate(p.paymentDate)}</Typography>
+                  <Typography className="text-right">
+                    {formatDate(p.paymentDate)}
+                  </Typography>
                 </td>
                 <td>
                   <Typography>{`${currency} ${p.amount}`}</Typography>
@@ -91,7 +90,7 @@ const OrderPaymentTable: FC<OrderPaymentTableProps> = ({
           </tbody>
           <tfoot>
             <tr className="border-t">
-              <td colSpan={2} className="pr-5 text-right">
+              <td className="pr-5 text-right">
                 <Typography>Pago Total</Typography>
               </td>
               <td colSpan={2} className="text-left">
@@ -99,7 +98,7 @@ const OrderPaymentTable: FC<OrderPaymentTableProps> = ({
               </td>
             </tr>
             <tr>
-              <td colSpan={2} className="pr-5 text-right">
+              <td className="pr-5 text-right">
                 <Typography>Monto Restante</Typography>
               </td>
               <td colSpan={2} className="text-left">

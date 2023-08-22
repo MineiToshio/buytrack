@@ -60,7 +60,7 @@ const DeliveryTable: FC<Props> = ({ deliveries, onChange, hasFilters }) => {
     () => [
       columnHelper.accessor((row) => row, {
         id: "expander",
-        size: 24,
+        size: 40,
         header: () => null,
         cell: ({ row }) => (
           <div className="flex w-full justify-start">
@@ -71,9 +71,9 @@ const DeliveryTable: FC<Props> = ({ deliveries, onChange, hasFilters }) => {
               }}
             >
               {row.getIsExpanded() ? (
-                <Icons.ChevronDown />
+                <Icons.ChevronDown className="text-letters" />
               ) : (
-                <Icons.ChevronRight />
+                <Icons.ChevronRight className="text-letters" />
               )}
             </button>
           </div>
@@ -85,19 +85,24 @@ const DeliveryTable: FC<Props> = ({ deliveries, onChange, hasFilters }) => {
           id: "store",
           cell: (info) => {
             const store = info.getValue();
-            return <Link href={`/stores/${store.url}`}>{store.name}</Link>;
+            return (
+              <Link href={`/stores/${store.url}`}>
+                <Typography>{store.name}</Typography>
+              </Link>
+            );
           },
-          header: () => <Typography className="text-left">Tienda</Typography>,
+          header: () => <Typography className="text-left">TIENDA</Typography>,
         },
       ),
       columnHelper.accessor((row) => row.delivered, {
         id: "delivered",
-        size: 150,
         cell: (info) => {
           const delivered = info.getValue();
           return (
             <div className="flex w-full">
               <Chip
+                variant="outlined"
+                className="w-28 justify-center"
                 label={
                   deliveryStatusData[
                     delivered
@@ -116,7 +121,7 @@ const DeliveryTable: FC<Props> = ({ deliveries, onChange, hasFilters }) => {
             </div>
           );
         },
-        header: () => <Typography className="text-left">Estado</Typography>,
+        header: () => <Typography className="text-left">ESTADO</Typography>,
       }),
       columnHelper.accessor(
         (row) => ({
@@ -138,13 +143,12 @@ const DeliveryTable: FC<Props> = ({ deliveries, onChange, hasFilters }) => {
             }
           },
           header: () => (
-            <Typography className="text-left">Entrega aprox.</Typography>
+            <Typography className="text-left">ENTREGA APROX.</Typography>
           ),
         },
       ),
       columnHelper.accessor((row) => row.currier, {
         id: "currier",
-        size: 100,
         cell: (info) => {
           const currier = info.getValue();
           return (
@@ -153,36 +157,35 @@ const DeliveryTable: FC<Props> = ({ deliveries, onChange, hasFilters }) => {
             </Typography>
           );
         },
-        header: () => <Typography className="text-left">Currier</Typography>,
+        header: () => <Typography className="text-left">COURIER</Typography>,
       }),
       columnHelper.accessor(
         (row) => ({ cost: row.price, currency: row.currency.name }),
         {
           id: "price",
-          size: 100,
           cell: (info) => {
             const price = info.getValue();
             return <Typography>{`${price.currency} ${price.cost}`}</Typography>;
           },
-          header: () => <Typography className="text-left">Precio</Typography>,
+          header: () => <Typography className="text-left">PRECIO</Typography>,
         },
       ),
       columnHelper.accessor((row) => row.id, {
         id: "deliveryUrl",
-        size: 24,
+        size: 84,
         cell: (info) => {
           const deliveryId = info.getValue();
           return (
-            <div className="flex w-full">
+            <div className="flex w-full gap-5">
               <Link
                 href={`/deliveries/${deliveryId}`}
-                className="hover:text-gray-500"
+                className="text-letters hover:text-gray-500"
               >
                 <Icons.View />
               </Link>
               <Button
                 variant="icon"
-                className="ml-2 text-black hover:text-gray-500"
+                className="text-letters hover:text-gray-500"
                 onClick={() => showDeleteMessage(deliveryId)}
               >
                 <Icons.Delete />
@@ -199,6 +202,11 @@ const DeliveryTable: FC<Props> = ({ deliveries, onChange, hasFilters }) => {
   const table = useReactTable({
     data: deliveries ?? [],
     columns,
+    defaultColumn: {
+      minSize: 0,
+      size: Number.MAX_SAFE_INTEGER,
+      maxSize: Number.MAX_SAFE_INTEGER,
+    },
     getRowCanExpand: () => true,
     getCoreRowModel: getCoreRowModel(),
   });
@@ -226,12 +234,17 @@ const DeliveryTable: FC<Props> = ({ deliveries, onChange, hasFilters }) => {
           <table className="w-full">
             <thead>
               {table.getHeaderGroups().map((headerGroup) => (
-                <tr key={headerGroup.id} className="border-b">
+                <tr key={headerGroup.id} className="border-b bg-slate-200">
                   {headerGroup.headers.map((header) => (
                     <th
                       key={header.id}
                       className="p-2"
-                      style={{ width: header.getSize() }}
+                      style={{
+                        width:
+                          header.getSize() === Number.MAX_SAFE_INTEGER
+                            ? "auto"
+                            : header.getSize(),
+                      }}
                     >
                       {header.isPlaceholder
                         ? null
@@ -252,13 +265,19 @@ const DeliveryTable: FC<Props> = ({ deliveries, onChange, hasFilters }) => {
                       "border-b":
                         i < table.getRowModel().rows.length - 1 &&
                         !row.getIsExpanded(),
+                      "bg-slate-100": i % 2 !== 0,
                     })}
                   >
                     {row.getVisibleCells().map((cell) => (
                       <td
                         key={cell.id}
                         className="p-2"
-                        style={{ width: cell.column.getSize() }}
+                        style={{
+                          width:
+                            cell.column.getSize() === Number.MAX_SAFE_INTEGER
+                              ? "auto"
+                              : cell.column.getSize(),
+                        }}
                       >
                         {flexRender(
                           cell.column.columnDef.cell,
@@ -273,24 +292,24 @@ const DeliveryTable: FC<Props> = ({ deliveries, onChange, hasFilters }) => {
                         "border-b":
                           i < table.getRowModel().rows.length - 1 &&
                           row.getIsExpanded(),
+                        "bg-slate-100": i % 2 !== 0,
                       })}
                     >
                       <td
                         colSpan={row.getVisibleCells().length}
                         className="p-2"
                       >
-                        <div className="flex w-full flex-col md:flex-row">
+                        <div className="flex w-full flex-col pb-6 pl-10 md:flex-row">
                           <div className="flex w-full flex-col">
-                            <Typography className="font-bold">
-                              Productos
+                            <Typography className="font-semibold">
+                              {`${row.original.orderProducts.length} Producto${
+                                row.original.orderProducts.length > 1 ? "s" : ""
+                              }`}
                             </Typography>
                             <table className="w-fit table-auto">
                               <tbody>
                                 {row.original.orderProducts.map((r, i) => (
                                   <tr key={r.id}>
-                                    <td className="pr-5">
-                                      <Typography>{i + 1}.</Typography>
-                                    </td>
                                     <td className="pr-5">
                                       <Typography>{r.productName}</Typography>
                                     </td>

@@ -28,7 +28,7 @@ const columnHelper = createColumnHelper<OrderFull>();
 const columns = [
   columnHelper.accessor((row) => row, {
     id: "expander",
-    size: 24,
+    size: 40,
     header: () => null,
     cell: ({ row }) => (
       <div className="flex w-full justify-start">
@@ -38,20 +38,23 @@ const columns = [
             style: { cursor: "pointer" },
           }}
         >
-          {row.getIsExpanded() ? <Icons.ChevronDown /> : <Icons.ChevronRight />}
+          {row.getIsExpanded() ? (
+            <Icons.ChevronDown className="text-letters" />
+          ) : (
+            <Icons.ChevronRight className="text-letters" />
+          )}
         </button>
       </div>
     ),
   }),
   columnHelper.accessor((row) => row.orderDate, {
     id: "orderDate",
-    size: 150,
     cell: (info) => {
       const date = info.getValue();
       return <Typography>{date != null ? formatDate(date) : "-"}</Typography>;
     },
     header: () => (
-      <Typography className="text-left">Fecha de Pedido</Typography>
+      <Typography className="text-left">FECHA DE PEDIDO</Typography>
     ),
   }),
   columnHelper.accessor(
@@ -60,37 +63,41 @@ const columns = [
       id: "store",
       cell: (info) => {
         const store = info.getValue();
-        return <Link href={`/stores/${store.url}`}>{store.name}</Link>;
+        return (
+          <Link href={`/stores/${store.url}`}>
+            <Typography>{store.name}</Typography>
+          </Link>
+        );
       },
-      header: () => <Typography className="text-left">Tienda</Typography>,
+      header: () => <Typography className="text-left">TIENDA</Typography>,
     },
   ),
   columnHelper.accessor((row) => row.status, {
     id: "status",
-    size: 150,
     cell: (info) => {
       const status = info.getValue();
       return (
         <Chip
+          variant="outlined"
+          className="w-40 justify-center"
           label={orderStatusLabel[status]}
           color={orderStatusColor[status]}
         />
       );
     },
-    header: () => <Typography className="text-left">Estado</Typography>,
+    header: () => <Typography className="text-left">ESTADO</Typography>,
   }),
   columnHelper.accessor(
     (row) => ({ cost: row.productsCost, currency: row.currency.name }),
     {
       id: "price",
-      size: 70,
       cell: (info) => {
         const price = info.getValue();
         return (
           <Typography className="text-left">{`${price.currency} ${price.cost}`}</Typography>
         );
       },
-      header: () => <Typography className="text-left">Precio</Typography>,
+      header: () => <Typography className="text-left">PRECIO</Typography>,
     },
   ),
   columnHelper.accessor(
@@ -113,18 +120,18 @@ const columns = [
         }
       },
       header: () => (
-        <Typography className="text-left">Entrega aprox.</Typography>
+        <Typography className="text-left">ENTREGA APROX.</Typography>
       ),
     },
   ),
   columnHelper.accessor((row) => row.id, {
     id: "orderUrl",
-    size: 24,
+    size: 40,
     cell: (info) => (
       <div className="flex w-full justify-center">
         <Link
           href={`/orders/${info.getValue()}`}
-          className="hover:text-gray-500"
+          className="text-letters hover:text-gray-500"
         >
           <Icons.View />
         </Link>
@@ -138,6 +145,11 @@ const OrderTable: FC<Props> = ({ orders, hasFilters }) => {
   const table = useReactTable({
     data: orders ?? [],
     columns,
+    defaultColumn: {
+      minSize: 0,
+      size: Number.MAX_SAFE_INTEGER,
+      maxSize: Number.MAX_SAFE_INTEGER,
+    },
     getRowCanExpand: () => true,
     getCoreRowModel: getCoreRowModel(),
   });
@@ -146,15 +158,20 @@ const OrderTable: FC<Props> = ({ orders, hasFilters }) => {
     <>
       {orders && orders.length > 0 ? (
         <div className="w-full overflow-x-auto rounded-md bg-slate-50">
-          <table className="w-full table-fixed">
+          <table className="w-full">
             <thead>
               {table.getHeaderGroups().map((headerGroup) => (
-                <tr key={headerGroup.id} className="border-b">
+                <tr key={headerGroup.id} className="border-b bg-slate-200">
                   {headerGroup.headers.map((header) => (
                     <th
                       key={header.id}
                       className="p-2"
-                      style={{ width: header.getSize() }}
+                      style={{
+                        width:
+                          header.getSize() === Number.MAX_SAFE_INTEGER
+                            ? "auto"
+                            : header.getSize(),
+                      }}
                     >
                       {header.isPlaceholder
                         ? null
@@ -175,13 +192,19 @@ const OrderTable: FC<Props> = ({ orders, hasFilters }) => {
                       "border-b":
                         i < table.getRowModel().rows.length - 1 &&
                         !row.getIsExpanded(),
+                      "bg-slate-100": i % 2 !== 0,
                     })}
                   >
                     {row.getVisibleCells().map((cell) => (
                       <td
                         key={cell.id}
                         className="p-2"
-                        style={{ width: cell.column.getSize() }}
+                        style={{
+                          width:
+                            cell.column.getSize() === Number.MAX_SAFE_INTEGER
+                              ? "auto"
+                              : cell.column.getSize(),
+                        }}
                       >
                         {flexRender(
                           cell.column.columnDef.cell,
@@ -196,24 +219,24 @@ const OrderTable: FC<Props> = ({ orders, hasFilters }) => {
                         "border-b":
                           i < table.getRowModel().rows.length - 1 &&
                           row.getIsExpanded(),
+                        "bg-slate-100": i % 2 !== 0,
                       })}
                     >
                       <td
                         colSpan={row.getVisibleCells().length}
                         className="p-2"
                       >
-                        <div className="flex w-full flex-col md:flex-row">
+                        <div className="flex w-full flex-col pb-6 pl-10 md:flex-row">
                           <div className="flex w-full flex-col">
-                            <Typography className="font-bold">
-                              Productos
+                            <Typography className="font-semibold">
+                              {`${row.original.products.length} Producto${
+                                row.original.products.length > 1 ? "s" : ""
+                              }`}
                             </Typography>
                             <table className="w-fit table-auto">
                               <tbody>
                                 {row.original.products.map((r, i) => (
                                   <tr key={r.id}>
-                                    <td className="pr-5">
-                                      <Typography>{i + 1}.</Typography>
-                                    </td>
                                     <td className="pr-2">
                                       <ProductStatusDot
                                         deliveryId={r.deliveryId}
@@ -236,8 +259,12 @@ const OrderTable: FC<Props> = ({ orders, hasFilters }) => {
                             </table>
                           </div>
                           <div className="mt-4 flex w-full flex-col md:mt-0">
-                            <Typography className="font-bold">
-                              Pagos Realizados
+                            <Typography className="font-semibold">
+                              {`${row.original.products.length} Pago${
+                                row.original.products.length > 1 ? "s" : ""
+                              } Realizado${
+                                row.original.products.length > 1 ? "s" : ""
+                              }`}
                             </Typography>
                             <OrderPaymentTable
                               className="w-fit"
