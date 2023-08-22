@@ -4,30 +4,94 @@ import { VariantProps, cva } from "class-variance-authority";
 import { FC, MouseEvent } from "react";
 import Icons from "./Icons";
 
-const chipVariants = cva(
-  "flex items-center rounded-3xl bg-gray-300 w-fit drop-shadow-md",
-  {
-    variants: {
-      size: {
-        lg: "px-3 py-1",
-        md: "px-3 py-1",
-        sm: "px-2 py-1",
-        xs: "px-1 py-1",
-      },
-      color: {
-        error: "bg-error",
-        primary: "bg-primary",
-        "primary-alt": "bg-primary-alt",
-        secondary: "bg-secondary",
-        "secondary-alt": "bg-secondary-alt",
-        muted: "bg-muted",
-      },
+const chipVariants = cva("flex items-center rounded-3xl w-fit", {
+  variants: {
+    variant: {
+      filled: "bg-gray-300 text-white drop-shadow-md",
+      outlined: "border-2",
     },
-    defaultVariants: {
-      size: "md",
+    size: {
+      lg: "px-3 py-1",
+      md: "px-3 py-1",
+      sm: "px-2 py-1",
+      xs: "px-1 py-1",
+    },
+    color: {
+      error: "",
+      primary: "",
+      "primary-alt": "",
+      secondary: "",
+      "secondary-alt": "",
+      muted: "",
     },
   },
-);
+  compoundVariants: [
+    {
+      variant: "filled",
+      color: "error",
+      class: "bg-error",
+    },
+    {
+      variant: "filled",
+      color: "primary",
+      class: "bg-primary",
+    },
+    {
+      variant: "filled",
+      color: "primary-alt",
+      class: "bg-primary-alt",
+    },
+    {
+      variant: "filled",
+      color: "secondary",
+      class: "bg-secondary",
+    },
+    {
+      variant: "filled",
+      color: "secondary-alt",
+      class: "bg-secondary-alt",
+    },
+    {
+      variant: "filled",
+      color: "muted",
+      class: "bg-muted",
+    },
+    {
+      variant: "outlined",
+      color: "error",
+      class: "border-error text-error",
+    },
+    {
+      variant: "outlined",
+      color: "primary",
+      class: "border-primary text-primary",
+    },
+    {
+      variant: "outlined",
+      color: "primary-alt",
+      class: "border-primary-alt text-primary-alt",
+    },
+    {
+      variant: "outlined",
+      color: "secondary",
+      class: "border-secondary text-secondary",
+    },
+    {
+      variant: "outlined",
+      color: "secondary-alt",
+      class: "border-secondary-alt text-secondary-alt",
+    },
+    {
+      variant: "outlined",
+      color: "muted",
+      class: "border-muted text-muted",
+    },
+  ],
+  defaultVariants: {
+    variant: "filled",
+    size: "md",
+  },
+});
 
 type ChipProps = VariantProps<typeof chipVariants> & {
   label: string;
@@ -43,6 +107,7 @@ const Chip: FC<ChipProps> = ({
   className,
   size,
   color,
+  variant,
   title,
   readOnly,
 }) => {
@@ -52,8 +117,11 @@ const Chip: FC<ChipProps> = ({
   };
 
   return (
-    <div className={cn(chipVariants({ size, color, className }))} title={title}>
-      <Typography className="text-white" size={size}>
+    <div
+      className={cn(chipVariants({ variant, size, color, className }))}
+      title={title}
+    >
+      <Typography size={size} color="unset">
         {label}
       </Typography>
       {onDelete && !readOnly && (
