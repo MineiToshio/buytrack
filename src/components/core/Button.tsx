@@ -12,7 +12,7 @@ export const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-white hover:bg-green-600",
+        default: "bg-primary text-white hover:bg-green-600 uppercase",
         outline:
           "bg-transparent text-primary hover:bg-primary border border-primary hover:text-white",
         ghost:
@@ -40,7 +40,7 @@ export const buttonVariants = cva(
       {
         variant: "default",
         color: "white",
-        class: "bg-white text-primary hover:bg-slate-50",
+        class: "bg-white text-primary hover:bg-slate-50 normal-case",
       },
       {
         variant: "icon",
