@@ -180,6 +180,7 @@ const DeliveryTable: FC<Props> = ({ deliveries, onChange, hasFilters }) => {
               <Link
                 href={`/deliveries/${deliveryId}`}
                 className="text-letters hover:text-gray-500"
+                title="Ver más"
               >
                 <Icons.View />
               </Link>
@@ -187,6 +188,7 @@ const DeliveryTable: FC<Props> = ({ deliveries, onChange, hasFilters }) => {
                 variant="icon"
                 className="text-letters hover:text-gray-500"
                 onClick={() => showDeleteMessage(deliveryId)}
+                title="Eliminar"
               >
                 <Icons.Delete />
               </Button>

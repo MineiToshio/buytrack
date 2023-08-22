@@ -132,6 +132,7 @@ const columns = [
         <Link
           href={`/orders/${info.getValue()}`}
           className="text-letters hover:text-gray-500"
+          title="Ver más"
         >
           <Icons.View />
         </Link>
