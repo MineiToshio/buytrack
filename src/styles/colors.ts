@@ -23,6 +23,10 @@ const colors = {
     light: "#FD2C00",
     DEFAULT: "#FD2C00",
   },
+  letters: {
+    light: "#334155",
+    DEFAULT: "#334155",
+  },
 };
 
 export default colors;

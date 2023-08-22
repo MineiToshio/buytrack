@@ -12,8 +12,9 @@ const typographyVariants = cva("", {
       lg: "text-lg, sm:text-xl",
     },
     color: {
-      default: "text-slate-700",
+      default: "text-letters",
       muted: "text-muted",
+      unset: "",
     },
   },
   defaultVariants: {
