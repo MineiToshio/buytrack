@@ -17,7 +17,6 @@ import {
 } from "react-hook-form";
 import { OrderFormType, Product } from "./OrderForm";
 import ProductStatusDot from "./ProductStatusDot";
-import StatusLegend from "./StatusLegend";
 
 type OrderFormProductsProps = {
   control: Control<OrderFormType>;
@@ -100,7 +99,6 @@ const OrderFormProducts: FC<OrderFormProductsProps> = ({
 
   return (
     <div className="mt-6 flex w-full max-w-xl flex-col gap-2">
-      {products != null && <StatusLegend className="self-end" />}
       <div className="flex gap-4">
         <div
           className={cn("flex items-center", {

@@ -320,7 +320,7 @@ const DeliveryForm: FC<DeliveryFormProps> = ({
               {!(isReadOnly && delivery?.currier?.length === 0) && (
                 <FormRow
                   title="Currier"
-                  Icon={Icons.Currier}
+                  Icon={Icons.Courier}
                   placeholder="Olva, Rappi, Motorizado"
                   type="input"
                   readOnly={isReadOnly}
@@ -330,7 +330,7 @@ const DeliveryForm: FC<DeliveryFormProps> = ({
               {!(isReadOnly && delivery?.tracking?.length === 0) && (
                 <FormRow
                   title="Tracking"
-                  Icon={Icons.Currier}
+                  Icon={Icons.Courier}
                   placeholder="123456789"
                   type="input"
                   readOnly={isReadOnly}

@@ -3,23 +3,8 @@
 import { deliveryStatusData } from "@/helpers/constants";
 import useRouter from "@/hooks/useRouter";
 import { cn } from "@/styles/utils";
-import { cva } from "class-variance-authority";
 import { FC } from "react";
 import { getStatusAttribute } from "./utils";
-
-const productStatusDotVariants = cva("rounded-full w-3 h-3 drop-shadow-md", {
-  variants: {
-    color: {
-      error: "bg-error",
-      primary: "bg-primary",
-      secondary: "bg-secondary",
-      muted: "bg-muted",
-    },
-  },
-  defaultVariants: {
-    color: "muted",
-  },
-});
 
 type ProductStatusDotProps = {
   isDelivered?: boolean;
@@ -34,6 +19,7 @@ const ProductStatusDot: FC<ProductStatusDotProps> = ({
 }) => {
   const router = useRouter();
   const statusAttribute = getStatusAttribute(isDelivered);
+  const StatusIcon = deliveryStatusData[statusAttribute].icon;
 
   const handleClick = () => {
     if (deliveryId) {
@@ -45,16 +31,12 @@ const ProductStatusDot: FC<ProductStatusDotProps> = ({
     <button
       onClick={handleClick}
       title={deliveryStatusData[statusAttribute].label}
-      className={cn(
-        productStatusDotVariants({
-          color: deliveryStatusData[statusAttribute].color,
-          className,
-        }),
-        {
-          "cursor-default": deliveryId == null,
-        },
-      )}
-    />
+      className={cn({
+        "cursor-default": deliveryId == null,
+      })}
+    >
+      <StatusIcon size={18} className={cn("text-letters", className)} />
+    </button>
   );
 };
 

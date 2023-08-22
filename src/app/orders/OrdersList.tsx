@@ -12,7 +12,6 @@ import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
 import { FC, useMemo, useState } from "react";
 import OrderSearchBar from "./OrderSearchBar";
 import OrderTable from "./OrderTable";
-import StatusLegend from "./StatusLegend";
 import Typography from "@/components/core/Typography";
 import { formatDate } from "@/helpers/utils";
 import { cn } from "@/styles/utils";
@@ -108,14 +107,10 @@ const OrdersList: FC<OrdersListProps> = ({ orders }) => {
   return (
     <>
       <div
-        className={cn(
-          "flex w-full flex-col-reverse justify-between md:flex-row",
-          {
-            "mb-5": !filtersDescription,
-          },
-        )}
+        className={cn("flex w-full flex-col-reverse justify-end md:flex-row", {
+          "mb-5": !filtersDescription,
+        })}
       >
-        <StatusLegend className="mr-2 justify-center md:justify-normal" />
         <div className="flex gap-2">
           <OrderSearchBar
             orders={orders}

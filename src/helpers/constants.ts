@@ -1,3 +1,4 @@
+import Icons from "@/components/core/Icons";
 import { OrderStatus, StoreType } from "@prisma/client";
 
 export const storeTypeLabel = Object.freeze({
@@ -38,15 +39,18 @@ export const deliveryStatus = {
 
 export const deliveryStatusData = Object.freeze({
   [deliveryStatus.noDelivery]: Object.freeze({
-    label: "Sin Entrega",
+    label: "Sin Entrega Programada",
     color: "muted",
+    icon: Icons.NoDelivery,
   }),
   [deliveryStatus.delivered]: Object.freeze({
     label: "Entregado",
     color: "primary",
+    icon: Icons.Delivered,
   }),
   [deliveryStatus.inRoute]: Object.freeze({
     label: "En Ruta",
     color: "secondary",
+    icon: Icons.Courier,
   }),
 });

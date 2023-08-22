@@ -236,9 +236,9 @@ const OrderTable: FC<Props> = ({ orders, hasFilters }) => {
                             </Typography>
                             <table className="w-fit table-auto">
                               <tbody>
-                                {row.original.products.map((r, i) => (
-                                  <tr key={r.id}>
-                                    <td className="pr-2">
+                                {row.original.products.map((r) => (
+                                  <tr key={r.id} className="flex">
+                                    <td className="flex pr-2">
                                       <ProductStatusDot
                                         deliveryId={r.deliveryId}
                                         isDelivered={r.delivery?.delivered}

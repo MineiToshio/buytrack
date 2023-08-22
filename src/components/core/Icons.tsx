@@ -26,6 +26,8 @@ import {
   Tag,
   Search,
   XCircle,
+  MailCheck,
+  BellOff,
 } from "lucide-react";
 
 export const Icons = {
@@ -52,10 +54,12 @@ export const Icons = {
   View: FileSearch,
   Coins,
   Send,
-  Currier: Truck,
+  Courier: Truck,
   Tag,
   Search,
   CancelCircle: XCircle,
+  Delivered: MailCheck,
+  NoDelivery: BellOff,
 };
 
 export default Icons;
