@@ -130,7 +130,7 @@ const OrderPayments: FC<OrderPaymentsProps> = ({
         </form>
       </Modal>
       <div className="flex w-full flex-col">
-        <div className="flex w-full items-center justify-between">
+        <div className="mb-2 flex w-full items-center justify-between">
           <Typography color="muted">Pagos Realizados</Typography>
           {remainingAmount > 0 && (
             <Button

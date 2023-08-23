@@ -63,17 +63,17 @@ const OrderPaymentTable: FC<OrderPaymentTableProps> = ({
       {orderedPayments.length > 0 ? (
         <table className={cn("table-auto", className)}>
           <tbody>
-            {orderedPayments.map((p, i) => (
+            {orderedPayments.map((p) => (
               <tr key={p.id}>
-                <td className="pr-5 text-center">
+                <td className="py-0.5 pr-5 text-center">
                   <Typography className="text-right">
                     {formatDate(p.paymentDate)}
                   </Typography>
                 </td>
-                <td>
+                <td className="py-0.5">
                   <Typography>{`${currency} ${p.amount}`}</Typography>
                 </td>
-                <td>
+                <td className="py-0.5 text-end align-bottom">
                   {onPaymentsChange && (
                     <Button
                       variant="icon"
@@ -81,7 +81,7 @@ const OrderPaymentTable: FC<OrderPaymentTableProps> = ({
                       isLoading={isLoadingDeletePayment && p.id === deleteId}
                       onClick={() => openDeleteModal(p.id)}
                     >
-                      <Icons.Delete size={15} />
+                      <Icons.Delete size={18} />
                     </Button>
                   )}
                 </td>
@@ -90,7 +90,7 @@ const OrderPaymentTable: FC<OrderPaymentTableProps> = ({
           </tbody>
           <tfoot>
             <tr className="border-t">
-              <td className="pr-5 text-right">
+              <td className="py-0.5 pr-5 text-right">
                 <Typography>Pago Total</Typography>
               </td>
               <td colSpan={2} className="text-left">
@@ -98,10 +98,10 @@ const OrderPaymentTable: FC<OrderPaymentTableProps> = ({
               </td>
             </tr>
             <tr>
-              <td className="pr-5 text-right">
+              <td className="py-0.5 pr-5 text-right">
                 <Typography>Monto Restante</Typography>
               </td>
-              <td colSpan={2} className="text-left">
+              <td colSpan={2} className="py-0.5 text-left">
                 <Typography>{`${currency} ${remainingAmount}`}</Typography>
               </td>
             </tr>
