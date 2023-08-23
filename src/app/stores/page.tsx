@@ -12,7 +12,7 @@ const page = async () => {
       <Heading size="sm" className="mb-5">
         Tiendas
       </Heading>
-      <div className="mb-5 flex w-full justify-end">
+      <div className="mb-6 flex w-full justify-end md:mb-10">
         <Link href="/stores/new">
           <Button>Agregar Tienda</Button>
         </Link>

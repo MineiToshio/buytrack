@@ -75,7 +75,7 @@ const page = async ({ searchParams }: Props) => {
 
   return (
     <div className="flex flex-col items-center px-4 pt-8 md:px-10">
-      <Heading size="sm" className="mb-5">
+      <Heading size="sm" className="mb-6 md:mb-10">
         Entregas
       </Heading>
       <Hydrate state={dehydratedState}>

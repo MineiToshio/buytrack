@@ -33,7 +33,7 @@ const page = async ({ params }: Params) => {
 
   return (
     <div className="flex w-full flex-col items-center px-10 pt-8">
-      <Heading size="sm" className="mb-5">
+      <Heading size="sm" className="mb-6 md:mb-10">
         Detalles de la Entrega
       </Heading>
       <div className="w-full max-w-4xl">
