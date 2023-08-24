@@ -1,21 +1,22 @@
 "use client";
 
-import Button from "@/components/core/Button";
-import Icons from "@/components/core/Icons";
+import Button from "@/core/Button";
+import Icons from "@/core/Icons";
 import { GET_ORDER } from "@/helpers/apiUrls";
+import { orderStatusLabel } from "@/helpers/constants";
 import { get } from "@/helpers/request";
+import { formatDate, pushState } from "@/helpers/utils";
 import { usePushStateListener } from "@/hooks/usePushStateListener";
+import FiltersInfo from "@/modules/FiltersInfo";
+import { cn } from "@/styles/utils";
 import { OrderFull, isOrderStatus } from "@/types/prisma";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
 import { FC, useMemo, useState } from "react";
-import OrderSearchBar from "./OrderSearchBar";
+import { useForm } from "react-hook-form";
+import OrderSearchBar, { SearchFormType } from "./OrderSearchBar";
 import OrderTable from "./OrderTable";
-import Typography from "@/components/core/Typography";
-import { formatDate } from "@/helpers/utils";
-import { cn } from "@/styles/utils";
-import { orderStatusLabel } from "@/helpers/constants";
 
 type FilterParams = {
   orderDate?: string;
@@ -26,6 +27,9 @@ type FilterParams = {
 type OrdersListProps = {
   orders: OrderFull[];
 };
+
+const isFilterParamsKey = (value: string): value is keyof FilterParams =>
+  value === "orderDate" || value === "storeId" || value === "status";
 
 const getOrders = (params: FilterParams) => {
   const searchParams: string[] = [];
@@ -58,6 +62,7 @@ const OrdersList: FC<OrdersListProps> = ({ orders }) => {
   const [filterParams, setFilterParams] = useState<FilterParams>(() =>
     getFilterParams(params),
   );
+  const { control, handleSubmit, setValue } = useForm<SearchFormType>();
 
   usePushStateListener((filterParams) => {
     const filterData = getFilterParams(filterParams);
@@ -74,29 +79,46 @@ const OrdersList: FC<OrdersListProps> = ({ orders }) => {
     () => getOrders(filterParams),
   );
 
-  const filtersDescription = useMemo(() => {
-    const filters: string[] = [];
+  const filteredData = useMemo(() => {
+    let orderDate, status, storeId;
     if (filterParams.orderDate) {
       const dates = filterParams.orderDate.split(",");
-      filters.push(
-        `Fecha de Pedido: ${formatDate(dates[0])} - ${formatDate(dates[1])}`,
-      );
+      orderDate = {
+        order: 1,
+        title: "Fecha de Pedido",
+        value: `${formatDate(dates[0])} - ${formatDate(dates[1])}`,
+      };
     }
     if (filterParams.storeId) {
       const storeOrder = orders.find((s) => s.storeId === filterParams.storeId);
-      filters.push(`Tienda: ${storeOrder?.store.name}`);
+      storeId = {
+        order: 2,
+        title: "Tienda",
+        value: storeOrder?.store.name,
+      };
     }
     if (filterParams.status) {
-      const status = filterParams.status.split(",");
-      const labelStatus = status.map((s) => {
+      const statusArray = filterParams.status.split(",");
+      const statusFilters: { label: string; value: string }[] = [];
+      statusArray.forEach((s) => {
         if (isOrderStatus(s)) {
-          return orderStatusLabel[s];
+          statusFilters.push({ label: orderStatusLabel[s], value: s });
         }
-        return s;
       });
-      filters.push(`Estado: ${labelStatus.join(", ")}`);
+      if (statusArray.length !== Object.entries(orderStatusLabel).length) {
+        status = {
+          order: 3,
+          title: "Estados",
+          value: statusFilters,
+        };
+      }
     }
-    return filters.join(" | ");
+
+    return {
+      orderDate,
+      status,
+      storeId,
+    };
   }, [
     filterParams.orderDate,
     filterParams.status,
@@ -104,43 +126,73 @@ const OrdersList: FC<OrdersListProps> = ({ orders }) => {
     orders,
   ]);
 
+  const hasFilters = useMemo(() => {
+    let hasFilter = false;
+    Object.values(filteredData).forEach((value) => {
+      if (value != null) {
+        hasFilter = true;
+      }
+    });
+    return hasFilter;
+  }, [filteredData]);
+
+  const handleFilterDelete = (searchKey: string, searchValue?: string) => {
+    let params: string[] = [];
+    Object.entries(filterParams).forEach(([key, value]) => {
+      if (value && isFilterParamsKey(key)) {
+        if (key !== searchKey) {
+          params.push(`${key}=${value}`);
+        } else if (searchValue) {
+          const values = value.split(",");
+          const newValues = values.filter((v) => v !== searchValue);
+          if (newValues.length > 0) {
+            params.push(`${key}=${newValues.join(",")}`);
+            setValue(key, newValues);
+          } else {
+            setValue(key, undefined);
+          }
+        } else {
+          setValue(key, undefined);
+        }
+      }
+    });
+    pushState(params.join("&"));
+  };
+
   return (
     <>
       <div
-        className={cn("flex w-full flex-col-reverse justify-end md:flex-row", {
-          "mb-5": !filtersDescription,
-        })}
+        className={cn(
+          "mb-6 flex w-full flex-col-reverse justify-end gap-10 md:flex-row",
+          { "justify-between": hasFilters },
+        )}
       >
-        <div className="flex gap-2">
+        {hasFilters && (
+          <FiltersInfo
+            filteredData={filteredData}
+            onDelete={handleFilterDelete}
+          />
+        )}
+        <div className="flex min-w-fit gap-2">
           <OrderSearchBar
             orders={orders}
             isLoading={isLoading}
             className="w-1/2 md:w-fit"
+            control={control}
+            onSubmit={handleSubmit}
+            setValue={setValue}
           />
-          <Link
-            href="/orders/new"
-            className="mb-4 w-1/2 self-end md:mb-0 md:w-fit"
-          >
+          <Link href="/orders/new" className="mb-4 w-1/2 md:mb-0 md:w-fit">
             <Button className="w-full md:w-fit">Agregar Pedido</Button>
           </Link>
         </div>
       </div>
-      {filtersDescription && (
-        <div className="mb-5 mt-2 flex w-full justify-center md:justify-normal">
-          <Typography color="muted" size="sm">
-            {filtersDescription}
-          </Typography>
-        </div>
-      )}
       {isLoading ? (
         <div className="flex w-full justify-center">
           <Icons.Loader className="animate-spin text-muted" size={40} />
         </div>
       ) : (
-        <OrderTable
-          orders={filteredOrders}
-          hasFilters={filtersDescription.length > 0}
-        />
+        <OrderTable orders={filteredOrders} hasFilters={hasFilters} />
       )}
     </>
   );

@@ -57,7 +57,7 @@ const StoreCard: FC<StoreCardProps> = ({
                   key={p.id}
                   label={p.name}
                   size="xs"
-                  className="bg-secondary"
+                  className="bg-secondary text-white"
                   title="Tipo de producto"
                 />
               ))}
@@ -66,7 +66,7 @@ const StoreCard: FC<StoreCardProps> = ({
                   key={c.id}
                   label={c.name}
                   size="xs"
-                  className="bg-violet-900"
+                  className="bg-violet-900 text-white"
                   title="País de importación"
                 />
               ))}

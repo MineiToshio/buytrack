@@ -7,7 +7,7 @@ import Icons from "./Icons";
 const chipVariants = cva("flex items-center rounded-3xl w-fit", {
   variants: {
     variant: {
-      filled: "bg-gray-300 text-white drop-shadow-md",
+      filled: "bg-gray-200 text-letters drop-shadow-md",
       outlined: "border-2",
     },
     size: {
@@ -29,32 +29,32 @@ const chipVariants = cva("flex items-center rounded-3xl w-fit", {
     {
       variant: "filled",
       color: "error",
-      class: "bg-error",
+      class: "bg-error text-white",
     },
     {
       variant: "filled",
       color: "primary",
-      class: "bg-primary",
+      class: "bg-primary text-white",
     },
     {
       variant: "filled",
       color: "primary-alt",
-      class: "bg-primary-alt",
+      class: "bg-primary-alts text-white",
     },
     {
       variant: "filled",
       color: "secondary",
-      class: "bg-secondary",
+      class: "bg-secondary text-white",
     },
     {
       variant: "filled",
       color: "secondary-alt",
-      class: "bg-secondary-alt",
+      class: "bg-secondary-alt text-white",
     },
     {
       variant: "filled",
       color: "muted",
-      class: "bg-muted",
+      class: "bg-muted text-white",
     },
     {
       variant: "outlined",
@@ -93,6 +93,22 @@ const chipVariants = cva("flex items-center rounded-3xl w-fit", {
   },
 });
 
+const deleteButtonVariants = cva(
+  "ml-2 flex h-6 w-6 items-center justify-center rounded-full bg-gray-400 hover:bg-gray-500",
+  {
+    variants: {
+      color: {
+        error: "",
+        primary: "bg-green-600 hover:bg-green-700",
+        "primary-alt": "bg-green-500 hover:bg-green-600",
+        secondary: "",
+        "secondary-alt": "bg-cyan-700 hover:bg-cyan-800",
+        muted: "",
+      },
+    },
+  },
+);
+
 type ChipProps = VariantProps<typeof chipVariants> & {
   label: string;
   className?: string;
@@ -127,7 +143,7 @@ const Chip: FC<ChipProps> = ({
       {onDelete && !readOnly && (
         <button
           onClick={handleDelete}
-          className="ml-2 flex h-6 w-6 items-center justify-center rounded-full bg-gray-400 hover:bg-gray-500"
+          className={cn(deleteButtonVariants({ color }))}
         >
           <Icons.Cancel className="h-5 w-5 text-white" />
         </button>

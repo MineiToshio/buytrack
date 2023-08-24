@@ -14,15 +14,23 @@ import { cn } from "@/styles/utils";
 import { OrderFull } from "@/types/prisma";
 import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
 import { FC, useEffect, useState } from "react";
-import { Controller, UseFormSetValue, useForm } from "react-hook-form";
+import {
+  Control,
+  Controller,
+  UseFormHandleSubmit,
+  UseFormSetValue
+} from "react-hook-form";
 
 type OrderSearchBarProps = {
   orders: OrderFull[];
   isLoading: boolean;
   className?: string;
+  control: Control<SearchFormType>;
+  onSubmit: UseFormHandleSubmit<SearchFormType>;
+  setValue: UseFormSetValue<SearchFormType>;
 };
 
-type SearchFormType = {
+export type SearchFormType = {
   orderDate: {
     min: Date;
     max: Date;
@@ -53,11 +61,12 @@ const OrderSearchBar: FC<OrderSearchBarProps> = ({
   orders,
   isLoading,
   className,
+  control,
+  onSubmit: handleSubmit,
+  setValue,
 }) => {
   const [showBar, setShowBar] = useState<boolean>(false);
   const params = useSearchParams();
-
-  const { control, handleSubmit, setValue } = useForm<SearchFormType>();
 
   useEffect(() => {
     setFilterValues(params, setValue);
@@ -149,7 +158,6 @@ const OrderSearchBar: FC<OrderSearchBarProps> = ({
                 render={({ field }) => (
                   <DateRangePicker
                     variant="standard"
-                    placeholder=""
                     onChange={field.onChange}
                     value={field.value}
                     maxDate={new Date()}
