@@ -4,7 +4,6 @@ import Button from "@/core/Button";
 import Icons from "@/core/Icons";
 import { GET_ORDER } from "@/helpers/apiUrls";
 import { orderStatusLabel } from "@/helpers/constants";
-import { get } from "@/helpers/request";
 import useFilters, { DataDefinition, FilterType } from "@/hooks/useFilters";
 import FiltersInfo from "@/modules/FiltersInfo";
 import { cn } from "@/styles/utils";
@@ -14,28 +13,8 @@ import { FC, useMemo } from "react";
 import OrderSearchBar, { SearchFormType } from "./OrderSearchBar";
 import OrderTable from "./OrderTable";
 
-type FilterParams = {
-  orderDate?: string;
-  storeId?: string;
-  status?: string;
-};
-
 type OrdersListProps = {
   orders: OrderFull[];
-};
-
-const getOrders = (params: FilterParams) => {
-  const searchParams: string[] = [];
-  if (params.orderDate) {
-    searchParams.push(`orderDate=${params.orderDate}`);
-  }
-  if (params.storeId) {
-    searchParams.push(`storeId=${params.storeId}`);
-  }
-  if (params.status) {
-    searchParams.push(`status=${params.status}`);
-  }
-  return get<OrderFull[]>(`${GET_ORDER}?${searchParams.join("&")}`);
 };
 
 const OrdersList: FC<OrdersListProps> = ({ orders }) => {
@@ -84,8 +63,8 @@ const OrdersList: FC<OrdersListProps> = ({ orders }) => {
     onSubmit,
   } = useFilters<SearchFormType, OrderFull>(
     filterDefinition,
+    GET_ORDER,
     "orders",
-    getOrders,
   );
 
   return (

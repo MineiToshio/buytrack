@@ -5,7 +5,6 @@ import Icons from "@/components/core/Icons";
 import FiltersInfo from "@/components/modules/FiltersInfo";
 import { GET_DELIVERY } from "@/helpers/apiUrls";
 import { deliveryStatusData } from "@/helpers/constants";
-import { get } from "@/helpers/request";
 import useFilters, { DataDefinition, FilterType } from "@/hooks/useFilters";
 import { cn } from "@/styles/utils";
 import { DeliveryFull, isDeliveryStatus } from "@/types/prisma";
@@ -14,30 +13,8 @@ import { FC, useMemo, useState } from "react";
 import DeliverySearchBar, { SearchFormType } from "./DeliverySearchBar";
 import DeliveryTable from "./DeliveryTable";
 
-type FilterParams = {
-  approximateDeliveryDate?: string;
-  storeId?: string;
-  status?: string;
-};
-
 type DeliveriesListProps = {
   deliveries: DeliveryFull[];
-};
-
-const getDeliveries = (params: FilterParams) => {
-  const searchParams: string[] = [];
-  if (params.approximateDeliveryDate) {
-    searchParams.push(
-      `approximateDeliveryDate=${params.approximateDeliveryDate}`,
-    );
-  }
-  if (params.storeId) {
-    searchParams.push(`storeId=${params.storeId}`);
-  }
-  if (params.status) {
-    searchParams.push(`status=${params.status}`);
-  }
-  return get<DeliveryFull[]>(`${GET_DELIVERY}?${searchParams.join("&")}`);
 };
 
 const DeliveriesList: FC<DeliveriesListProps> = ({ deliveries }) => {
@@ -92,8 +69,8 @@ const DeliveriesList: FC<DeliveriesListProps> = ({ deliveries }) => {
     onSubmit,
   } = useFilters<SearchFormType, DeliveryFull>(
     filterDefinition,
+    GET_DELIVERY,
     "deliveries",
-    getDeliveries,
   );
 
   return (

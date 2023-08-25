@@ -4,6 +4,7 @@ import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
 import { usePushStateListener } from "./usePushStateListener";
+import { get } from "@/helpers/request";
 
 export enum FilterType {
   dateRange,
@@ -51,10 +52,24 @@ const getFilterParams = (
   return filterParams;
 };
 
+const getItems = <FilteredItem>(
+  getUrl: string,
+  params: FilterParams,
+  dataDefinition: DataDefinition,
+) => {
+  const searchParams: string[] = [];
+  dataDefinition.forEach((d) => {
+    if (params[d.attribute]) {
+      searchParams.push(`${d.attribute}=${params[d.attribute]}`);
+    }
+  });
+  return get<FilteredItem[]>(`${getUrl}?${searchParams.join("&")}`);
+};
+
 const useFilters = <SearchFormType extends FieldValues, FilteredItem>(
   dataDefinition: DataDefinition,
+  getUrl: string,
   queryKey: string,
-  filterFn: (params: FilterParams) => Promise<FilteredItem[] | undefined>,
 ) => {
   const params = useSearchParams();
   const [filterParams, setFilterParams] = useState<FilterParams>(() =>
@@ -75,7 +90,9 @@ const useFilters = <SearchFormType extends FieldValues, FilteredItem>(
     data: filteredItems,
     isFetching,
     refetch,
-  } = useQuery([queryKey, ...filterKeys], () => filterFn(filterParams));
+  } = useQuery([queryKey, ...filterKeys], () =>
+    getItems<FilteredItem>(getUrl, filterParams, dataDefinition),
+  );
 
   const { control, handleSubmit, setValue } = useForm<SearchFormType>();
 
