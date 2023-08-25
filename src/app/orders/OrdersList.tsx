@@ -5,16 +5,12 @@ import Icons from "@/core/Icons";
 import { GET_ORDER } from "@/helpers/apiUrls";
 import { orderStatusLabel } from "@/helpers/constants";
 import { get } from "@/helpers/request";
-import { formatDate, pushState } from "@/helpers/utils";
-import { usePushStateListener } from "@/hooks/usePushStateListener";
+import useFilters, { DataDefinition, FilterType } from "@/hooks/useFilters";
 import FiltersInfo from "@/modules/FiltersInfo";
 import { cn } from "@/styles/utils";
 import { OrderFull, isOrderStatus } from "@/types/prisma";
-import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
-import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
-import { FC, useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
+import { FC, useMemo } from "react";
 import OrderSearchBar, { SearchFormType } from "./OrderSearchBar";
 import OrderTable from "./OrderTable";
 
@@ -27,9 +23,6 @@ type FilterParams = {
 type OrdersListProps = {
   orders: OrderFull[];
 };
-
-const isFilterParamsKey = (value: string): value is keyof FilterParams =>
-  value === "orderDate" || value === "storeId" || value === "status";
 
 const getOrders = (params: FilterParams) => {
   const searchParams: string[] = [];
@@ -45,133 +38,66 @@ const getOrders = (params: FilterParams) => {
   return get<OrderFull[]>(`${GET_ORDER}?${searchParams.join("&")}`);
 };
 
-const getFilterParams = (params: URLSearchParams | ReadonlyURLSearchParams) => {
-  const orderDate = params.get("orderDate") ?? undefined;
-  const storeId = params.get("storeId") ?? undefined;
-  const status = params.get("status") ?? undefined;
-
-  return {
-    orderDate,
-    storeId,
-    status,
-  };
-};
-
 const OrdersList: FC<OrdersListProps> = ({ orders }) => {
-  const params = useSearchParams();
-  const [filterParams, setFilterParams] = useState<FilterParams>(() =>
-    getFilterParams(params),
-  );
-  const { control, handleSubmit, setValue } = useForm<SearchFormType>();
-
-  usePushStateListener((filterParams) => {
-    const filterData = getFilterParams(filterParams);
-    setFilterParams(filterData);
-  });
-
-  const { data: filteredOrders, isLoading } = useQuery(
-    [
-      "orders",
-      filterParams.orderDate,
-      filterParams.status,
-      filterParams.storeId,
-    ],
-    () => getOrders(filterParams),
-  );
-
-  const filteredData = useMemo(() => {
-    let orderDate, status, storeId;
-    if (filterParams.orderDate) {
-      const dates = filterParams.orderDate.split(",");
-      orderDate = {
-        order: 1,
+  const filterDefinition: DataDefinition = useMemo(
+    () => [
+      {
+        type: FilterType.dateRange,
+        attribute: "orderDate",
         title: "Fecha de Pedido",
-        value: `${formatDate(dates[0])} - ${formatDate(dates[1])}`,
-      };
-    }
-    if (filterParams.storeId) {
-      const storeOrder = orders.find((s) => s.storeId === filterParams.storeId);
-      storeId = {
-        order: 2,
+      },
+      {
+        type: FilterType.text,
+        attribute: "storeId",
         title: "Tienda",
-        value: storeOrder?.store.name,
-      };
-    }
-    if (filterParams.status) {
-      const statusArray = filterParams.status.split(",");
-      const statusFilters: { label: string; value: string }[] = [];
-      statusArray.forEach((s) => {
-        if (isOrderStatus(s)) {
-          statusFilters.push({ label: orderStatusLabel[s], value: s });
-        }
-      });
-      if (statusArray.length !== Object.entries(orderStatusLabel).length) {
-        status = {
-          order: 3,
-          title: "Estados",
-          value: statusFilters,
-        };
-      }
-    }
+        finderFunc: (storeId: string) => {
+          const storeOrder = orders.find((s) => s.storeId === storeId);
+          return storeOrder?.store.name;
+        },
+      },
+      {
+        type: FilterType.list,
+        attribute: "status",
+        title: "Estados",
+        finderFunc: (statusIds: string[]) => {
+          const statusFilters: { label: string; value: string }[] = [];
+          statusIds.forEach((s) => {
+            if (isOrderStatus(s)) {
+              statusFilters.push({ label: orderStatusLabel[s], value: s });
+            }
+          });
+          return statusFilters;
+        },
+      },
+    ],
+    [orders],
+  );
 
-    return {
-      orderDate,
-      status,
-      storeId,
-    };
-  }, [
-    filterParams.orderDate,
-    filterParams.status,
-    filterParams.storeId,
-    orders,
-  ]);
-
-  const hasFilters = useMemo(() => {
-    let hasFilter = false;
-    Object.values(filteredData).forEach((value) => {
-      if (value != null) {
-        hasFilter = true;
-      }
-    });
-    return hasFilter;
-  }, [filteredData]);
-
-  const handleFilterDelete = (searchKey: string, searchValue?: string) => {
-    let params: string[] = [];
-    Object.entries(filterParams).forEach(([key, value]) => {
-      if (value && isFilterParamsKey(key)) {
-        if (key !== searchKey) {
-          params.push(`${key}=${value}`);
-        } else if (searchValue) {
-          const values = value.split(",");
-          const newValues = values.filter((v) => v !== searchValue);
-          if (newValues.length > 0) {
-            params.push(`${key}=${newValues.join(",")}`);
-            setValue(key, newValues);
-          } else {
-            setValue(key, undefined);
-          }
-        } else {
-          setValue(key, undefined);
-        }
-      }
-    });
-    pushState(params.join("&"));
-  };
+  const {
+    hasFilters,
+    control,
+    filteredItems,
+    filteredInfo,
+    isLoading,
+    setValue,
+    onFilterDelete,
+    onSubmit,
+  } = useFilters<SearchFormType, OrderFull>(
+    filterDefinition,
+    "orders",
+    getOrders,
+  );
 
   return (
     <>
       <div
         className={cn(
-          "mb-6 flex w-full flex-col-reverse justify-end gap-10 md:flex-row",
+          "mb-6 flex w-full flex-col-reverse justify-end gap-0 md:flex-row md:gap-10",
           { "justify-between": hasFilters },
         )}
       >
         {hasFilters && (
-          <FiltersInfo
-            filteredData={filteredData}
-            onDelete={handleFilterDelete}
-          />
+          <FiltersInfo filteredData={filteredInfo} onDelete={onFilterDelete} />
         )}
         <div className="flex min-w-fit gap-2">
           <OrderSearchBar
@@ -179,7 +105,7 @@ const OrdersList: FC<OrdersListProps> = ({ orders }) => {
             isLoading={isLoading}
             className="w-1/2 md:w-fit"
             control={control}
-            onSubmit={handleSubmit}
+            onSubmit={onSubmit}
             setValue={setValue}
           />
           <Link href="/orders/new" className="mb-4 w-1/2 md:mb-0 md:w-fit">
@@ -192,7 +118,7 @@ const OrdersList: FC<OrdersListProps> = ({ orders }) => {
           <Icons.Loader className="animate-spin text-muted" size={40} />
         </div>
       ) : (
-        <OrderTable orders={filteredOrders} hasFilters={hasFilters} />
+        <OrderTable orders={filteredItems} hasFilters={hasFilters} />
       )}
     </>
   );

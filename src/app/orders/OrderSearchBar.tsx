@@ -18,7 +18,7 @@ import {
   Control,
   Controller,
   UseFormHandleSubmit,
-  UseFormSetValue
+  UseFormSetValue,
 } from "react-hook-form";
 
 type OrderSearchBarProps = {

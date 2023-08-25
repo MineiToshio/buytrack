@@ -55,8 +55,8 @@ const page = async ({ searchParams }: Props) => {
     [
       "orders",
       searchParams.orderDate,
-      searchParams.status,
       searchParams.storeId,
+      searchParams.status,
     ],
     () =>
       filterOrdersByUser(
