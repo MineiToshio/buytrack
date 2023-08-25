@@ -71,10 +71,11 @@ const useFilters = <SearchFormType extends FieldValues, FilteredItem>(
     [dataDefinition, filterParams],
   );
 
-  const { data: filteredItems, isLoading } = useQuery(
-    [queryKey, ...filterKeys],
-    () => filterFn(filterParams),
-  );
+  const {
+    data: filteredItems,
+    isFetching,
+    refetch,
+  } = useQuery([queryKey, ...filterKeys], () => filterFn(filterParams));
 
   const { control, handleSubmit, setValue } = useForm<SearchFormType>();
 
@@ -163,7 +164,8 @@ const useFilters = <SearchFormType extends FieldValues, FilteredItem>(
     control,
     filteredItems,
     filteredInfo,
-    isLoading,
+    isLoading: isFetching,
+    refetch,
     setValue,
     onFilterDelete,
     onSubmit: handleSubmit,

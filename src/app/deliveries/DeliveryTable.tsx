@@ -20,19 +20,20 @@ import {
 } from "@tanstack/react-table";
 import Link from "next/link";
 import {
-  type Dispatch,
-  FC,
   Fragment,
-  type SetStateAction,
   useCallback,
   useMemo,
   useState,
+  type Dispatch,
+  type FC,
+  type SetStateAction,
 } from "react";
 
 type Props = {
   deliveries?: DeliveryFull[];
-  onChange: Dispatch<SetStateAction<DeliveryFull[] | undefined>>;
   hasFilters: boolean;
+  refetch: () => void;
+  setIsLoading: Dispatch<SetStateAction<boolean>>;
 };
 
 const deleteDelivery = (deliveryId: string) =>
@@ -40,13 +41,22 @@ const deleteDelivery = (deliveryId: string) =>
 
 const columnHelper = createColumnHelper<DeliveryFull>();
 
-const DeliveryTable: FC<Props> = ({ deliveries, onChange, hasFilters }) => {
+const DeliveryTable: FC<Props> = ({
+  deliveries,
+  hasFilters,
+  refetch,
+  setIsLoading,
+}) => {
   const [isDeleteMessageShowing, setIsDeleteMessageShowing] =
     useState<boolean>(false);
   const [deleteDeliveryId, setDeleteDeliveryId] = useState<string | null>(null);
 
   const { mutate } = useMutation({
     mutationFn: (deliveryId: string) => deleteDelivery(deliveryId),
+    onSuccess: () => {
+      refetch();
+      setIsLoading(false);
+    },
   });
 
   const toggleDeleteMessage = () => setIsDeleteMessageShowing((s) => !s);
@@ -215,11 +225,13 @@ const DeliveryTable: FC<Props> = ({ deliveries, onChange, hasFilters }) => {
 
   const confirmDelete = () => {
     if (deleteDeliveryId) {
+      setIsLoading(true);
       toggleDeleteMessage();
       mutate(deleteDeliveryId);
-      onChange((delivery) =>
-        delivery?.filter((d) => d.id !== deleteDeliveryId),
-      );
+
+      // onChange((delivery) =>
+      //   delivery?.filter((d) => d.id !== deleteDeliveryId),
+      // );
     }
   };
 

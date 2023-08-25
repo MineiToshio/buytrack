@@ -58,8 +58,8 @@ const page = async ({ searchParams }: Props) => {
     [
       "deliveries",
       searchParams.approximateDeliveryDate,
-      searchParams.status,
       searchParams.storeId,
+      searchParams.status,
     ],
     () =>
       filterDeliveries(

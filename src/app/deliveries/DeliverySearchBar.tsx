@@ -10,21 +10,30 @@ import { cn } from "@/styles/utils";
 import { DeliveryFull, isDeliveryStatus } from "@/types/prisma";
 import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
 import { FC, useEffect, useState } from "react";
-import { Controller, UseFormSetValue, useForm } from "react-hook-form";
+import {
+  Control,
+  Controller,
+  UseFormHandleSubmit,
+  UseFormSetValue,
+  useForm,
+} from "react-hook-form";
 
-type DeliverySearchBarProps = {
-  deliveries: DeliveryFull[];
-  isLoading: boolean;
-  className?: string;
-};
-
-type SearchFormType = {
+export type SearchFormType = {
   approximateDeliveryDate: {
     min: Date;
     max: Date;
   } | null;
   storeId?: string;
   status?: string[];
+};
+
+type DeliverySearchBarProps = {
+  deliveries: DeliveryFull[];
+  isLoading: boolean;
+  className?: string;
+  control: Control<SearchFormType>;
+  onSubmit: UseFormHandleSubmit<SearchFormType>;
+  setValue: UseFormSetValue<SearchFormType>;
 };
 
 const setFilterValues = (
@@ -49,11 +58,12 @@ const DeliverySearchBar: FC<DeliverySearchBarProps> = ({
   deliveries,
   isLoading,
   className,
+  control,
+  onSubmit: handleSubmit,
+  setValue,
 }) => {
   const [showBar, setShowBar] = useState<boolean>(false);
   const params = useSearchParams();
-
-  const { control, handleSubmit, setValue } = useForm<SearchFormType>();
 
   useEffect(() => {
     setFilterValues(params, setValue);

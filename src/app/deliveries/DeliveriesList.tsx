@@ -1,21 +1,18 @@
 "use client";
 
 import Button from "@/components/core/Button";
-import Link from "next/link";
-import { FC, useEffect, useMemo, useState } from "react";
-import DeliveryTable from "./DeliveryTable";
-import { DeliveryFull, isDeliveryStatus } from "@/types/prisma";
-import { GET_DELIVERY } from "@/helpers/apiUrls";
-import { get } from "@/helpers/request";
-import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
-import { usePushStateListener } from "@/hooks/usePushStateListener";
-import { useQuery } from "@tanstack/react-query";
-import { formatDate } from "@/helpers/utils";
-import { deliveryStatusData } from "@/helpers/constants";
 import Icons from "@/components/core/Icons";
-import Typography from "@/components/core/Typography";
-import DeliverySearchBar from "./DeliverySearchBar";
+import FiltersInfo from "@/components/modules/FiltersInfo";
+import { GET_DELIVERY } from "@/helpers/apiUrls";
+import { deliveryStatusData } from "@/helpers/constants";
+import { get } from "@/helpers/request";
+import useFilters, { DataDefinition, FilterType } from "@/hooks/useFilters";
 import { cn } from "@/styles/utils";
+import { DeliveryFull, isDeliveryStatus } from "@/types/prisma";
+import Link from "next/link";
+import { FC, useMemo, useState } from "react";
+import DeliverySearchBar, { SearchFormType } from "./DeliverySearchBar";
+import DeliveryTable from "./DeliveryTable";
 
 type FilterParams = {
   approximateDeliveryDate?: string;
@@ -43,113 +40,97 @@ const getDeliveries = (params: FilterParams) => {
   return get<DeliveryFull[]>(`${GET_DELIVERY}?${searchParams.join("&")}`);
 };
 
-const getFilterParams = (params: URLSearchParams | ReadonlyURLSearchParams) => {
-  const approximateDeliveryDate =
-    params.get("approximateDeliveryDate") ?? undefined;
-  const storeId = params.get("storeId") ?? undefined;
-  const status = params.get("status") ?? undefined;
-
-  return {
-    approximateDeliveryDate,
-    storeId,
-    status,
-  };
-};
-
 const DeliveriesList: FC<DeliveriesListProps> = ({ deliveries }) => {
-  const params = useSearchParams();
-  const [filterParams, setFilterParams] = useState<FilterParams>(() =>
-    getFilterParams(params),
-  );
-  const [filteredDeliveries, setFilteredDeliveries] = useState<
-    DeliveryFull[] | undefined
-  >(undefined);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  usePushStateListener((filterParams) => {
-    const filterData = getFilterParams(filterParams);
-    setFilterParams(filterData);
-  });
-
-  const { data, isLoading } = useQuery(
-    [
-      "deliveries",
-      filterParams.approximateDeliveryDate,
-      filterParams.status,
-      filterParams.storeId,
+  const filterDefinition: DataDefinition = useMemo(
+    () => [
+      {
+        type: FilterType.dateRange,
+        attribute: "approximateDeliveryDate",
+        title: "Entrega aprox.",
+      },
+      {
+        type: FilterType.text,
+        attribute: "storeId",
+        title: "Tienda",
+        finderFunc: (storeId: string) => {
+          const storeDelivery = deliveries.find((d) => d.storeId === storeId);
+          return storeDelivery?.store.name;
+        },
+      },
+      {
+        type: FilterType.list,
+        attribute: "status",
+        title: "Estado",
+        finderFunc: (statusIds: string[]) => {
+          const statusFilters: { label: string; value: string }[] = [];
+          statusIds.forEach((s) => {
+            if (isDeliveryStatus(s)) {
+              statusFilters.push({
+                label: deliveryStatusData[s].label,
+                value: s,
+              });
+            }
+          });
+          return statusFilters;
+        },
+      },
     ],
-    () => getDeliveries(filterParams),
+    [deliveries],
   );
 
-  useEffect(() => {
-    setFilteredDeliveries(data);
-  }, [data]);
-
-  const filtersDescription = useMemo(() => {
-    const filters: string[] = [];
-    if (filterParams.approximateDeliveryDate) {
-      const dates = filterParams.approximateDeliveryDate.split(",");
-      filters.push(
-        `Fecha de Pedido: ${formatDate(dates[0])} - ${formatDate(dates[1])}`,
-      );
-    }
-    if (filterParams.storeId) {
-      const storeOrder = deliveries.find(
-        (d) => d.storeId === filterParams.storeId,
-      );
-      filters.push(`Tienda: ${storeOrder?.store.name}`);
-    }
-    if (filterParams.status) {
-      const status = filterParams.status.split(",");
-      const deliveredArray = status?.filter((s) => isDeliveryStatus(s));
-
-      if (
-        deliveredArray &&
-        deliveredArray.length === 1 &&
-        isDeliveryStatus(deliveredArray[0])
-      ) {
-        filters.push(`Estado: ${deliveryStatusData[deliveredArray[0]].label}`);
-      }
-    }
-    return filters.join(" | ");
-  }, [
-    filterParams.approximateDeliveryDate,
-    filterParams.status,
-    filterParams.storeId,
-    deliveries,
-  ]);
+  const {
+    hasFilters,
+    control,
+    filteredItems,
+    filteredInfo,
+    isLoading: isFetching,
+    refetch,
+    setValue,
+    onFilterDelete,
+    onSubmit,
+  } = useFilters<SearchFormType, DeliveryFull>(
+    filterDefinition,
+    "deliveries",
+    getDeliveries,
+  );
 
   return (
     <>
       <div
-        className={cn("flex w-full justify-end gap-2", {
-          "mb-5": !filtersDescription,
-        })}
+        className={cn(
+          "mb-6 flex w-full flex-col-reverse justify-end gap-0 md:flex-row md:gap-10",
+          { "justify-between": hasFilters },
+        )}
       >
-        <DeliverySearchBar
-          deliveries={deliveries}
-          isLoading={isLoading}
-          className="w-1/2 md:w-fit"
-        />
-        <Link href="/deliveries/new" className="w-1/2 md:w-fit">
-          <Button className="w-full">Nueva Entrega</Button>
-        </Link>
-      </div>
-      {filtersDescription && (
-        <div className="mb-5 mt-2 flex w-full justify-center md:justify-normal">
-          <Typography color="muted" size="sm">
-            {filtersDescription}
-          </Typography>
+        {hasFilters && (
+          <FiltersInfo filteredData={filteredInfo} onDelete={onFilterDelete} />
+        )}
+        <div className="flex min-w-fit gap-2">
+          <DeliverySearchBar
+            deliveries={deliveries}
+            isLoading={isLoading}
+            className="w-1/2 md:w-fit"
+            control={control}
+            onSubmit={onSubmit}
+            setValue={setValue}
+          />
+          <Link href="/deliveries/new" className="w-1/2 md:w-fit">
+            <Button className="w-full">Nueva Entrega</Button>
+          </Link>
         </div>
-      )}
-      {isLoading ? (
+      </div>
+      {isLoading || isFetching ? (
         <div className="flex w-full justify-center">
           <Icons.Loader className="animate-spin text-muted" size={40} />
         </div>
       ) : (
         <DeliveryTable
-          deliveries={filteredDeliveries}
-          onChange={setFilteredDeliveries}
-          hasFilters={filtersDescription.length > 0}
+          deliveries={filteredItems}
+          setIsLoading={setIsLoading}
+          refetch={refetch}
+          hasFilters={hasFilters}
         />
       )}
     </>
