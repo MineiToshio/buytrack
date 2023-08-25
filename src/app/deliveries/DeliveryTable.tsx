@@ -228,10 +228,6 @@ const DeliveryTable: FC<Props> = ({
       setIsLoading(true);
       toggleDeleteMessage();
       mutate(deleteDeliveryId);
-
-      // onChange((delivery) =>
-      //   delivery?.filter((d) => d.id !== deleteDeliveryId),
-      // );
     }
   };
 
