@@ -11,7 +11,7 @@ import { del } from "@/helpers/request";
 import { formatDate } from "@/helpers/utils";
 import { cn } from "@/styles/utils";
 import { DeliveryFull } from "@/types/prisma";
-import { useMutation } from "@tanstack/react-query";
+import { QueryObserverResult, useMutation } from "@tanstack/react-query";
 import {
   createColumnHelper,
   flexRender,
@@ -32,7 +32,7 @@ import {
 type Props = {
   deliveries?: DeliveryFull[];
   hasFilters: boolean;
-  refetch: () => void;
+  refetch: () => Promise<QueryObserverResult<DeliveryFull[] | undefined>>;
   setIsLoading: Dispatch<SetStateAction<boolean>>;
 };
 
@@ -53,8 +53,8 @@ const DeliveryTable: FC<Props> = ({
 
   const { mutate } = useMutation({
     mutationFn: (deliveryId: string) => deleteDelivery(deliveryId),
-    onSuccess: () => {
-      refetch();
+    onSuccess: async () => {
+      await refetch();
       setIsLoading(false);
     },
   });
