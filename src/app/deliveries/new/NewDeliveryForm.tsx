@@ -39,11 +39,9 @@ const NewDeliveryForm: FC<NewDeliveryFormProps> = ({ stores, orders }) => {
 
   const { isLoading, mutate } = useMutation({
     mutationFn: (data: DeliveryFormType) => createDelivery(data),
-    onSuccess: () => {
+    onSuccess: (newDelivery) => {
       setIsPending(true);
-      router.push("/deliveries");
-      // This refresh is to force the await in /deliveries page
-      router.refresh();
+      router.push(`/deliveries/${newDelivery?.id}`);
     },
   });
 
