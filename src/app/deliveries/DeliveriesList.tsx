@@ -94,7 +94,9 @@ const DeliveriesList: FC<DeliveriesListProps> = ({ deliveries }) => {
             setValue={setValue}
           />
           <Link href="/deliveries/new" className="w-1/2 md:w-fit">
-            <Button className="w-full">Nueva Entrega</Button>
+            <Button className="w-full" StartIcon={Icons.Add}>
+              Nueva Entrega
+            </Button>
           </Link>
         </div>
       </div>

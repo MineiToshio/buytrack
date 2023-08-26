@@ -7,6 +7,7 @@ import {
   MessageCircle,
   ChevronDownSquare,
   PlusCircle,
+  Plus,
   X,
   Globe2,
   CornerUpLeft,
@@ -28,6 +29,11 @@ import {
   XCircle,
   MailCheck,
   BellOff,
+  Check,
+  Save,
+  ListRestart,
+  LogOut,
+  LogIn,
 } from "lucide-react";
 
 export const Icons = {
@@ -38,7 +44,8 @@ export const Icons = {
   Message: MessageCircle,
   Web: Globe,
   ChevronSquareDown: ChevronDownSquare,
-  Add: PlusCircle,
+  AddCircle: PlusCircle,
+  Add: Plus,
   Cancel: X,
   Globe: Globe2,
   CornerUpLeftArrow: CornerUpLeft,
@@ -60,6 +67,11 @@ export const Icons = {
   CancelCircle: XCircle,
   Delivered: MailCheck,
   NoDelivery: BellOff,
+  Check,
+  Save,
+  Restart: ListRestart,
+  LogOut,
+  LogIn,
 };
 
 export default Icons;

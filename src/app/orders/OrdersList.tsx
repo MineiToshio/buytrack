@@ -88,7 +88,9 @@ const OrdersList: FC<OrdersListProps> = ({ orders }) => {
             setValue={setValue}
           />
           <Link href="/orders/new" className="mb-4 w-1/2 md:mb-0 md:w-fit">
-            <Button className="w-full md:w-fit">Agregar Pedido</Button>
+            <Button className="w-full md:w-fit" StartIcon={Icons.Add}>
+              Agregar Pedido
+            </Button>
           </Link>
         </div>
       </div>

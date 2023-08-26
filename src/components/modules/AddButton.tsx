@@ -46,7 +46,7 @@ const AddButton: FC<AddButtonProps> = ({ title, onAdd }) => {
   return (
     <>
       <button type="button" className="group" onClick={handleClose}>
-        <Icons.Add className="text-primary group-hover:text-green-600" />
+        <Icons.AddCircle className="text-primary group-hover:text-green-600" />
       </button>
       <Modal open={isOpen} onClose={toggleOpen}>
         <form className="p-4" onSubmit={onBeforeSubmit}>
@@ -63,10 +63,17 @@ const AddButton: FC<AddButtonProps> = ({ title, onAdd }) => {
             </Typography>
           )}
           <div className="mt-6 flex justify-end">
-            <Button variant="outline" className="mr-2" onClick={handleClose}>
+            <Button
+              variant="outline"
+              className="mr-2"
+              onClick={handleClose}
+              StartIcon={Icons.Cancel}
+            >
               Cancelar
             </Button>
-            <Button type="submit">Guardar</Button>
+            <Button type="submit" StartIcon={Icons.Save}>
+              Guardar
+            </Button>
           </div>
         </form>
       </Modal>

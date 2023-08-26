@@ -114,7 +114,7 @@ const OrderFormProducts: FC<OrderFormProductsProps> = ({
               onClick={addNewRow}
               title="Agregar producto"
             >
-              <Icons.Add />
+              <Icons.AddCircle />
             </Button>
           )}
         </div>

@@ -12,6 +12,7 @@ export const getStores = () =>
     include: {
       productsCountry: { include: { country: true } },
       productTypes: { include: { productType: true } },
+      country: true,
     },
     orderBy: { name: "asc" },
   });

@@ -126,7 +126,9 @@ const OrderPayments: FC<OrderPaymentsProps> = ({
               *El monto máximo es de {remainingAmount}.
             </Typography>
           </div>
-          <Button type="submit">Agregar</Button>
+          <Button type="submit" StartIcon={Icons.Add}>
+            Agregar
+          </Button>
         </form>
       </Modal>
       <div className="flex w-full flex-col">
@@ -139,7 +141,7 @@ const OrderPayments: FC<OrderPaymentsProps> = ({
               onClick={openModal}
               isLoading={isLoadingNewPayment}
             >
-              <Icons.Add />
+              <Icons.AddCircle />
             </Button>
           )}
         </div>

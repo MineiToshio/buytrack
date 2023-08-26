@@ -257,6 +257,7 @@ const OrderForm: FC<OrderFormProps> = ({ isLoading, order, onSubmit }) => {
                   type="submit"
                   className="mt-5 w-fit"
                   isLoading={isLoading}
+                  StartIcon={Icons.Save}
                 >
                   Guardar
                 </Button>
@@ -266,6 +267,7 @@ const OrderForm: FC<OrderFormProps> = ({ isLoading, order, onSubmit }) => {
                   type="button"
                   className="mt-5 w-fit"
                   onClick={registerDelivery}
+                  StartIcon={Icons.Courier}
                 >
                   Registrar Entrega
                 </Button>
@@ -278,6 +280,7 @@ const OrderForm: FC<OrderFormProps> = ({ isLoading, order, onSubmit }) => {
                   className="mt-5 w-fit"
                   isLoading={isCanceling}
                   onClick={showCancelOrderModal}
+                  StartIcon={Icons.Cancel}
                 >
                   Cancelar Pedido
                 </Button>

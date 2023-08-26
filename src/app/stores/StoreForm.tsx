@@ -250,7 +250,12 @@ const StoreForm: FC<StoreFormProps> = ({ isLoading, store, onSubmit }) => {
         />
       )}
       {!isReadOnly && (
-        <Button type="submit" className="mt-5 w-fit" isLoading={isLoading}>
+        <Button
+          type="submit"
+          className="mt-5 w-fit"
+          isLoading={isLoading}
+          StartIcon={Icons.Save}
+        >
           Guardar
         </Button>
       )}

@@ -4,6 +4,7 @@ import Button from "@/core/Button";
 import { useSession } from "next-auth/react";
 import { signIn, signOut } from "next-auth/react";
 import { useState } from "react";
+import Icons from "../core/Icons";
 
 const GoogleAuthButton = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -30,6 +31,7 @@ const GoogleAuthButton = () => {
       font="secondary"
       size="lg"
       color="white"
+      StartIcon={status === "authenticated" ? Icons.LogOut : Icons.LogIn}
     >
       {status === "authenticated" ? "Salir" : "Ingresar"}
     </Button>

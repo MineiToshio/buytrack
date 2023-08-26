@@ -228,11 +228,14 @@ const DeliveryForm: FC<DeliveryFormProps> = ({
             className={cn({ "border-error": deliveryDate.error })}
           />
           <div className="flex justify-end gap-x-2">
-            <Button onClick={confirmDelivery}>Confirmar</Button>
+            <Button onClick={confirmDelivery} StartIcon={Icons.Check}>
+              Confirmar
+            </Button>
             <Button
               color="muted"
               onClick={toggleDeliveryMessage}
               variant="outline"
+              StartIcon={Icons.Cancel}
             >
               Cancelar
             </Button>
@@ -403,7 +406,12 @@ const DeliveryForm: FC<DeliveryFormProps> = ({
           </div>
           <div className="mt-5 flex gap-x-4">
             {!isReadOnly && (
-              <Button type="submit" className="w-fit" isLoading={isLoading}>
+              <Button
+                type="submit"
+                className="w-fit"
+                isLoading={isLoading}
+                StartIcon={Icons.Save}
+              >
                 Guardar
               </Button>
             )}
@@ -414,6 +422,7 @@ const DeliveryForm: FC<DeliveryFormProps> = ({
                     className="w-fit"
                     isLoading={isDeleting || isPending}
                     onClick={openDeliveryMessage}
+                    StartIcon={Icons.Delivered}
                   >
                     Marcar como entregado
                   </Button>
@@ -424,6 +433,7 @@ const DeliveryForm: FC<DeliveryFormProps> = ({
                   className="w-fit"
                   isLoading={isDeleting || isPending}
                   onClick={showDeleteMessage}
+                  StartIcon={Icons.Delete}
                 >
                   Eliminar
                 </Button>

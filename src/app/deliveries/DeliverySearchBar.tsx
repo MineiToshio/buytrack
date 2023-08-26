@@ -200,7 +200,12 @@ const DeliverySearchBar: FC<DeliverySearchBarProps> = ({
           <Button type="submit" StartIcon={Icons.Search}>
             Buscar
           </Button>
-          <Button variant="outline" onClick={clear} className="mt-2">
+          <Button
+            variant="outline"
+            onClick={clear}
+            className="mt-2"
+            StartIcon={Icons.Restart}
+          >
             Restablecer valores
           </Button>
         </form>
