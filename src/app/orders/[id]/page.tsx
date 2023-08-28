@@ -34,7 +34,7 @@ const page = async ({ params }: Params) => {
       <Heading size="sm" className="mb-6 md:mb-10">
         Detalles del Pedido
       </Heading>
-      <div className="w-full max-w-4xl">
+      <div className="w-form">
         <Hydrate state={dehydratedState}>
           <ViewOrderForm order={order} />
         </Hydrate>

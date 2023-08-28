@@ -1,3 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.w-form {
+  @apply w-full max-w-xl;
+}

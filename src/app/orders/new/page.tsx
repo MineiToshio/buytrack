@@ -19,7 +19,7 @@ const page = async () => {
       <Heading size="sm" className="mb-6 md:mb-10">
         Nuevo Pedido
       </Heading>
-      <div className="w-full max-w-4xl">
+      <div className="w-form">
         <Hydrate state={dehydratedState}>
           <NewOrderForm />
         </Hydrate>

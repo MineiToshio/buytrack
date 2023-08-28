@@ -77,7 +77,7 @@ const OrderNotes: FC<OrderNotesProps> = ({ orderId, notes }) => {
         onCancel={closeDeleteModal}
         onConfirm={deleteNote}
       />
-      <div className="flex h-full w-full flex-col">
+      <div className="mt-8 flex h-full w-full flex-col">
         <Typography color="muted" className="mb-2">
           Notas
         </Typography>

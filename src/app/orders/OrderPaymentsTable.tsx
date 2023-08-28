@@ -61,7 +61,7 @@ const OrderPaymentTable: FC<OrderPaymentTableProps> = ({
         onConfirm={deletePayment}
       />
       {orderedPayments.length > 0 ? (
-        <table className={cn("table-auto", className)}>
+        <table className={cn("w-full table-auto md:w-72", className)}>
           <tbody>
             {orderedPayments.map((p) => (
               <tr key={p.id}>

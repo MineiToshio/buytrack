@@ -151,9 +151,9 @@ const OrderForm: FC<OrderFormProps> = ({ isLoading, order, onSubmit }) => {
         onCancel={toggleCancelModal}
         onConfirm={confirmCancelOrder}
       />
-      <div className="flex flex-col gap-x-4 md:flex-row">
+      <div className="flex flex-col gap-x-4">
         <form
-          className="flex w-full flex-col md:w-3/5"
+          className="flex w-full flex-col"
           onSubmit={handleSubmit(onSubmit)}
         >
           {isReadOnly && status != null && (
@@ -250,53 +250,53 @@ const OrderForm: FC<OrderFormProps> = ({ isLoading, order, onSubmit }) => {
             readOnly={isReadOnly}
             products={order?.products}
           />
-          {status !== OrderStatus.Canceled && (
-            <div className="flex gap-x-4">
-              {!isReadOnly && (
-                <Button
-                  type="submit"
-                  className="mt-5 w-fit"
-                  isLoading={isLoading}
-                  StartIcon={Icons.Save}
-                >
-                  Guardar
-                </Button>
-              )}
-              {isReadOnly && isDeliveryAvailable && (
-                <Button
-                  type="button"
-                  className="mt-5 w-fit"
-                  onClick={registerDelivery}
-                  StartIcon={Icons.Courier}
-                >
-                  Registrar Entrega
-                </Button>
-              )}
-              {isReadOnly && (
-                <Button
-                  type="button"
-                  color="error"
-                  variant="outline"
-                  className="mt-5 w-fit"
-                  isLoading={isCanceling}
-                  onClick={showCancelOrderModal}
-                  StartIcon={Icons.Cancel}
-                >
-                  Cancelar Pedido
-                </Button>
-              )}
-            </div>
+          {!isReadOnly && (
+            <Button
+              type="submit"
+              className="mt-5 w-fit"
+              isLoading={isLoading}
+              StartIcon={Icons.Save}
+            >
+              Guardar
+            </Button>
           )}
         </form>
         {order && (
-          <div className="mt-6 flex h-80 w-full flex-col gap-y-6 md:mt-1 md:w-2/5">
-            <OrderNotes orderId={order.id} notes={order.orderNotes} />
+          <>
             <OrderPayments
               orderId={order.id}
               payments={order.orderPayments}
               productsCost={order.productsCost}
               currency={order.currency.name}
             />
+            <OrderNotes orderId={order.id} notes={order.orderNotes} />
+          </>
+        )}
+        {status !== OrderStatus.Canceled && (
+          <div className="mt-8 flex gap-x-4">
+            {isReadOnly && isDeliveryAvailable && (
+              <Button
+                type="button"
+                className="w-fit"
+                onClick={registerDelivery}
+                StartIcon={Icons.Courier}
+              >
+                Registrar Entrega
+              </Button>
+            )}
+            {isReadOnly && (
+              <Button
+                type="button"
+                color="error"
+                variant="outline"
+                className="w-fit"
+                isLoading={isCanceling}
+                onClick={showCancelOrderModal}
+                StartIcon={Icons.Cancel}
+              >
+                Cancelar Pedido
+              </Button>
+            )}
           </div>
         )}
       </div>

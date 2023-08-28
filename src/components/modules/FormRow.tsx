@@ -8,7 +8,7 @@ import { Control, Controller, FieldValues, Path } from "react-hook-form";
 import DatePicker from "../core/DatePicker";
 import DateRangePicker from "../core/DateRangePicker";
 import Button from "../core/Button";
-import Chip from "../core/Chip";
+import Chip, { ChipColorVariant } from "../core/Chip";
 import { cn } from "@/styles/utils";
 
 type RowInputProps = {
@@ -103,7 +103,7 @@ type ChipProps = {
   onButtonClick?: undefined;
   onChange?: undefined;
   label: string;
-  color?: "error" | "primary" | "secondary" | "muted";
+  color?: ChipColorVariant;
 };
 
 type LabelProps = {

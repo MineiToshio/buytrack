@@ -4,6 +4,17 @@ import { VariantProps, cva } from "class-variance-authority";
 import { FC, MouseEvent } from "react";
 import Icons from "./Icons";
 
+const variantColor = {
+  error: "",
+  primary: "",
+  "primary-alt": "",
+  secondary: "",
+  "secondary-alt": "",
+  muted: "",
+};
+
+export type ChipColorVariant = keyof typeof variantColor;
+
 const chipVariants = cva("flex items-center rounded-3xl w-fit", {
   variants: {
     variant: {
@@ -16,14 +27,7 @@ const chipVariants = cva("flex items-center rounded-3xl w-fit", {
       sm: "px-2 py-1",
       xs: "px-1 py-1",
     },
-    color: {
-      error: "",
-      primary: "",
-      "primary-alt": "",
-      secondary: "",
-      "secondary-alt": "",
-      muted: "",
-    },
+    color: variantColor,
   },
   compoundVariants: [
     {

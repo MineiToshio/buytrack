@@ -26,7 +26,7 @@ const page = async ({ params }: Params) => {
 
   return (
     <div className="flex w-full flex-col items-center px-10 pt-8">
-      <div className="w-full max-w-4xl">
+      <div className="w-form">
         <Hydrate state={dehydratedState}>
           <ViewStoreForm store={store} />
         </Hydrate>
