@@ -237,18 +237,18 @@ const OrderTable: FC<Props> = ({ orders, hasFilters }) => {
                             <table className="w-fit table-auto">
                               <tbody>
                                 {row.original.products.map((r) => (
-                                  <tr key={r.id} className="flex pb-1">
-                                    <td className="pr-5">
+                                  <tr key={r.id}>
+                                    <td className="pb-1 pr-5">
                                       <Typography>{r.productName}</Typography>
                                     </td>
-                                    <td className="pr-5">
+                                    <td className="pb-1 pr-5">
                                       <Typography>
                                         {r.price
                                           ? `${row.original.currency.name} ${r.price}`
                                           : `${row.original.currency.name} -`}
                                       </Typography>
                                     </td>
-                                    <td className="flex">
+                                    <td className="pb-1">
                                       <ProductStatusDot
                                         deliveryId={r.deliveryId}
                                         isDelivered={r.delivery?.delivered}
