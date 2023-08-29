@@ -25,7 +25,7 @@ const page = async ({ params }: Params) => {
   const store = await getStoreByUrl(params.url);
 
   return (
-    <div className="flex w-full flex-col items-center px-10 pt-8">
+    <div className="flex w-full flex-col items-center px-4 pt-8 md:px-10">
       <div className="w-form">
         <Hydrate state={dehydratedState}>
           <ViewStoreForm store={store} />

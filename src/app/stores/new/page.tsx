@@ -17,7 +17,7 @@ const page = async ({}) => {
   const dehydratedState = dehydrate(queryClient);
 
   return (
-    <div className="flex w-full flex-col items-center px-10 pt-8">
+    <div className="flex w-full flex-col items-center px-4 pt-8 md:px-10">
       <Heading size="sm" className="mb-6 md:mb-10">
         Nueva Tienda
       </Heading>

@@ -30,7 +30,7 @@ const page = async ({ params }: Params) => {
   const order = await getOrderById(params.id, session.user.id);
 
   return (
-    <div className="flex w-full flex-col items-center px-10 pt-8">
+    <div className="flex w-full flex-col items-center px-4 pt-8 md:px-10">
       <Heading size="sm" className="mb-6 md:mb-10">
         Detalles del Pedido
       </Heading>
