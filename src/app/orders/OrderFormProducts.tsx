@@ -103,7 +103,7 @@ const OrderFormProducts: FC<OrderFormProductsProps> = ({
         <div
           className={cn("flex items-center", {
             "w-[calc(75%-24px)]": fields.length > 1 && !readOnly,
-            "w-3/4": fields.length <= 1 || readOnly,
+            "w-2/4": fields.length <= 1 || readOnly,
           })}
         >
           <Typography color="muted">Producto</Typography>
@@ -128,16 +128,9 @@ const OrderFormProducts: FC<OrderFormProductsProps> = ({
           <div
             className={cn("flex w-full items-center", {
               "w-[calc(75%-24px)]": fields.length > 1 && !readOnly,
-              "w-3/4": fields.length <= 1 || readOnly,
+              "w-2/4": fields.length <= 1 || readOnly,
             })}
           >
-            {products && (
-              <ProductStatusDot
-                isDelivered={products[index].delivery?.delivered}
-                deliveryId={products[index].deliveryId}
-                className="mr-2"
-              />
-            )}
             <Input
               variant="standard"
               className={cn({
@@ -164,6 +157,13 @@ const OrderFormProducts: FC<OrderFormProductsProps> = ({
               valueAsNumber: true,
             })}
           />
+          {products && (
+            <ProductStatusDot
+              isDelivered={products[index].delivery?.delivered}
+              deliveryId={products[index].deliveryId}
+              className="w-1/4"
+            />
+          )}
           {fields.length > 1 && !readOnly && (
             <Button
               variant="text"

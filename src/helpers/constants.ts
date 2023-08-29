@@ -39,7 +39,7 @@ export const deliveryStatus = {
 
 export const deliveryStatusData = Object.freeze({
   [deliveryStatus.noDelivery]: Object.freeze({
-    label: "Sin Entrega Programada",
+    label: "Sin Entrega",
     color: "muted",
     icon: Icons.NoDelivery,
   }),

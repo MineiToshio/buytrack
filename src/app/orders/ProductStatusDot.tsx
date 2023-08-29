@@ -5,6 +5,8 @@ import useRouter from "@/hooks/useRouter";
 import { cn } from "@/styles/utils";
 import { FC } from "react";
 import { getStatusAttribute } from "./utils";
+import Typography from "@/components/core/Typography";
+import Chip from "@/components/core/Chip";
 
 type ProductStatusDotProps = {
   isDelivered?: boolean;
@@ -31,11 +33,16 @@ const ProductStatusDot: FC<ProductStatusDotProps> = ({
     <button
       onClick={handleClick}
       title={deliveryStatusData[statusAttribute].label}
-      className={cn({
+      className={cn(className, {
         "cursor-default": deliveryId == null,
       })}
     >
-      <StatusIcon size={18} className={cn("text-letters", className)} />
+      <Chip
+        label={deliveryStatusData[statusAttribute].label}
+        color={deliveryStatusData[statusAttribute].color}
+        size="xs"
+        className="w-[85px] justify-center"
+      />
     </button>
   );
 };

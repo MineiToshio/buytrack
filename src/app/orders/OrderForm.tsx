@@ -273,11 +273,11 @@ const OrderForm: FC<OrderFormProps> = ({ isLoading, order, onSubmit }) => {
           </>
         )}
         {status !== OrderStatus.Canceled && (
-          <div className="mt-8 flex gap-x-4">
+          <div className="mt-8 flex flex-col gap-4 md:flex-row">
             {isReadOnly && isDeliveryAvailable && (
               <Button
                 type="button"
-                className="w-fit"
+                className="md:w-fit"
                 onClick={registerDelivery}
                 StartIcon={Icons.Courier}
               >
@@ -289,7 +289,7 @@ const OrderForm: FC<OrderFormProps> = ({ isLoading, order, onSubmit }) => {
                 type="button"
                 color="error"
                 variant="outline"
-                className="w-fit"
+                className="md:w-fit"
                 isLoading={isCanceling}
                 onClick={showCancelOrderModal}
                 StartIcon={Icons.Cancel}

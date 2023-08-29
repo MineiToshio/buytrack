@@ -98,7 +98,7 @@ const chipVariants = cva("flex items-center rounded-3xl w-fit", {
 });
 
 const deleteButtonVariants = cva(
-  "ml-2 flex h-6 w-6 items-center justify-center rounded-full bg-gray-400 hover:bg-gray-500",
+  "ml-2 flex items-center justify-center rounded-full bg-gray-400 hover:bg-gray-500",
   {
     variants: {
       color: {
@@ -109,6 +109,15 @@ const deleteButtonVariants = cva(
         "secondary-alt": "bg-cyan-700 hover:bg-cyan-800",
         muted: "",
       },
+      size: {
+        lg: "h-6 w-6",
+        md: "h-6 w-6",
+        sm: "h-5 w-5 md:h-6 md:w-6",
+        xs: "h-4 w-4 md:h-5 md:w-5",
+      },
+    },
+    defaultVariants: {
+      size: "md",
     },
   },
 );
@@ -147,7 +156,7 @@ const Chip: FC<ChipProps> = ({
       {onDelete && !readOnly && (
         <button
           onClick={handleDelete}
-          className={cn(deleteButtonVariants({ color }))}
+          className={cn(deleteButtonVariants({ color, size }))}
         >
           <Icons.Cancel className="h-5 w-5 text-white" />
         </button>
