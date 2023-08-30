@@ -1,10 +1,11 @@
 "use client";
 
-import Button from "@/components/core/Button";
-import Chip from "@/components/core/Chip";
-import Icons from "@/components/core/Icons";
-import Typography from "@/components/core/Typography";
-import ConfirmModal from "@/components/modules/ConfirmModal";
+import Button from "@/core/Button";
+import Chip from "@/core/Chip";
+import Icons from "@/core/Icons";
+import Typography from "@/core/Typography";
+import ConfirmModal from "@/modules/ConfirmModal";
+import SortArrow from "@/modules/SortArrow";
 import { DELETE_DELIVERY } from "@/helpers/apiUrls";
 import { deliveryStatus, deliveryStatusData } from "@/helpers/constants";
 import { del } from "@/helpers/request";
@@ -13,9 +14,12 @@ import { cn } from "@/styles/utils";
 import { DeliveryFull } from "@/types/prisma";
 import { QueryObserverResult, useMutation } from "@tanstack/react-query";
 import {
+  Row,
+  SortingState,
   createColumnHelper,
   flexRender,
   getCoreRowModel,
+  getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 import Link from "next/link";
@@ -28,6 +32,7 @@ import {
   type FC,
   type SetStateAction,
 } from "react";
+import { sortBooleans, sortDates, sortNumbers, sortText } from "@/helpers/sort";
 
 type Props = {
   deliveries?: DeliveryFull[];
@@ -47,6 +52,12 @@ const DeliveryTable: FC<Props> = ({
   refetch,
   setIsLoading,
 }) => {
+  const [sorting, setSorting] = useState<SortingState>([
+    {
+      id: "store",
+      desc: true,
+    },
+  ]);
   const [isDeleteMessageShowing, setIsDeleteMessageShowing] =
     useState<boolean>(false);
   const [deleteDeliveryId, setDeleteDeliveryId] = useState<string | null>(null);
@@ -93,6 +104,8 @@ const DeliveryTable: FC<Props> = ({
         (row) => ({ name: row.store.name, url: row.store.url }),
         {
           id: "store",
+          sortingFn: (rowA: Row<DeliveryFull>, rowB: Row<DeliveryFull>) =>
+            sortText(rowA.original.store.name, rowB.original.store.name),
           cell: (info) => {
             const store = info.getValue();
             return (
@@ -101,11 +114,13 @@ const DeliveryTable: FC<Props> = ({
               </Link>
             );
           },
-          header: () => <Typography className="text-left">TIENDA</Typography>,
+          header: () => "TIENDA",
         },
       ),
       columnHelper.accessor((row) => row.delivered, {
         id: "delivered",
+        sortingFn: (rowA: Row<DeliveryFull>, rowB: Row<DeliveryFull>) =>
+          sortBooleans(rowA.original.delivered, rowB.original.delivered),
         cell: (info) => {
           const delivered = info.getValue();
           return (
@@ -131,7 +146,7 @@ const DeliveryTable: FC<Props> = ({
             </div>
           );
         },
-        header: () => <Typography className="text-left">ESTADO</Typography>,
+        header: () => "ESTADO",
       }),
       columnHelper.accessor(
         (row) => ({
@@ -140,6 +155,11 @@ const DeliveryTable: FC<Props> = ({
         }),
         {
           id: "approximateDeliveryDate",
+          sortingFn: (rowA: Row<DeliveryFull>, rowB: Row<DeliveryFull>) =>
+            sortDates(
+              rowA.original.minApproximateDeliveryDate,
+              rowB.original.minApproximateDeliveryDate,
+            ),
           cell: (info) => {
             const date = info.getValue();
             if (date.start && date.end)
@@ -152,13 +172,13 @@ const DeliveryTable: FC<Props> = ({
               return <Typography>-</Typography>;
             }
           },
-          header: () => (
-            <Typography className="text-left">ENTREGA APROX.</Typography>
-          ),
+          header: () => "ENTREGA APROX.",
         },
       ),
       columnHelper.accessor((row) => row.currier, {
         id: "currier",
+        sortingFn: (rowA: Row<DeliveryFull>, rowB: Row<DeliveryFull>) =>
+          sortText(rowA.original.currier, rowB.original.currier),
         cell: (info) => {
           const currier = info.getValue();
           return (
@@ -167,17 +187,19 @@ const DeliveryTable: FC<Props> = ({
             </Typography>
           );
         },
-        header: () => <Typography className="text-left">COURIER</Typography>,
+        header: () => "COURIER",
       }),
       columnHelper.accessor(
         (row) => ({ cost: row.price, currency: row.currency.name }),
         {
           id: "price",
+          sortingFn: (rowA: Row<DeliveryFull>, rowB: Row<DeliveryFull>) =>
+            sortNumbers(rowA.original.price, rowB.original.price),
           cell: (info) => {
             const price = info.getValue();
             return <Typography>{`${price.currency} ${price.cost}`}</Typography>;
           },
-          header: () => <Typography className="text-left">PRECIO</Typography>,
+          header: () => "PRECIO",
         },
       ),
       columnHelper.accessor((row) => row.id, {
@@ -219,6 +241,12 @@ const DeliveryTable: FC<Props> = ({
       size: Number.MAX_SAFE_INTEGER,
       maxSize: Number.MAX_SAFE_INTEGER,
     },
+    state: {
+      sorting,
+    },
+    enableSortingRemoval: false,
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
     getRowCanExpand: () => true,
     getCoreRowModel: getCoreRowModel(),
   });
@@ -256,12 +284,25 @@ const DeliveryTable: FC<Props> = ({
                             : header.getSize(),
                       }}
                     >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
+                      {header.isPlaceholder ? null : (
+                        <div className="flex items-center gap-1">
+                          <Typography
+                            className={cn("text-left", {
+                              "cursor-pointer select-none":
+                                header.column.getCanSort(),
+                            })}
+                            onClick={header.column.getToggleSortingHandler()}
+                          >
+                            {flexRender(
+                              header.column.columnDef.header,
+                              header.getContext(),
+                            )}
+                          </Typography>
+                          <SortArrow
+                            sortDirection={header.column.getIsSorted()}
+                          />
+                        </div>
+                      )}
                     </th>
                   ))}
                 </tr>
