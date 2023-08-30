@@ -1,5 +1,7 @@
+import { deliveryStatus } from "@/helpers/constants";
+
 export const getStatusAttribute = (isDelivered?: boolean) => {
-  if (isDelivered == null) return 0;
-  else if (isDelivered) return 1;
-  else return 2;
+  if (isDelivered == null) return deliveryStatus.noDelivery;
+  else if (isDelivered) return deliveryStatus.delivered;
+  else return deliveryStatus.inRoute;
 };
