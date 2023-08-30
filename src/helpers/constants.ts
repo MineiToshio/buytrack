@@ -14,21 +14,30 @@ export const storeTypeOptions = Object.entries(storeTypeLabel).map(
 );
 
 export const orderStatusLabel = Object.freeze({
-  [OrderStatus.Canceled]: "Cancelado",
-  [OrderStatus.Delivered]: "Entregado",
-  [OrderStatus.In_Route]: "En Ruta",
   [OrderStatus.Open]: "Abierto",
-  [OrderStatus.Partial_Delivered]: "Entrega Parcial",
   [OrderStatus.Partial_In_Route]: "En Ruta Parcial",
+  [OrderStatus.In_Route]: "En Ruta",
+  [OrderStatus.Partial_Delivered]: "Entrega Parcial",
+  [OrderStatus.Delivered]: "Entregado",
+  [OrderStatus.Canceled]: "Cancelado",
 });
 
 export const orderStatusColor = Object.freeze({
-  [OrderStatus.Canceled]: "error",
-  [OrderStatus.Delivered]: "primary",
-  [OrderStatus.In_Route]: "secondary",
   [OrderStatus.Open]: "muted",
-  [OrderStatus.Partial_Delivered]: "primary-alt",
   [OrderStatus.Partial_In_Route]: "secondary-alt",
+  [OrderStatus.In_Route]: "secondary",
+  [OrderStatus.Partial_Delivered]: "primary-alt",
+  [OrderStatus.Delivered]: "primary",
+  [OrderStatus.Canceled]: "error",
+});
+
+export const orderStatusOrder = Object.freeze({
+  [OrderStatus.Open]: 1,
+  [OrderStatus.Partial_In_Route]: 2,
+  [OrderStatus.In_Route]: 3,
+  [OrderStatus.Partial_Delivered]: 4,
+  [OrderStatus.Delivered]: 5,
+  [OrderStatus.Canceled]: 6,
 });
 
 export const deliveryStatus = {

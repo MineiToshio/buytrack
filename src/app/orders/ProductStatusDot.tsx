@@ -21,7 +21,6 @@ const ProductStatusDot: FC<ProductStatusDotProps> = ({
 }) => {
   const router = useRouter();
   const statusAttribute = getStatusAttribute(isDelivered);
-  const StatusIcon = deliveryStatusData[statusAttribute].icon;
 
   const handleClick = () => {
     if (deliveryId) {

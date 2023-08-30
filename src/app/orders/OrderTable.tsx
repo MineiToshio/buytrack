@@ -3,18 +3,27 @@
 import Chip from "@/components/core/Chip";
 import Icons from "@/components/core/Icons";
 import Typography from "@/components/core/Typography";
-import { orderStatusColor, orderStatusLabel } from "@/helpers/constants";
+import SortArrow from "@/components/modules/SortArrow";
+import {
+  orderStatusColor,
+  orderStatusLabel,
+  orderStatusOrder,
+} from "@/helpers/constants";
+import { sortDates, sortNumbers, sortText } from "@/helpers/sort";
 import { formatDate } from "@/helpers/utils";
 import { cn } from "@/styles/utils";
 import { OrderFull } from "@/types/prisma";
 import {
+  Row,
+  SortingState,
   createColumnHelper,
   flexRender,
   getCoreRowModel,
+  getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 import Link from "next/link";
-import { FC, Fragment } from "react";
+import { FC, Fragment, useState } from "react";
 import OrderPaymentTable from "./OrderPaymentsTable";
 import ProductStatusDot from "./ProductStatusDot";
 
@@ -49,18 +58,20 @@ const columns = [
   }),
   columnHelper.accessor((row) => row.orderDate, {
     id: "orderDate",
+    sortingFn: (rowA: Row<OrderFull>, rowB: Row<OrderFull>) =>
+      sortDates(rowA.original.orderDate, rowB.original.orderDate),
     cell: (info) => {
       const date = info.getValue();
       return <Typography>{date != null ? formatDate(date) : "-"}</Typography>;
     },
-    header: () => (
-      <Typography className="text-left">FECHA DE PEDIDO</Typography>
-    ),
+    header: () => "FECHA DE PEDIDO",
   }),
   columnHelper.accessor(
     (row) => ({ name: row.store.name, url: row.store.url }),
     {
       id: "store",
+      sortingFn: (rowA: Row<OrderFull>, rowB: Row<OrderFull>) =>
+        sortText(rowA.original.store.name, rowB.original.store.name),
       cell: (info) => {
         const store = info.getValue();
         return (
@@ -69,11 +80,16 @@ const columns = [
           </Link>
         );
       },
-      header: () => <Typography className="text-left">TIENDA</Typography>,
+      header: () => "TIENDA",
     },
   ),
   columnHelper.accessor((row) => row.status, {
     id: "status",
+    sortingFn: (rowA: Row<OrderFull>, rowB: Row<OrderFull>) =>
+      sortNumbers(
+        orderStatusOrder[rowA.original.status],
+        orderStatusOrder[rowB.original.status],
+      ),
     cell: (info) => {
       const status = info.getValue();
       return (
@@ -85,19 +101,21 @@ const columns = [
         />
       );
     },
-    header: () => <Typography className="text-left">ESTADO</Typography>,
+    header: () => "ESTADO",
   }),
   columnHelper.accessor(
     (row) => ({ cost: row.productsCost, currency: row.currency.name }),
     {
-      id: "price",
+      id: "productsCost",
+      sortingFn: (rowA: Row<OrderFull>, rowB: Row<OrderFull>) =>
+        sortNumbers(rowA.original.productsCost, rowB.original.productsCost),
       cell: (info) => {
         const price = info.getValue();
         return (
           <Typography className="text-left">{`${price.currency} ${price.cost}`}</Typography>
         );
       },
-      header: () => <Typography className="text-left">PRECIO</Typography>,
+      header: () => "PRECIO",
     },
   ),
   columnHelper.accessor(
@@ -107,6 +125,11 @@ const columns = [
     }),
     {
       id: "approximateDeliveryDate",
+      sortingFn: (rowA: Row<OrderFull>, rowB: Row<OrderFull>) =>
+        sortDates(
+          rowA.original.minApproximateDeliveryDate,
+          rowB.original.minApproximateDeliveryDate,
+        ),
       cell: (info) => {
         const date = info.getValue();
         if (date.start && date.end)
@@ -119,9 +142,7 @@ const columns = [
           return <Typography>-</Typography>;
         }
       },
-      header: () => (
-        <Typography className="text-left">ENTREGA APROX.</Typography>
-      ),
+      header: () => "ENTREGA APROX.",
     },
   ),
   columnHelper.accessor((row) => row.id, {
@@ -143,6 +164,13 @@ const columns = [
 ];
 
 const OrderTable: FC<Props> = ({ orders, hasFilters }) => {
+  const [sorting, setSorting] = useState<SortingState>([
+    {
+      id: "orderDate",
+      desc: true,
+    },
+  ]);
+
   const table = useReactTable({
     data: orders ?? [],
     columns,
@@ -151,6 +179,12 @@ const OrderTable: FC<Props> = ({ orders, hasFilters }) => {
       size: Number.MAX_SAFE_INTEGER,
       maxSize: Number.MAX_SAFE_INTEGER,
     },
+    state: {
+      sorting,
+    },
+    enableSortingRemoval: false,
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
     getRowCanExpand: () => true,
     getCoreRowModel: getCoreRowModel(),
   });
@@ -174,12 +208,25 @@ const OrderTable: FC<Props> = ({ orders, hasFilters }) => {
                             : header.getSize(),
                       }}
                     >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
+                      {header.isPlaceholder ? null : (
+                        <div className="flex items-center gap-1">
+                          <Typography
+                            className={cn("text-left", {
+                              "cursor-pointer select-none":
+                                header.column.getCanSort(),
+                            })}
+                            onClick={header.column.getToggleSortingHandler()}
+                          >
+                            {flexRender(
+                              header.column.columnDef.header,
+                              header.getContext(),
+                            )}
+                          </Typography>
+                          <SortArrow
+                            sortDirection={header.column.getIsSorted()}
+                          />
+                        </div>
+                      )}
                     </th>
                   ))}
                 </tr>
