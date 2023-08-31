@@ -11,7 +11,7 @@ import Icons from "./Icons";
 import Button from "./Button";
 
 const selectVariants = cva(
-  "relative w-full cursor-pointer rounded-md p-2 h-[45px]",
+  "relative w-full cursor-pointer rounded-md p-2 min-h-[45px] h-fit",
   {
     variants: {
       variant: {
@@ -165,7 +165,7 @@ const Select: FC<SelectProps> = ({
         {selectedOption && selectedOption.length > 0 ? (
           <>
             {multiple ? (
-              <div className="flex">
+              <div className="flex flex-wrap gap-2">
                 {selectedOption.map((so) => {
                   const key =
                     typeof so.value === "boolean"
@@ -175,7 +175,7 @@ const Select: FC<SelectProps> = ({
                       : so.value;
                   return (
                     <Chip
-                      className="mr-2"
+                      size="sm"
                       label={so.label}
                       key={key}
                       readOnly={readOnly}
