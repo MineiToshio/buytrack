@@ -4,21 +4,30 @@ import Button from "@/core/Button";
 import Icons from "@/core/Icons";
 import { GET_ORDER } from "@/helpers/apiUrls";
 import { orderStatusLabel } from "@/helpers/constants";
-import useFilters, { DataDefinition, FilterType } from "@/hooks/useFilters";
+import useFilters, { FilterDefinition, FilterType } from "@/hooks/useFilters";
 import FiltersInfo from "@/modules/FiltersInfo";
 import { cn } from "@/styles/utils";
 import { OrderFull, isOrderStatus } from "@/types/prisma";
 import Link from "next/link";
 import { FC, useMemo } from "react";
-import OrderSearchBar, { SearchFormType } from "./OrderSearchBar";
+import OrderSearchBar from "./OrderSearchBar";
 import OrderTable from "./OrderTable";
 
 type OrdersListProps = {
   orders: OrderFull[];
 };
 
+export type SearchFormType = {
+  orderDate: {
+    min: Date;
+    max: Date;
+  } | null;
+  storeId?: string;
+  status?: string[];
+};
+
 const OrdersList: FC<OrdersListProps> = ({ orders }) => {
-  const filterDefinition: DataDefinition = useMemo(
+  const filterDefinition: FilterDefinition<SearchFormType> = useMemo(
     () => [
       {
         type: FilterType.dateRange,
@@ -86,6 +95,7 @@ const OrdersList: FC<OrdersListProps> = ({ orders }) => {
             control={control}
             onSubmit={onSubmit}
             setValue={setValue}
+            filterDefinition={filterDefinition}
           />
           <Link href="/orders/new" className="mb-4 w-1/2 md:mb-0 md:w-fit">
             <Button className="w-full md:w-fit" StartIcon={Icons.Add}>

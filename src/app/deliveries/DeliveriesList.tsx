@@ -5,22 +5,31 @@ import Icons from "@/components/core/Icons";
 import FiltersInfo from "@/components/modules/FiltersInfo";
 import { GET_DELIVERY } from "@/helpers/apiUrls";
 import { deliveryStatusData } from "@/helpers/constants";
-import useFilters, { DataDefinition, FilterType } from "@/hooks/useFilters";
+import useFilters, { FilterDefinition, FilterType } from "@/hooks/useFilters";
 import { cn } from "@/styles/utils";
 import { DeliveryFull, isDeliveryStatus } from "@/types/prisma";
 import Link from "next/link";
 import { FC, useMemo, useState } from "react";
-import DeliverySearchBar, { SearchFormType } from "./DeliverySearchBar";
+import DeliverySearchBar from "./DeliverySearchBar";
 import DeliveryTable from "./DeliveryTable";
 
 type DeliveriesListProps = {
   deliveries: DeliveryFull[];
 };
 
+export type SearchFormType = {
+  approximateDeliveryDate: {
+    min: Date;
+    max: Date;
+  } | null;
+  storeId?: string;
+  status?: string[];
+};
+
 const DeliveriesList: FC<DeliveriesListProps> = ({ deliveries }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const filterDefinition: DataDefinition = useMemo(
+  const filterDefinition: FilterDefinition<SearchFormType> = useMemo(
     () => [
       {
         type: FilterType.dateRange,
@@ -92,6 +101,7 @@ const DeliveriesList: FC<DeliveriesListProps> = ({ deliveries }) => {
             control={control}
             onSubmit={onSubmit}
             setValue={setValue}
+            filterDefinition={filterDefinition}
           />
           <Link href="/deliveries/new" className="w-1/2 md:w-fit">
             <Button className="w-full" StartIcon={Icons.Add}>

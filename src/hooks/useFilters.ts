@@ -2,7 +2,7 @@ import { formatDate, pushState } from "@/helpers/utils";
 import { useQuery } from "@tanstack/react-query";
 import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
-import { FieldValues, useForm } from "react-hook-form";
+import { FieldValues, Path, useForm } from "react-hook-form";
 import { usePushStateListener } from "./usePushStateListener";
 import { get } from "@/helpers/request";
 
@@ -27,18 +27,18 @@ type DefaultDefinition = {
   finderFunc?: undefined;
 };
 
-export type DataDefinition = Array<
+export type FilterDefinition<T extends FieldValues> = Array<
   {
-    attribute: string;
+    attribute: Path<T>;
     title: string;
   } & (TextDefinition | ListDefinition | DefaultDefinition)
 >;
 
 type FilterParams = Record<string, string | undefined>;
 
-const getFilterParams = (
+const getFilterParams = <T extends FieldValues>(
   params: URLSearchParams | ReadonlyURLSearchParams,
-  dataDefinition: DataDefinition,
+  dataDefinition: FilterDefinition<T>,
 ) => {
   let filterParams = {};
   dataDefinition.forEach((d) => {
@@ -52,10 +52,10 @@ const getFilterParams = (
   return filterParams;
 };
 
-const getItems = <FilteredItem>(
+const getItems = <FilteredItem, T extends FieldValues>(
   getUrl: string,
   params: FilterParams,
-  dataDefinition: DataDefinition,
+  dataDefinition: FilterDefinition<T>,
 ) => {
   const searchParams: string[] = [];
   dataDefinition.forEach((d) => {
@@ -67,7 +67,7 @@ const getItems = <FilteredItem>(
 };
 
 const useFilters = <SearchFormType extends FieldValues, FilteredItem>(
-  dataDefinition: DataDefinition,
+  dataDefinition: FilterDefinition<SearchFormType>,
   getUrl: string,
   queryKey: string,
 ) => {
@@ -89,10 +89,13 @@ const useFilters = <SearchFormType extends FieldValues, FilteredItem>(
   const {
     data: filteredItems,
     isLoading,
-    isRefetching,
     refetch,
   } = useQuery([queryKey, ...filterKeys], () =>
-    getItems<FilteredItem>(getUrl, filterParams, dataDefinition),
+    getItems<FilteredItem, SearchFormType>(
+      getUrl,
+      filterParams,
+      dataDefinition,
+    ),
   );
 
   const { control, handleSubmit, setValue } = useForm<SearchFormType>();
