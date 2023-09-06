@@ -1,34 +1,76 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+<p align="center">
+  <img alt="Logo" src="public/images/logo.png" width="150" />
+  <a href="https://toshiominei.com">
+<p>
 
-## Getting Started
+<p align="center">
+  A purchase order tracker made for collectors
+</p>
 
-First, run the development server:
+<p align="center">
+  <img alt="Version" src="https://img.shields.io/badge/version-1.0-blue.svg?cacheSeconds=2592000" />
+  <a href="http://makeapullrequest.com">
+    <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square" alt="PRs Welcome">
+  </a>
+</p>
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
+## 🔥 Features
+
+- Find a store to grow your collection.
+- Manage your purchase orders.
+- Track your deliveries.
+- Get reports about your purchases.
+
+Dev features:
+
+- `Typescript` enabled.
+- Maintained code format with `Prettier` & `Eslint`.
+- Styling with `Tailwind`
+- `React Hook Forms` for from management.
+- Database handling with `Prisma`.
+- Authentication with `Next Auth`.
+- Ready to deploy in `Vercel`.
+
+## 🛠 Installation & Set Up
+
+1. Install dependencies:
+
+```sh
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Set up env variables.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+# .env
+NEXTAUTH_SECRET=*********
+NEXTAUTH_URL=*********
+GOOGLE_CLIENT_ID=*********
+GOOGLE_CLIENT_SECRET=*********
+DATABASE_URL=*********
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+3. Start dev server:
 
-## Learn More
+```sh
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+## 👤 Author
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+This project was developed by Sergio Toshio Minei. You can find me here:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+- Website: https://toshiominei.com
+- Facebook: [@MineiToshio](https://facebook.com/MineiToshio)
+- Instagram: [@MineiToshio](https://instagram.com/MineiToshio)
+- Twitter: [@MineiToshio](https://twitter.com/MineiToshio)
+- Github: [@MineiToshio](https://github.com/MineiToshio)
+- LinkedIn: [@MineiToshio](https://linkedin.com/in/MineiToshio)
 
-## Deploy on Vercel
+## 🤝 Contributing
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+All contributions are welcome. If you see a bug or want to implement a new feature, feel free to make a PR.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## 👏🏻 Show your support
+
+Give a ⭐️ if you like the project!
