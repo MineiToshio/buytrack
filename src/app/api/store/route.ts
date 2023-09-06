@@ -1,6 +1,6 @@
 import { apiResponses } from "@/helpers/api";
 import { authOptions } from "@/helpers/auth";
-import { createStore, getStores } from "@/queries/store";
+import { createStore, filterStores, getStores } from "@/queries/store";
 import { StoreType } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { NextRequest } from "next/server";
@@ -21,9 +21,14 @@ const reqPostSchema = z.object({
   productTypeIds: z.string().array().optional(),
 });
 
-export const GET = async () => {
+export const GET = async (req: NextRequest) => {
   try {
-    const stores = await getStores();
+    const { searchParams } = new URL(req.url);
+    const name = searchParams.get("name") ?? undefined;
+    const productTypes = searchParams.get("productTypes")?.split(",");
+    const productsCountry = searchParams.get("productsCountry")?.split(",");
+
+    const stores = await filterStores(name, productTypes, productsCountry);
     return apiResponses(stores).success;
   } catch (error) {
     return apiResponses(error).error;

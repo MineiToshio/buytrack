@@ -10,8 +10,45 @@ type StoreData =
 export const getStores = () =>
   db.store.findMany({
     include: {
-      productsCountry: { include: { country: true } },
-      productTypes: { include: { productType: true } },
+      productsCountry: {
+        include: { country: true },
+        orderBy: { country: { name: "asc" } },
+      },
+      productTypes: {
+        include: { productType: true },
+        orderBy: { productType: { name: "asc" } },
+      },
+      country: true,
+    },
+    orderBy: { name: "asc" },
+  });
+
+export const filterStores = (
+  name?: string,
+  productTypeIds?: string[],
+  productsCountryIds?: string[],
+) =>
+  db.store.findMany({
+    where: {
+      ...(name && { name: { contains: name } }),
+      ...(productTypeIds && {
+        productTypes: { some: { idProductType: { in: productTypeIds } } },
+      }),
+      ...(productsCountryIds && {
+        productsCountry: {
+          some: { idProductsCountry: { in: productsCountryIds } },
+        },
+      }),
+    },
+    include: {
+      productsCountry: {
+        include: { country: true },
+        orderBy: { country: { name: "asc" } },
+      },
+      productTypes: {
+        include: { productType: true },
+        orderBy: { productType: { name: "asc" } },
+      },
       country: true,
     },
     orderBy: { name: "asc" },
@@ -24,8 +61,14 @@ export const getStoreByUrl = (url: string) =>
   db.store.findFirst({
     where: { url },
     include: {
-      productsCountry: { include: { country: true } },
-      productTypes: { include: { productType: true } },
+      productsCountry: {
+        include: { country: true },
+        orderBy: { country: { name: "asc" } },
+      },
+      productTypes: {
+        include: { productType: true },
+        orderBy: { productType: { name: "asc" } },
+      },
       country: true,
     },
   });

@@ -12,7 +12,7 @@ import ChipToggleButtons, {
 } from "@/modules/ChipToggleButtons";
 import { cn } from "@/styles/utils";
 import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
-import { FC, useEffect, useState } from "react";
+import { ChangeEvent, FC, useEffect, useState } from "react";
 import {
   Controller,
   type Control,
@@ -20,7 +20,9 @@ import {
   type Path,
   type UseFormHandleSubmit,
   type UseFormSetValue,
+  UseFormRegister,
 } from "react-hook-form";
+import Input from "../core/Input";
 
 type SearchBarProps<T extends FieldValues> = {
   isLoading: boolean;
@@ -162,6 +164,28 @@ export const ChipToggleField = <SearchFormType extends FieldValues>({
           value={field.value}
         />
       )}
+    />
+  </SearchField>
+);
+
+type TextFieldProps<SearchFormType extends FieldValues> = {
+  title: string;
+  placeholder?: string;
+  formField: Path<SearchFormType>;
+  register: UseFormRegister<SearchFormType>;
+};
+
+export const TextToggleField = <SearchFormType extends FieldValues>({
+  title,
+  placeholder,
+  formField,
+  register,
+}: TextFieldProps<SearchFormType>) => (
+  <SearchField title={title}>
+    <Input
+      variant="standard"
+      placeholder={placeholder}
+      {...register(formField)}
     />
   </SearchField>
 );

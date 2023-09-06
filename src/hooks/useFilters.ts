@@ -14,7 +14,7 @@ export enum FilterType {
 
 type TextDefinition = {
   type: FilterType.text;
-  finderFunc: (id: string) => string | undefined;
+  finderFunc?: (id: string) => string | undefined;
 };
 
 type ListDefinition = {
@@ -98,7 +98,7 @@ const useFilters = <SearchFormType extends FieldValues, FilteredItem>(
     ),
   );
 
-  const { control, handleSubmit, setValue } = useForm<SearchFormType>();
+  const { setValue, handleSubmit, ...formData } = useForm<SearchFormType>();
 
   const filteredInfo = useMemo(() => {
     let filters = {};
@@ -115,7 +115,9 @@ const useFilters = <SearchFormType extends FieldValues, FilteredItem>(
             },
           };
         } else if (d.type === FilterType.text) {
-          const value = d.finderFunc(filterParams[d.attribute]!);
+          const value = d.finderFunc
+            ? d.finderFunc(filterParams[d.attribute]!)
+            : filterParams[d.attribute];
           if (value) {
             filters = {
               ...filters,
@@ -182,7 +184,6 @@ const useFilters = <SearchFormType extends FieldValues, FilteredItem>(
 
   return {
     hasFilters,
-    control,
     filteredItems,
     filteredInfo,
     isLoading,
@@ -190,6 +191,7 @@ const useFilters = <SearchFormType extends FieldValues, FilteredItem>(
     setValue,
     onFilterDelete,
     onSubmit: handleSubmit,
+    ...formData,
   };
 };
 
