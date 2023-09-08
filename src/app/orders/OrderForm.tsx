@@ -9,7 +9,11 @@ import {
   GET_STORE,
   UPDATE_ORDER,
 } from "@/helpers/apiUrls";
-import { orderStatusColor, orderStatusLabel } from "@/helpers/constants";
+import {
+  FormState,
+  orderStatusColor,
+  orderStatusLabel,
+} from "@/helpers/constants";
 import { put } from "@/helpers/request";
 import useRouter from "@/hooks/useRouter";
 import useSelect from "@/hooks/useSelect";
@@ -18,12 +22,15 @@ import { OrderFull } from "@/types/prisma";
 import { Currency, Order, OrderStatus } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
 import { FC, useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import OrderFormProducts from "./OrderFormProducts";
 import OrderNotes from "./OrderNotes";
 import OrderPayments from "./OrderPayments";
 
 export type Product = {
+  productId?: string;
+  deliveryId?: string;
+  delivered?: boolean;
   productName: string;
   price?: number;
 };
@@ -51,10 +58,15 @@ const cancelOrder = (orderId: string) =>
 
 const OrderForm: FC<OrderFormProps> = ({ isLoading, order, onSubmit }) => {
   const router = useRouter();
-  const [isReadOnly, setIsReadOnly] = useState<boolean>(!!order);
+  const [formState, setFormState] = useState<FormState>(
+    order != null ? FormState.view : FormState.create,
+  );
   const [status, setStatus] = useState<OrderStatus | undefined>(order?.status);
   const [showCancelModal, setShowCancelModal] = useState<boolean>(false);
   const { options: stores } = useSelect(["stores"], GET_STORE);
+
+  const isViewing = formState === FormState.view;
+  const isCreating = formState === FormState.create;
 
   const { isLoading: isCanceling, mutate } = useMutation({
     mutationFn: (orderId: string) => cancelOrder(orderId),
@@ -94,11 +106,15 @@ const OrderForm: FC<OrderFormProps> = ({ isLoading, order, onSubmit }) => {
         });
       }
       order.products.forEach((p, i) => {
+        setValue(`products.${i}.productId`, p.id);
+        p.deliveryId && setValue(`products.${i}.deliveryId`, p.deliveryId);
+        setValue(`products.${i}.delivered`, p.delivery?.delivered);
         setValue(`products.${i}.productName`, p.productName);
         p.price && setValue(`products.${i}.price`, p.price);
       });
     }
-  }, [order, setValue]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const calculatePrice = () => {
     const values = getValues();
@@ -143,6 +159,15 @@ const OrderForm: FC<OrderFormProps> = ({ isLoading, order, onSubmit }) => {
     }
   };
 
+  const handleEdit = () => setFormState(FormState.edit);
+
+  const submit: SubmitHandler<OrderFormType> = (data) => {
+    if (formState === FormState.edit) {
+      setFormState(FormState.view);
+    }
+    onSubmit(data);
+  };
+
   return (
     <>
       <ConfirmModal
@@ -152,11 +177,8 @@ const OrderForm: FC<OrderFormProps> = ({ isLoading, order, onSubmit }) => {
         onConfirm={confirmCancelOrder}
       />
       <div className="flex flex-col gap-x-4">
-        <form
-          className="flex w-full flex-col"
-          onSubmit={handleSubmit(onSubmit)}
-        >
-          {isReadOnly && status != null && (
+        <form className="flex w-full flex-col" onSubmit={handleSubmit(submit)}>
+          {!isCreating && status != null && (
             <FormRow
               title="Estado"
               Icon={Icons.Tag}
@@ -174,7 +196,7 @@ const OrderForm: FC<OrderFormProps> = ({ isLoading, order, onSubmit }) => {
             options={stores}
             control={control}
             formField="storeId"
-            readOnly={isReadOnly}
+            readOnly={!!order}
             allowSearch
             required
             error={!!errors.storeId}
@@ -187,14 +209,14 @@ const OrderForm: FC<OrderFormProps> = ({ isLoading, order, onSubmit }) => {
             type="datepicker"
             control={control}
             formField="orderDate"
-            readOnly={isReadOnly}
+            readOnly={isViewing}
             maxDate={new Date()}
             required
             error={!!errors.orderDate}
             errorMessage="La fecha de orden es obligatoria"
           />
           {!(
-            isReadOnly &&
+            isViewing &&
             (order?.maxApproximateDeliveryDate == null ||
               order?.minApproximateDeliveryDate == null)
           ) && (
@@ -205,8 +227,8 @@ const OrderForm: FC<OrderFormProps> = ({ isLoading, order, onSubmit }) => {
               type="dateRangePicker"
               control={control}
               formField="approximateDeliveryDate"
-              readOnly={isReadOnly}
-              minDate={new Date()}
+              readOnly={isViewing}
+              minDate={isCreating ? new Date() : undefined}
             />
           )}
           <FormRow
@@ -222,14 +244,14 @@ const OrderForm: FC<OrderFormProps> = ({ isLoading, order, onSubmit }) => {
             required
             error={!!errors.currencyId}
             errorMessage="La moneda es obligatoria"
-            readOnly={isReadOnly}
+            readOnly={isViewing}
           />
           <FormRow
             title="Costo Total"
             Icon={Icons.Money}
             placeholder="1234"
             type="input"
-            readOnly={isReadOnly}
+            readOnly={isViewing}
             ButtonIcon={Icons.Calculator}
             onButtonClick={calculatePrice}
             error={!!errors.productsCost}
@@ -247,10 +269,10 @@ const OrderForm: FC<OrderFormProps> = ({ isLoading, order, onSubmit }) => {
             register={register}
             setFocus={setFocus}
             errors={errors.products}
-            readOnly={isReadOnly}
+            readOnly={isViewing}
             products={order?.products}
           />
-          {!isReadOnly && (
+          {!isViewing && (
             <Button
               type="submit"
               className="mt-5 w-fit"
@@ -261,7 +283,7 @@ const OrderForm: FC<OrderFormProps> = ({ isLoading, order, onSubmit }) => {
             </Button>
           )}
         </form>
-        {order && (
+        {order && isViewing && (
           <>
             <OrderPayments
               orderId={order.id}
@@ -274,28 +296,38 @@ const OrderForm: FC<OrderFormProps> = ({ isLoading, order, onSubmit }) => {
         )}
         {status !== OrderStatus.Canceled && (
           <div className="mt-8 flex flex-col gap-4 md:flex-row">
-            {isReadOnly && isDeliveryAvailable && (
+            {isViewing && isDeliveryAvailable && (
               <Button
-                type="button"
                 className="md:w-fit"
                 onClick={registerDelivery}
                 StartIcon={Icons.Courier}
+                isLoading={isLoading}
               >
                 Registrar Entrega
               </Button>
             )}
-            {isReadOnly && (
-              <Button
-                type="button"
-                color="error"
-                variant="outline"
-                className="md:w-fit"
-                isLoading={isCanceling}
-                onClick={showCancelOrderModal}
-                StartIcon={Icons.Cancel}
-              >
-                Cancelar Pedido
-              </Button>
+            {isViewing && (
+              <>
+                <Button
+                  variant="outline"
+                  className="md:w-fit"
+                  onClick={handleEdit}
+                  StartIcon={Icons.Edit}
+                  isLoading={isLoading}
+                >
+                  Editar
+                </Button>
+                <Button
+                  color="error"
+                  variant="outline"
+                  className="md:w-fit"
+                  isLoading={isCanceling || isLoading}
+                  onClick={showCancelOrderModal}
+                  StartIcon={Icons.Cancel}
+                >
+                  Cancelar Pedido
+                </Button>
+              </>
             )}
           </div>
         )}

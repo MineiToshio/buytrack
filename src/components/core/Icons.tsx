@@ -35,6 +35,7 @@ import {
   ListRestart,
   LogOut,
   LogIn,
+  FileEdit,
 } from "lucide-react";
 
 export const Icons = {
@@ -74,6 +75,7 @@ export const Icons = {
   Restart: ListRestart,
   LogOut,
   LogIn,
+  Edit: FileEdit,
 };
 
 export default Icons;

@@ -8,24 +8,10 @@ import { useMutation } from "@tanstack/react-query";
 import { FC, useState } from "react";
 import { SubmitHandler } from "react-hook-form";
 import OrderForm, { OrderFormType } from "../OrderForm";
+import { formatOrderFormData } from "../utils";
 
 const createOrder = (data: OrderFormType) => {
-  const newOrder = {
-    storeId: data.storeId,
-    productsCost: data.productsCost,
-    ...(data.orderDate && { orderDate: new Date(data.orderDate) }),
-    ...(data.approximateDeliveryDate?.min && {
-      minApproximateDeliveryDate: data.approximateDeliveryDate?.min,
-    }),
-    ...(data.approximateDeliveryDate?.max && {
-      maxApproximateDeliveryDate: data.approximateDeliveryDate?.max,
-    }),
-    currencyId: data.currencyId,
-    products: data.products.map((p) => ({
-      productName: p.productName,
-      ...(p.price && { price: p.price }),
-    })),
-  };
+  const newOrder = formatOrderFormData(data);
   return post<Order>(CREATE_ORDER, newOrder);
 };
 

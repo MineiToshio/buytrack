@@ -87,13 +87,23 @@ const OrderFormProducts: FC<OrderFormProductsProps> = ({
           setFocus(`products.${index + 1}.${attribute}`);
         }
       } else if (e.key === "Delete") {
-        if (fields.length > 1) {
+        if (fields[index].deliveryId) {
+          alert("Solo se pueden eliminar productos sin entregas programadas.");
+        } else if (fields.length > 1) {
           e.preventDefault();
           remove(index);
           const currentIndex = fields.length === index + 1 ? index - 1 : index;
           setFocus(`products.${currentIndex}.${attribute}`);
         }
       }
+    }
+  };
+
+  const handleDelete = (index: number) => {
+    if (fields[index].deliveryId) {
+      alert("Solo se pueden eliminar productos sin entregas programadas.");
+    } else {
+      remove(index);
     }
   };
 
@@ -140,7 +150,9 @@ const OrderFormProducts: FC<OrderFormProductsProps> = ({
               autoComplete="off"
               readOnly={readOnly}
               onKeyDown={handleKeyDown}
-              {...register(`products.${index}.productName`, { required: true })}
+              {...register(`products.${index}.productName`, {
+                required: true,
+              })}
             />
           </div>
           <Input
@@ -159,8 +171,8 @@ const OrderFormProducts: FC<OrderFormProductsProps> = ({
           />
           {products && (
             <ProductStatusDot
-              isDelivered={products[index].delivery?.delivered}
-              deliveryId={products[index].deliveryId}
+              isDelivered={field.delivered}
+              deliveryId={field.deliveryId}
               className="w-1/4"
             />
           )}
@@ -168,7 +180,7 @@ const OrderFormProducts: FC<OrderFormProductsProps> = ({
             <Button
               variant="text"
               className="w-[24px] p-0"
-              onClick={() => remove(index)}
+              onClick={() => handleDelete(index)}
               title="Eliminar producto"
             >
               <Icons.Delete />

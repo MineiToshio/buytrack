@@ -244,47 +244,54 @@ export const updateOrder = (
   userId: string,
   order: Partial<Order>,
   orderProducts?: ProductUpdate[],
-) => db.$transaction(async (tx) => {
-    const productsIds =
-      orderProducts?.filter((o) => o.id != null)?.map((o) => o.id) ?? [];
-    const updateProducts = orderProducts?.map(o => ({ id: o.id ?? "-1", ...o }))
+) =>
+  db.$transaction(
+    async (tx) => {
+      const productsIds =
+        orderProducts?.filter((o) => o.id != null)?.map((o) => o.id) ?? [];
+      const updateProducts = orderProducts?.map((o) => ({
+        id: o.id ?? "-1",
+        ...o,
+      }));
 
-    await tx.order.update({
-      data: {
-        ...order,
-      },
-      where: {
-        id: orderId,
-        userId,
-      },
-    });
-    await tx.orderProduct.deleteMany({
-      where: {
-        orderId,
-        // @ts-ignore: items will never be undefined because of filter in orderProductsIds
-        id: { notIn: productsIds },
-      },
-    });
-    if (updateProducts) {
-      await Promise.all(
-        updateProducts.map((o) =>
-          tx.orderProduct.upsert({
-            where: { id: o.id },
-            update: o,
-            create: {
-              productName: o.productName,
-              price: o.price,
-              orderId,
-            },
-          }),
-        ),
-      );
-    }
-    await Promise.all([
-      updateOrderStatusToOpen(tx),
-      updateOrderStatusToInRoute(tx),
-      updateOrderStatusToDelivered(tx),
-      updateOrderStatusToPartialInRoute(tx),
-      updateOrderStatusToPartialDelivered(tx),
-    ])
-  }, { maxWait: 5000, timeout: 10000 });
+      await tx.order.update({
+        data: {
+          ...order,
+        },
+        where: {
+          id: orderId,
+          userId,
+        },
+      });
+      await tx.orderProduct.deleteMany({
+        where: {
+          orderId,
+          // @ts-ignore: items will never be undefined because of filter in orderProductsIds
+          id: { notIn: productsIds },
+        },
+      });
+      if (updateProducts) {
+        await Promise.all(
+          updateProducts.map((o) =>
+            tx.orderProduct.upsert({
+              where: { id: o.id },
+              update: o,
+              create: {
+                productName: o.productName,
+                price: o.price,
+                orderId,
+              },
+            }),
+          ),
+        );
+      }
+      await Promise.all([
+        updateOrderStatusToOpen(tx),
+        updateOrderStatusToInRoute(tx),
+        updateOrderStatusToDelivered(tx),
+        updateOrderStatusToPartialInRoute(tx),
+        updateOrderStatusToPartialDelivered(tx),
+      ]);
+    },
+    { maxWait: 5000, timeout: 10000 },
+  );

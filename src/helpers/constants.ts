@@ -63,3 +63,9 @@ export const deliveryStatusData = Object.freeze({
     icon: Icons.Courier,
   }),
 });
+
+export enum FormState {
+  create,
+  edit,
+  view,
+}
