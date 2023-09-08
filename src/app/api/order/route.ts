@@ -45,6 +45,13 @@ const reqPutSchema = z.object({
       OrderStatus.Partial_In_Route,
     ])
     .optional(),
+  products: z.array(
+    z.object({
+      id: z.string().optional(),
+      productName: z.string(),
+      price: z.number().optional(),
+    }),
+  ).optional(),
 });
 
 export const GET = async (req: NextRequest) => {
@@ -119,7 +126,7 @@ export const PUT = async (req: NextRequest) => {
       return apiResponses().unauthorized;
     }
 
-    const { orderId, ...orderData } = reqPutSchema.parse(body);
+    const { orderId, products, ...orderData } = reqPutSchema.parse(body);
 
     const order = getOrderById(orderId, user.id);
 
@@ -127,8 +134,18 @@ export const PUT = async (req: NextRequest) => {
       return apiResponses().unauthorized;
     }
 
-    const updatedOrder = await updateOrder(orderId, user.id, orderData);
-    return apiResponses(updatedOrder).success;
+    await updateOrder(
+      orderId,
+      user.id,
+      orderData,
+      products,
+    );
+
+    return apiResponses({
+      id: orderId,
+      products,
+      ...orderData,
+    }).success;
   } catch (error) {
     return apiResponses(error).error;
   }

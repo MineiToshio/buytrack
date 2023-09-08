@@ -21,6 +21,12 @@ type ProductCreate = {
   price?: number;
 };
 
+type ProductUpdate = {
+  id?: string;
+  productName: string;
+  price?: number;
+};
+
 type OrderCompute = Order & {
   products: (OrderProduct & {
     delivery: Delivery | null;
@@ -158,19 +164,6 @@ export const createOrder = (order: OrderCreate, products: ProductCreate[]) =>
     },
   });
 
-export const updateOrder = (
-  orderId: string,
-  userId: string,
-  order: Partial<Order>,
-) =>
-  db.order.update({
-    data: order,
-    where: {
-      id: orderId,
-      userId,
-    },
-  });
-
 // No product has a scheduled delivery
 export const updateOrderStatusToOpen = (tx: Transaction) =>
   tx.order.updateMany({
@@ -245,3 +238,53 @@ export const updateOrderStatusToPartialDelivered = (tx: Transaction) =>
       ],
     },
   });
+
+export const updateOrder = (
+  orderId: string,
+  userId: string,
+  order: Partial<Order>,
+  orderProducts?: ProductUpdate[],
+) => db.$transaction(async (tx) => {
+    const productsIds =
+      orderProducts?.filter((o) => o.id != null)?.map((o) => o.id) ?? [];
+    const updateProducts = orderProducts?.map(o => ({ id: o.id ?? "-1", ...o }))
+
+    await tx.order.update({
+      data: {
+        ...order,
+      },
+      where: {
+        id: orderId,
+        userId,
+      },
+    });
+    await tx.orderProduct.deleteMany({
+      where: {
+        orderId,
+        // @ts-ignore: items will never be undefined because of filter in orderProductsIds
+        id: { notIn: productsIds },
+      },
+    });
+    if (updateProducts) {
+      await Promise.all(
+        updateProducts.map((o) =>
+          tx.orderProduct.upsert({
+            where: { id: o.id },
+            update: o,
+            create: {
+              productName: o.productName,
+              price: o.price,
+              orderId,
+            },
+          }),
+        ),
+      );
+    }
+    await Promise.all([
+      updateOrderStatusToOpen(tx),
+      updateOrderStatusToInRoute(tx),
+      updateOrderStatusToDelivered(tx),
+      updateOrderStatusToPartialInRoute(tx),
+      updateOrderStatusToPartialDelivered(tx),
+    ])
+  }, { maxWait: 5000, timeout: 10000 });
