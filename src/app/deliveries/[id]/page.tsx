@@ -21,15 +21,15 @@ const page = async ({ params }: Params) => {
   const session = await getServerSession(authOptions);
   if (!session) return notFound();
 
+  const delivery = await getDeliveryById(params.id, session.user.id);
+
   const queryClient = getQueryClient();
   const res = await Promise.all([
     queryClient.prefetchQuery(["currencies"], getCurrencies),
-    getStoreByAvailableOrders(session.user.id),
-    getOrdersWithoutDeliveredProducts(session.user.id),
+    getStoreByAvailableOrders(session.user.id, delivery?.storeId),
+    getOrdersWithoutDeliveredProducts(session.user.id, params.id),
   ]);
   const dehydratedState = dehydrate(queryClient);
-
-  const delivery = await getDeliveryById(params.id, session.user.id);
 
   return (
     <div className="flex w-full flex-col items-center px-4 pt-8 md:px-10">

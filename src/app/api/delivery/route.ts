@@ -5,7 +5,6 @@ import {
   createDelivery,
   deleteDelivery,
   filterDeliveries,
-  getDeliveries,
   getDeliveryById,
   updateDelivery,
 } from "@/queries/delivery";
@@ -36,6 +35,7 @@ const reqPutSchema = z.object({
   maxApproximateDeliveryDate: z.string().pipe(z.coerce.date()).optional(),
   delivered: z.boolean().optional(),
   deliveryDate: z.string().pipe(z.coerce.date()).optional(),
+  products: z.string().array().optional(),
 });
 
 export const GET = async (req: NextRequest) => {
@@ -108,7 +108,7 @@ export const PUT = async (req: NextRequest) => {
       return apiResponses().unauthorized;
     }
 
-    const { deliveryId, ...deliveryData } = reqPutSchema.parse(body);
+    const { deliveryId, products, ...deliveryData } = reqPutSchema.parse(body);
 
     const delivery = getDeliveryById(deliveryId, user.id);
 
@@ -116,12 +116,13 @@ export const PUT = async (req: NextRequest) => {
       return apiResponses().unauthorized;
     }
 
-    const updatedOrder = await updateDelivery(
-      deliveryId,
-      user.id,
-      deliveryData,
-    );
-    return apiResponses(updatedOrder).success;
+    await updateDelivery(deliveryId, user.id, deliveryData, products);
+
+    return apiResponses({
+      id: deliveryId,
+      products,
+      ...deliveryData,
+    }).success;
   } catch (error) {
     return apiResponses(error).error;
   }

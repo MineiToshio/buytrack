@@ -23,7 +23,6 @@ const ViewOrderForm: FC<ViewOrderFormProps> = ({ order }) => {
   const { isLoading, mutate } = useMutation({
     mutationFn: ({ data, orderId }: { data: OrderFormType; orderId: string }) =>
       updateOrder(data, orderId),
-    onSuccess: () => {},
   });
 
   const handleSubmit: SubmitHandler<OrderFormType> = (data) => {

@@ -116,20 +116,42 @@ export const getOrderByOrderNote = (orderNoteId: string, userId: string) =>
     },
   });
 
-export const getOrdersWithoutDeliveredProducts = (userId: string) =>
+export const getOrdersWithoutDeliveredProducts = (
+  userId: string,
+  currentDeliveryId?: string,
+) =>
   db.order.findMany({
     where: {
-      status: {
-        in: ["Open", "In_Route", "Partial_Delivered", "Partial_In_Route"],
-      },
-      userId,
-      products: {
-        some: { deliveryId: null },
-      },
+      OR: [
+        {
+          status: {
+            in: ["Open", "In_Route", "Partial_Delivered", "Partial_In_Route"],
+          },
+          userId,
+          products: {
+            some: { deliveryId: null },
+          },
+        },
+        ...(currentDeliveryId
+          ? [
+              {
+                userId,
+                products: {
+                  some: { deliveryId: currentDeliveryId },
+                },
+              },
+            ]
+          : []),
+      ],
     },
     include: {
       products: {
-        where: { deliveryId: null },
+        where: {
+          OR: [
+            { deliveryId: null },
+            ...(currentDeliveryId ? [{ deliveryId: currentDeliveryId }] : []),
+          ],
+        },
         orderBy: { productName: "asc" },
       },
     },

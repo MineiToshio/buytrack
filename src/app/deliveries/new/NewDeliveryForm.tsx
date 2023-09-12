@@ -10,6 +10,7 @@ import { useSearchParams } from "next/navigation";
 import { FC, useState } from "react";
 import { SubmitHandler } from "react-hook-form";
 import DeliveryForm, { DeliveryFormType } from "../DeliveryForm";
+import { formatDeliveryFormData } from "../utils";
 
 type NewDeliveryFormProps = {
   stores: Store[];
@@ -17,15 +18,7 @@ type NewDeliveryFormProps = {
 };
 
 const createDelivery = (data: DeliveryFormType) => {
-  const delivery = {
-    ...data,
-    ...(data.approximateDeliveryDate?.min && {
-      minApproximateDeliveryDate: data.approximateDeliveryDate?.min,
-    }),
-    ...(data.approximateDeliveryDate?.max && {
-      maxApproximateDeliveryDate: data.approximateDeliveryDate?.max,
-    }),
-  };
+  const delivery = formatDeliveryFormData(data);
   return post<Delivery>(CREATE_DELIVERY, delivery);
 };
 

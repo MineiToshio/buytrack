@@ -84,8 +84,10 @@ export const createDelivery = (delivery: DeliveryCreate, products: string[]) =>
       data: { deliveryId: createdDelivery.id },
       where: { id: { in: products } },
     });
-    await updateOrderStatusToInRoute(tx);
-    await updateOrderStatusToPartialInRoute(tx);
+    await Promise.all([
+      updateOrderStatusToInRoute(tx),
+      updateOrderStatusToPartialInRoute(tx),
+    ]);
     return createdDelivery;
   });
 
@@ -93,20 +95,39 @@ export const updateDelivery = (
   deliveryId: string,
   userId: string,
   delivery: Partial<Delivery>,
+  products?: string[],
 ) =>
-  db.$transaction(async (tx) => {
-    await tx.delivery.update({
-      data: delivery,
-      where: {
-        id: deliveryId,
-        orderProducts: { some: { order: { userId } } },
-      },
-    });
-    await updateOrderStatusToInRoute(tx);
-    await updateOrderStatusToDelivered(tx);
-    await updateOrderStatusToPartialInRoute(tx);
-    await updateOrderStatusToPartialDelivered(tx);
-  });
+  db.$transaction(
+    async (tx) => {
+      await tx.delivery.update({
+        data: delivery,
+        where: {
+          id: deliveryId,
+          orderProducts: { some: { order: { userId } } },
+        },
+      });
+      if (products) {
+        await Promise.all([
+          tx.orderProduct.updateMany({
+            data: { deliveryId: null },
+            where: { id: { notIn: products }, deliveryId },
+          }),
+          tx.orderProduct.updateMany({
+            data: { deliveryId: deliveryId },
+            where: { id: { in: products } },
+          }),
+        ]);
+      }
+      await Promise.all([
+        updateOrderStatusToOpen(tx),
+        updateOrderStatusToInRoute(tx),
+        updateOrderStatusToDelivered(tx),
+        updateOrderStatusToPartialInRoute(tx),
+        updateOrderStatusToPartialDelivered(tx),
+      ]);
+    },
+    { maxWait: 5000, timeout: 10000 },
+  );
 
 export const deleteDelivery = (deliveryId: string) =>
   db.$transaction(async (tx) => {
@@ -114,8 +135,10 @@ export const deleteDelivery = (deliveryId: string) =>
       data: { deliveryId: null },
       where: { deliveryId: deliveryId },
     });
-    await updateOrderStatusToOpen(tx);
-    await updateOrderStatusToPartialInRoute(tx);
+    await Promise.all([
+      updateOrderStatusToOpen(tx),
+      updateOrderStatusToPartialInRoute(tx),
+    ]);
     return await tx.delivery.delete({
       where: {
         id: deliveryId,

@@ -73,7 +73,10 @@ export const getStoreByUrl = (url: string) =>
     },
   });
 
-export const getStoreByAvailableOrders = (userId: string) =>
+export const getStoreByAvailableOrders = (
+  userId: string,
+  currentStoreId?: string,
+) =>
   db.store.findMany({
     include: {
       orders: {
@@ -86,15 +89,31 @@ export const getStoreByAvailableOrders = (userId: string) =>
       },
     },
     where: {
-      orders: {
-        some: {
-          userId,
-          products: { some: { deliveryId: null } },
-          status: {
-            in: ["Open", "In_Route", "Partial_Delivered", "Partial_In_Route"],
+      OR: [
+        {
+          orders: {
+            some: {
+              userId,
+              products: { some: { deliveryId: null } },
+              status: {
+                in: [
+                  "Open",
+                  "In_Route",
+                  "Partial_Delivered",
+                  "Partial_In_Route",
+                ],
+              },
+            },
           },
         },
-      },
+        ...(currentStoreId
+          ? [
+              {
+                id: currentStoreId,
+              },
+            ]
+          : []),
+      ],
     },
     orderBy: { name: "asc" },
   });

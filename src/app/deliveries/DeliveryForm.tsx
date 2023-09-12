@@ -10,7 +10,11 @@ import {
   GET_CURRENCY,
   UPDATE_DELIVERY,
 } from "@/helpers/apiUrls";
-import { deliveryStatus, deliveryStatusData } from "@/helpers/constants";
+import {
+  FormState,
+  deliveryStatus,
+  deliveryStatusData,
+} from "@/helpers/constants";
 import { del, put } from "@/helpers/request";
 import { formatDate } from "@/helpers/utils";
 import useRouter from "@/hooks/useRouter";
@@ -23,7 +27,7 @@ import { DeliveryFull, OrderWithProducts } from "@/types/prisma";
 import { Currency, Store } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
 import { FC, useCallback, useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import DeliveryProducts from "./DeliveryProducts";
 
 const DEFAULT_DELIVERY_DATE = {
@@ -71,6 +75,9 @@ const DeliveryForm: FC<DeliveryFormProps> = ({
   onSubmit,
 }) => {
   const router = useRouter();
+  const [formState, setFormState] = useState<FormState>(
+    delivery != null ? FormState.view : FormState.create,
+  );
   const [isDelivered, setIsDelivered] = useState<boolean | undefined>(
     delivery?.delivered,
   );
@@ -83,10 +90,15 @@ const DeliveryForm: FC<DeliveryFormProps> = ({
     value: Date | null;
     error: boolean;
   }>(DEFAULT_DELIVERY_DATE);
-  const [isReadOnly, setIsReadOnly] = useState<boolean>(!!delivery);
   const [ordersWithProducts, setOrdersWithProducts] = useState<
     OrderWithProducts[]
   >([]);
+  const [selectedProducts, setSelectedProducts] = useState(
+    delivery ? delivery.orderProducts : [],
+  );
+
+  const isViewing = formState === FormState.view;
+  const isCreating = formState === FormState.create;
 
   const { isLoading: isDeleting, mutate: mutateDelete } = useMutation({
     mutationFn: (deliveryId: string) => deleteDelivery(deliveryId),
@@ -150,6 +162,7 @@ const DeliveryForm: FC<DeliveryFormProps> = ({
           "products",
           delivery.orderProducts.map((o) => o.id),
         );
+      setProductsByStore(delivery.storeId);
     } else if (defaults) {
       if (defaults.storeId) {
         const storeExists = stores.find((s) => s.id === defaults.storeId);
@@ -169,7 +182,8 @@ const DeliveryForm: FC<DeliveryFormProps> = ({
         }
       }
     }
-  }, [delivery, defaults, setValue, stores, orders, setProductsByStore]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleStoreChange = (storeId: string) => {
     setProductsByStore(storeId);
@@ -215,6 +229,21 @@ const DeliveryForm: FC<DeliveryFormProps> = ({
     }
   };
 
+  const handleEdit = () => setFormState(FormState.edit);
+
+  const submit: SubmitHandler<DeliveryFormType> = (data) => {
+    if (formState === FormState.edit) {
+      setFormState(FormState.view);
+      const orderProducts = orders
+        .map((o) => o.products)
+        .flat()
+        .filter((product) => data.products.includes(product.id));
+
+      setSelectedProducts(orderProducts);
+    }
+    onSubmit(data);
+  };
+
   return (
     <>
       <Modal open={showDeliveredMessage} onClose={toggleDeliveryMessage}>
@@ -249,10 +278,7 @@ const DeliveryForm: FC<DeliveryFormProps> = ({
         onConfirm={confirmDelete}
       />
       <div className="flex flex-col gap-x-4 md:flex-row">
-        <form
-          className="flex w-full flex-col"
-          onSubmit={handleSubmit(onSubmit)}
-        >
+        <form className="flex w-full flex-col" onSubmit={handleSubmit(submit)}>
           <div className="flex w-full flex-col gap-x-4 md:flex-row">
             <div className="flex w-full flex-col md:w-3/5">
               {isDelivered != null && (
@@ -297,7 +323,7 @@ const DeliveryForm: FC<DeliveryFormProps> = ({
                 options={storeOptions}
                 control={control}
                 formField="storeId"
-                readOnly={isReadOnly}
+                readOnly={isViewing}
                 allowSearch
                 required
                 error={!!errors.storeId}
@@ -305,7 +331,7 @@ const DeliveryForm: FC<DeliveryFormProps> = ({
                 onChange={handleStoreChange}
               />
               {!(
-                isReadOnly &&
+                isViewing &&
                 (delivery?.maxApproximateDeliveryDate == null ||
                   delivery?.minApproximateDeliveryDate == null)
               ) && (
@@ -316,27 +342,27 @@ const DeliveryForm: FC<DeliveryFormProps> = ({
                   type="dateRangePicker"
                   control={control}
                   formField="approximateDeliveryDate"
-                  readOnly={isReadOnly}
-                  minDate={new Date()}
+                  readOnly={isViewing}
+                  minDate={isCreating ? new Date() : undefined}
                 />
               )}
-              {!(isReadOnly && delivery?.currier?.length === 0) && (
+              {!(isViewing && delivery?.currier?.length === 0) && (
                 <FormRow
                   title="Currier"
                   Icon={Icons.Courier}
                   placeholder="Olva, Rappi, Motorizado"
                   type="input"
-                  readOnly={isReadOnly}
+                  readOnly={isViewing}
                   {...register("currier")}
                 />
               )}
-              {!(isReadOnly && delivery?.tracking?.length === 0) && (
+              {!(isViewing && delivery?.tracking?.length === 0) && (
                 <FormRow
                   title="Tracking"
                   Icon={Icons.Courier}
                   placeholder="123456789"
                   type="input"
-                  readOnly={isReadOnly}
+                  readOnly={isViewing}
                   {...register("tracking")}
                 />
               )}
@@ -353,14 +379,14 @@ const DeliveryForm: FC<DeliveryFormProps> = ({
                 required
                 error={!!errors.currencyId}
                 errorMessage="La moneda es obligatoria"
-                readOnly={isReadOnly}
+                readOnly={isViewing}
               />
               <FormRow
                 title="Precio"
                 Icon={Icons.Money}
                 placeholder="1234"
                 type="input"
-                readOnly={isReadOnly}
+                readOnly={isViewing}
                 error={!!errors.price}
                 errorMessage="El precio es obligatorio"
                 min={0}
@@ -377,15 +403,11 @@ const DeliveryForm: FC<DeliveryFormProps> = ({
                   { "border-error": !!errors.products },
                 )}
               >
-                {isReadOnly ? (
+                {isViewing ? (
                   <>
-                    {delivery && (
-                      <>
-                        {delivery.orderProducts.map((p) => (
-                          <Typography key={p.id}>{p.productName}</Typography>
-                        ))}
-                      </>
-                    )}
+                    {selectedProducts.map((p) => (
+                      <Typography key={p.id}>{p.productName}</Typography>
+                    ))}
                   </>
                 ) : (
                   <Controller
@@ -405,7 +427,7 @@ const DeliveryForm: FC<DeliveryFormProps> = ({
             </div>
           </div>
           <div className="mt-5 flex gap-x-4">
-            {!isReadOnly && (
+            {!isViewing && (
               <Button
                 type="submit"
                 className="w-fit"
@@ -415,23 +437,34 @@ const DeliveryForm: FC<DeliveryFormProps> = ({
                 Guardar
               </Button>
             )}
-            {isReadOnly && (
+            {isViewing && (
               <>
                 {!isDelivered && (
-                  <Button
-                    className="w-fit"
-                    isLoading={isDeleting || isPending}
-                    onClick={openDeliveryMessage}
-                    StartIcon={Icons.Delivered}
-                  >
-                    Marcar como entregado
-                  </Button>
+                  <>
+                    <Button
+                      className="w-fit"
+                      isLoading={isDeleting || isPending || isLoading}
+                      onClick={openDeliveryMessage}
+                      StartIcon={Icons.Delivered}
+                    >
+                      Confirmar entrega
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="w-fit"
+                      isLoading={isDeleting || isPending || isLoading}
+                      onClick={handleEdit}
+                      StartIcon={Icons.Edit}
+                    >
+                      Editar
+                    </Button>
+                  </>
                 )}
                 <Button
                   variant="outline"
                   color="error"
                   className="w-fit"
-                  isLoading={isDeleting || isPending}
+                  isLoading={isDeleting || isPending || isLoading}
                   onClick={showDeleteMessage}
                   StartIcon={Icons.Delete}
                 >

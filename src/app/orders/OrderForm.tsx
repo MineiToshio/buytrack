@@ -325,7 +325,7 @@ const OrderForm: FC<OrderFormProps> = ({ isLoading, order, onSubmit }) => {
                   onClick={showCancelOrderModal}
                   StartIcon={Icons.Cancel}
                 >
-                  Cancelar Pedido
+                  Cancelar
                 </Button>
               </>
             )}
