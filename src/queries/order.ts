@@ -1,4 +1,5 @@
 import { db } from "@/helpers/db";
+import { createId } from "@/helpers/utils";
 import { Transaction } from "@/types/prisma";
 import { DateRange } from "@/types/types";
 import {
@@ -271,10 +272,6 @@ export const updateOrder = (
     async (tx) => {
       const productsIds =
         orderProducts?.filter((o) => o.id != null)?.map((o) => o.id) ?? [];
-      const updateProducts = orderProducts?.map((o) => ({
-        id: o.id ?? "-1",
-        ...o,
-      }));
 
       await tx.order.update({
         data: {
@@ -292,21 +289,28 @@ export const updateOrder = (
           id: { notIn: productsIds },
         },
       });
-      if (updateProducts) {
-        await Promise.all(
-          updateProducts.map((o) =>
-            tx.orderProduct.upsert({
-              where: { id: o.id },
-              update: o,
-              create: {
-                productName: o.productName,
-                price: o.price,
-                orderId,
-              },
-            }),
-          ),
-        );
+
+      if (orderProducts) {
+        await tx.$executeRaw`
+          INSERT INTO \`buytrack-db\`.OrderProduct (id, orderId, productName, price)
+          VALUES ${Prisma.join(
+            orderProducts.map(
+              (field) =>
+                Prisma.sql`(${Prisma.join([
+                  field.id ?? createId(),
+                  orderId,
+                  field.productName,
+                  field.price,
+                ])})`,
+            ),
+          )}
+          ON DUPLICATE KEY UPDATE
+            orderId = VALUES(orderId),
+            productName = VALUES(productName),
+            price = VALUES(price);
+        `;
       }
+
       await Promise.all([
         updateOrderStatusToOpen(tx),
         updateOrderStatusToInRoute(tx),

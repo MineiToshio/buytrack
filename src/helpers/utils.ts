@@ -1,4 +1,5 @@
 import { Locale } from "@/types/types";
+import { init } from "@paralleldrive/cuid2";
 
 export const generateId = (length: number) => {
   let result = "";
@@ -11,6 +12,12 @@ export const generateId = (length: number) => {
   }
   return result;
 };
+
+export const createId = (length: number = 25) =>
+  init({
+    length,
+    fingerprint: "90845k2cr0390tvdk340693",
+  })();
 
 export const addLeadingZeros = (number: number, lenght: number = 2) => {
   const pad_char = "0";
