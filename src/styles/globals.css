@@ -5,3 +5,7 @@
 .w-form {
   @apply w-full max-w-xl;
 }
+
+.p-page {
+  @apply p-4 md:p-10;
+}

@@ -40,12 +40,17 @@ export const buttonVariants = cva(
       {
         variant: "default",
         color: "white",
-        class: "bg-white text-primary hover:bg-slate-50 normal-case",
+        class: "bg-white text-primary hover:bg-slate-200 normal-case",
       },
       {
         variant: "icon",
         color: "muted",
         class: "text-muted hover:text-gray-500",
+      },
+      {
+        variant: "icon",
+        color: "white",
+        class: "text-white hover:text-slate-200",
       },
       {
         variant: "outline",

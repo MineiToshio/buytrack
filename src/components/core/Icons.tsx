@@ -36,6 +36,9 @@ import {
   LogOut,
   LogIn,
   FileEdit,
+  Menu,
+  LayoutDashboard,
+  FileText,
 } from "lucide-react";
 
 export const Icons = {
@@ -76,6 +79,9 @@ export const Icons = {
   LogOut,
   LogIn,
   Edit: FileEdit,
+  Menu,
+  Dashboard: LayoutDashboard,
+  File: FileText,
 };
 
 export default Icons;
