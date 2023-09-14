@@ -13,7 +13,7 @@ import { OrderPayment } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
 import { FC, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import OrderPaymentsTable from "./OrderPaymentsTable";
+import OrderPaymentsTable from "../OrderPaymentsTable";
 
 type Form = {
   paymentDate: Date;

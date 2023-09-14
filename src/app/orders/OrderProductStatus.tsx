@@ -1,12 +1,11 @@
 "use client";
 
+import Chip from "@/components/core/Chip";
 import { deliveryStatusData } from "@/helpers/constants";
 import useRouter from "@/hooks/useRouter";
 import { cn } from "@/styles/utils";
 import { FC } from "react";
 import { getStatusAttribute } from "./utils";
-import Typography from "@/components/core/Typography";
-import Chip from "@/components/core/Chip";
 
 type ProductStatusDotProps = {
   isDelivered?: boolean;

@@ -25,7 +25,7 @@ import {
 import Link from "next/link";
 import { FC, Fragment, useState } from "react";
 import OrderPaymentTable from "./OrderPaymentsTable";
-import ProductStatusDot from "./ProductStatusDot";
+import OrderProductStatus from "./OrderProductStatus";
 
 type Props = {
   orders?: OrderFull[];
@@ -296,7 +296,7 @@ const OrderTable: FC<Props> = ({ orders, hasFilters }) => {
                                       </Typography>
                                     </td>
                                     <td className="pb-1">
-                                      <ProductStatusDot
+                                      <OrderProductStatus
                                         deliveryId={r.deliveryId}
                                         isDelivered={r.delivery?.delivered}
                                       />

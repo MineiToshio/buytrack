@@ -16,7 +16,7 @@ import {
   useFieldArray,
 } from "react-hook-form";
 import { OrderFormType, Product } from "./OrderForm";
-import ProductStatusDot from "./ProductStatusDot";
+import OrderProductStatus from "../OrderProductStatus";
 
 type OrderFormProductsProps = {
   control: Control<OrderFormType>;
@@ -170,7 +170,7 @@ const OrderFormProducts: FC<OrderFormProductsProps> = ({
             })}
           />
           {products && (
-            <ProductStatusDot
+            <OrderProductStatus
               isDelivered={field.delivered}
               deliveryId={field.deliveryId}
               className="w-1/4"
