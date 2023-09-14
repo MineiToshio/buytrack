@@ -1,4 +1,3 @@
-import NewStoreForm from "@/app/stores/new/NewStoreForm";
 import Heading from "@/core/Heading";
 import { getQueryClient } from "@/helpers/reactQuery";
 import Hydrate from "@/modules/Hydrate";
@@ -6,6 +5,7 @@ import { getCountries } from "@/queries/country";
 import { getProductTypes } from "@/queries/productType";
 import { getProductsCountries } from "@/queries/productsCountry";
 import { dehydrate } from "@tanstack/react-query";
+import NewStoreForm from "./NewStoreForm";
 
 const page = async ({}) => {
   const queryClient = getQueryClient();
