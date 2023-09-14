@@ -23,7 +23,7 @@ import {
   StoreType,
 } from "@prisma/client";
 import { FC, useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 
 const YES_NO_OPTIONS = [
   {
@@ -85,6 +85,7 @@ const StoreForm: FC<StoreFormProps> = ({ isLoading, store, onSubmit }) => {
     setValue,
     formState: { errors },
   } = useForm<StoreFormType>();
+  const storeType = useWatch({ control, name: "type" });
 
   useEffect(() => {
     if (store) {
@@ -185,45 +186,49 @@ const StoreForm: FC<StoreFormProps> = ({ isLoading, store, onSubmit }) => {
         errorMessage="El país de la tienda es obligatorio"
         readOnly={isReadOnly}
       />
-      {!(isReadOnly && store?.whatsapp?.length === 0) && (
-        <FormRow
-          title="Whatsapp"
-          Icon={Icons.Message}
-          placeholder="987 654 321"
-          type="input"
-          readOnly={isReadOnly}
-          {...register("whatsapp")}
-        />
-      )}
-      {!(isReadOnly && store?.facebook?.length === 0) && (
-        <FormRow
-          title="Facebook"
-          Icon={Icons.Facebook}
-          placeholder="https://fb.com/misitio"
-          type="input"
-          readOnly={isReadOnly}
-          {...register("facebook")}
-        />
-      )}
-      {!(isReadOnly && store?.instagram?.length === 0) && (
-        <FormRow
-          title="Instagram"
-          Icon={Icons.Instagram}
-          placeholder="https://instagram.com/misitio"
-          type="input"
-          readOnly={isReadOnly}
-          {...register("instagram")}
-        />
-      )}
-      {!(isReadOnly && store?.website?.length === 0) && (
-        <FormRow
-          title="Website"
-          Icon={Icons.Web}
-          placeholder="https://misitio.com"
-          type="input"
-          readOnly={isReadOnly}
-          {...register("website")}
-        />
+      {storeType === StoreType.Business && (
+        <>
+          {!(isReadOnly && store?.whatsapp?.length === 0) && (
+            <FormRow
+              title="Whatsapp"
+              Icon={Icons.Message}
+              placeholder="987 654 321"
+              type="input"
+              readOnly={isReadOnly}
+              {...register("whatsapp")}
+            />
+          )}
+          {!(isReadOnly && store?.facebook?.length === 0) && (
+            <FormRow
+              title="Facebook"
+              Icon={Icons.Facebook}
+              placeholder="https://fb.com/misitio"
+              type="input"
+              readOnly={isReadOnly}
+              {...register("facebook")}
+            />
+          )}
+          {!(isReadOnly && store?.instagram?.length === 0) && (
+            <FormRow
+              title="Instagram"
+              Icon={Icons.Instagram}
+              placeholder="https://instagram.com/misitio"
+              type="input"
+              readOnly={isReadOnly}
+              {...register("instagram")}
+            />
+          )}
+          {!(isReadOnly && store?.website?.length === 0) && (
+            <FormRow
+              title="Website"
+              Icon={Icons.Web}
+              placeholder="https://misitio.com"
+              type="input"
+              readOnly={isReadOnly}
+              {...register("website")}
+            />
+          )}
+        </>
       )}
       {!(isReadOnly && store?.hasStock == null) && (
         <FormRow

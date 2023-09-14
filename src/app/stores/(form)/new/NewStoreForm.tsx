@@ -2,9 +2,9 @@
 
 import { CREATE_STORE } from "@/helpers/apiUrls";
 import { post } from "@/helpers/request";
-import { generateId } from "@/helpers/utils";
+import { createId } from "@/helpers/utils";
 import useRouter from "@/hooks/useRouter";
-import { Store } from "@prisma/client";
+import { Store, StoreType } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
 import { FC, useState } from "react";
 import { SubmitHandler } from "react-hook-form";
@@ -12,9 +12,18 @@ import slugify from "slugify";
 import StoreForm, { StoreFormType } from "../StoreForm";
 
 const createStore = async (data: StoreFormType) => {
-  const randomString = generateId(5);
+  const isBusiness = data.type === StoreType.Business;
+  const { facebook, instagram, whatsapp, website, ...remainingData } = data;
+  const randomString = createId(5);
   const url = slugify(`${data.name}-${randomString}`);
-  return post<Store>(CREATE_STORE, { ...data, url });
+  return post<Store>(CREATE_STORE, {
+    ...remainingData,
+    ...(isBusiness && { facebook }),
+    ...(isBusiness && { instagram }),
+    ...(isBusiness && { whatsapp }),
+    ...(isBusiness && { website }),
+    url,
+  });
 };
 
 const NewStoreForm: FC = () => {
