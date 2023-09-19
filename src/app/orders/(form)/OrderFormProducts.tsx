@@ -119,7 +119,7 @@ const OrderFormProducts: FC<OrderFormProductsProps> = ({
           <Typography color="muted">Producto</Typography>
           {!readOnly && (
             <Button
-              variant="text"
+              variant="icon"
               className="ml-2 p-0"
               onClick={addNewRow}
               title="Agregar producto"

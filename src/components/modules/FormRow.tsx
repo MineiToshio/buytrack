@@ -197,7 +197,7 @@ const FormRow = <T extends FieldValues>(
     </div>
     <div className="flex w-full flex-col">
       {type === "input" && (
-        <div className="flex w-full">
+        <div className="flex w-full items-center">
           <Input
             placeholder={placeholder}
             readOnly={readOnly}
@@ -207,7 +207,7 @@ const FormRow = <T extends FieldValues>(
             ref={ref}
           />
           {ButtonIcon && onButtonClick && !readOnly && (
-            <Button variant="text" onClick={onButtonClick} className="p-0">
+            <Button variant="icon" onClick={onButtonClick}>
               <ButtonIcon />
             </Button>
           )}
