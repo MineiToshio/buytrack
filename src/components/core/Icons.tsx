@@ -39,6 +39,7 @@ import {
   Menu,
   LayoutDashboard,
   FileText,
+  Star,
 } from "lucide-react";
 
 export const Icons = {
@@ -82,6 +83,7 @@ export const Icons = {
   Menu,
   Dashboard: LayoutDashboard,
   File: FileText,
+  Star,
 };
 
 export default Icons;
