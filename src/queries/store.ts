@@ -1,5 +1,5 @@
 import { db } from "@/helpers/db";
-import { Prisma } from "@prisma/client";
+import { Prisma, Store, StoreReview } from "@prisma/client";
 
 type StoreData =
   | (Prisma.Without<Prisma.StoreCreateInput, Prisma.StoreUncheckedCreateInput> &
@@ -7,8 +7,25 @@ type StoreData =
   | (Prisma.Without<Prisma.StoreUncheckedCreateInput, Prisma.StoreCreateInput> &
       Prisma.StoreCreateInput);
 
-export const getStores = () =>
-  db.store.findMany({
+type StoreCompute = Store & {
+  storeReviews: StoreReview[];
+};
+
+const computeStore = <T extends StoreCompute>(store: T) => {
+  if (store.storeReviews == null || store.storeReviews.length == 0) {
+    return store;
+  }
+
+  return {
+    ...store,
+    rating:
+      store.storeReviews.reduce((acc, curr) => acc + curr.rating, 0) /
+      store.storeReviews.length,
+  };
+};
+
+export const getStores = async () => {
+  const stores = await db.store.findMany({
     include: {
       productsCountry: {
         include: { country: true },
@@ -19,16 +36,21 @@ export const getStores = () =>
         orderBy: { productType: { name: "asc" } },
       },
       country: true,
+      storeReviews: {
+        orderBy: { createdDate: "desc" },
+      },
     },
     orderBy: { name: "asc" },
   });
+  return stores.map((s) => computeStore(s));
+};
 
-export const filterStores = (
+export const filterStores = async (
   name?: string,
   productTypeIds?: string[],
   productsCountryIds?: string[],
-) =>
-  db.store.findMany({
+) => {
+  const stores = await db.store.findMany({
     where: {
       ...(name && { name: { contains: name } }),
       ...(productTypeIds && {
@@ -50,15 +72,20 @@ export const filterStores = (
         orderBy: { productType: { name: "asc" } },
       },
       country: true,
+      storeReviews: {
+        orderBy: { createdDate: "desc" },
+      },
     },
     orderBy: { name: "asc" },
   });
+  return stores.map((s) => computeStore(s));
+};
 
 export const getStoreById = (id: string) =>
   db.store.findFirst({ where: { id } });
 
-export const getStoreByUrl = (url: string) =>
-  db.store.findFirst({
+export const getStoreByUrl = async (url: string) => {
+  const store = await db.store.findFirst({
     where: { url },
     include: {
       productsCountry: {
@@ -70,8 +97,13 @@ export const getStoreByUrl = (url: string) =>
         orderBy: { productType: { name: "asc" } },
       },
       country: true,
+      storeReviews: {
+        orderBy: { createdDate: "desc" },
+      },
     },
   });
+  if (store) return computeStore(store);
+};
 
 export const getStoreByAvailableOrders = (
   userId: string,

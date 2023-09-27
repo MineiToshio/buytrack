@@ -27,6 +27,8 @@ export type StoreFull = Store & {
   productsCountry?: {
     country: ProductsCountry;
   }[];
+  storeReviews: StoreReview[];
+  rating?: number;
 };
 
 export type OrderFullProduct = OrderProduct & {

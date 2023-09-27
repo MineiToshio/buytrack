@@ -105,6 +105,23 @@ const columns = [
     },
     header: () => "PAÍSES DE IMPORTACIÓN",
   }),
+  columnHelper.accessor((row) => row.rating, {
+    id: "rating",
+    size: 40,
+    cell: (info) => {
+      const rating = info.getValue();
+      return (
+        <div
+          className="flex items-center justify-center gap-1"
+          title="Calificación"
+        >
+          <Typography>{rating?.toFixed(1) ?? "-"}</Typography>
+          {rating && <Icons.Star className="text-letters" />}
+        </div>
+      );
+    },
+    header: () => null,
+  }),
   columnHelper.accessor((row) => row.url, {
     id: "storeUrl",
     size: 40,
