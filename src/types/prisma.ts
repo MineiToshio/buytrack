@@ -12,6 +12,7 @@ import {
   ProductType,
   ProductsCountry,
   Store,
+  StoreReview,
 } from "@prisma/client";
 import {
   DefaultArgs,
@@ -36,6 +37,7 @@ export type OrderFull = Order & {
   products: OrderFullProduct[];
   orderNotes: OrderNote[];
   orderPayments: OrderPayment[];
+  review: StoreReview;
   store: Store;
   currency: Currency;
   paidAmount: number;

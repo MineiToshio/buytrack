@@ -26,6 +26,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import OrderFormProducts from "./OrderFormProducts";
 import OrderNotes from "./OrderNotes";
 import OrderPayments from "./OrderPayments";
+import OrderReview from "./OrderReview";
 
 export type Product = {
   productId?: string;
@@ -177,6 +178,13 @@ const OrderForm: FC<OrderFormProps> = ({ isLoading, order, onSubmit }) => {
         onConfirm={confirmCancelOrder}
       />
       <div className="flex flex-col gap-x-4">
+        {order && (
+          <OrderReview
+            storeId={order.storeId}
+            orderId={order.id}
+            review={order.review}
+          />
+        )}
         <form className="flex w-full flex-col" onSubmit={handleSubmit(submit)}>
           {!isCreating && status != null && (
             <FormRow

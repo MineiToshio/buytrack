@@ -19,3 +19,5 @@ export const CREATE_DELIVERY = "/api/delivery";
 export const GET_DELIVERY = "/api/delivery";
 export const UPDATE_DELIVERY = "/api/delivery";
 export const DELETE_DELIVERY = "/api/delivery?id=";
+export const CREATE_STORE_REVIEW = "/api/store-review";
+export const UPDATE_STORE_REVIEW = "/api/store-review";

@@ -7,9 +7,10 @@ type ModalProps = {
   children: React.ReactNode | Array<React.ReactNode>;
   onClose: () => void;
   open: boolean;
+  className?: string;
 };
 
-const Modal: FC<ModalProps> = ({ children, onClose, open }) => {
+const Modal: FC<ModalProps> = ({ children, onClose, open, className }) => {
   return (
     <Portal>
       <div
@@ -21,7 +22,12 @@ const Modal: FC<ModalProps> = ({ children, onClose, open }) => {
           },
         )}
       >
-        <div className="relative w-min min-w-[300px] max-w-3xl rounded-md bg-white">
+        <div
+          className={cn(
+            "relative w-min min-w-[300px] max-w-3xl rounded-md bg-white m-4 md:m-10",
+            className,
+          )}
+        >
           <button
             type="button"
             onClick={onClose}

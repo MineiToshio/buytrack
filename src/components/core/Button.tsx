@@ -17,7 +17,7 @@ export const buttonVariants = cva(
           "bg-transparent text-primary hover:bg-primary border border-primary hover:text-white",
         ghost:
           "bg-transparent hover:bg-primary data-[state=open]:bg-transparent",
-        text: "bg-transparent underline-offset-4 hover:underline text-primary hover:text-green-600",
+        text: "bg-transparent underline-offset-4 hover:underline text-primary hover:text-green-600 focus:ring-0 focus:ring-offset-0",
         icon: "bg-transparent text-primary !p-0 border-transparent focus:ring-0 focus:ring-transparent !h-min hover:text-green-600",
       },
       size: {
@@ -34,6 +34,7 @@ export const buttonVariants = cva(
         white: "",
         muted: "",
         error: "",
+        secondary: "",
       },
     },
     compoundVariants: [
@@ -61,6 +62,11 @@ export const buttonVariants = cva(
         variant: "outline",
         color: "muted",
         class: "border-muted text-muted hover:bg-muted focus:ring-muted",
+      },
+      {
+        variant: "text",
+        color: "secondary",
+        class: "text-secondary hover:text-secondary-alt",
       },
     ],
     defaultVariants: {

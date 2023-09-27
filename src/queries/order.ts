@@ -53,6 +53,7 @@ export const getOrdersByUser = async (userId: string) => {
       orderPayments: { orderBy: { paymentDate: "desc" } },
       store: true,
       currency: true,
+      review: true,
     },
   });
   return orders.map((o) => computeOrder(o));
@@ -86,6 +87,7 @@ export const filterOrdersByUser = async (
       orderPayments: { orderBy: { paymentDate: "desc" } },
       store: true,
       currency: true,
+      review: true,
     },
   });
   return orders.map((o) => computeOrder(o));
@@ -104,6 +106,7 @@ export const getOrderById = async (id: string, userId: string) => {
       orderPayments: { orderBy: { paymentDate: "desc" } },
       store: true,
       currency: true,
+      review: true,
     },
   });
   if (order) return computeOrder(order);

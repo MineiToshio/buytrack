@@ -163,15 +163,16 @@ model StoreAddress {
 }
 
 model StoreReview {
-  id      String  @id @default(cuid())
-  storeId String
-  store   Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
-  userId  String
-  user    User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  rating  Int
-  comment String
-  orderId String? @unique
-  order   Order? @relation(fields: [orderId], references: [id])
+  id          String @id @default(cuid())
+  storeId     String
+  store       Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rating      Int
+  comment     String
+  orderId     String? @unique
+  order       Order? @relation(fields: [orderId], references: [id])
+  createdDate DateTime @default(now())
 
   @@index([storeId])
   @@index([userId])
