@@ -145,6 +145,23 @@ const columns = [
       header: () => "ENTREGA APROX.",
     },
   ),
+  columnHelper.accessor((row) => row.review, {
+    id: "review",
+    size: 40,
+    cell: (info) => {
+      const review = info.getValue();
+      return (
+        <div
+          className="flex items-center justify-center gap-1"
+          title="Calificación"
+        >
+          <Typography>{review?.rating ?? "-"}</Typography>
+          {review && <Icons.Star className="text-letters" />}
+        </div>
+      );
+    },
+    header: () => null,
+  }),
   columnHelper.accessor((row) => row.id, {
     id: "orderUrl",
     size: 40,

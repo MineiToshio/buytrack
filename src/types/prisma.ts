@@ -37,7 +37,7 @@ export type OrderFull = Order & {
   products: OrderFullProduct[];
   orderNotes: OrderNote[];
   orderPayments: OrderPayment[];
-  review: StoreReview;
+  review: StoreReview | null;
   store: Store;
   currency: Currency;
   paidAmount: number;

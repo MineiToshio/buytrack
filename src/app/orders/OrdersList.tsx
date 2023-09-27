@@ -27,6 +27,7 @@ export type SearchFormType = {
 };
 
 const OrdersList: FC<OrdersListProps> = ({ orders }) => {
+  console.log(orders);
   const filterDefinition: FilterDefinition<SearchFormType> = useMemo(
     () => [
       {

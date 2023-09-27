@@ -155,7 +155,7 @@ const OrderReview: FC<OrderReviewProps> = ({ storeId, orderId, review }) => {
         <div className="pb-4 flex items-center">
           <ReviewStars stars={currentReview.rating} />
           <Button variant="text" color="secondary" onClick={openModal}>
-            Editar opinión
+            Editar calificación
           </Button>
         </div>
       ) : (
