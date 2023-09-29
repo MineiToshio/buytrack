@@ -4,7 +4,7 @@ import Input from "@/core/Input";
 import Typography from "@/core/Typography";
 import { CREATE_ORDER_NOTE, DELETE_ORDER_NOTE } from "@/helpers/apiUrls";
 import { del, post } from "@/helpers/request";
-import { formatDatetime } from "@/helpers/utils";
+import { formatDatetime, formatTimeAgo } from "@/helpers/utils";
 import useDeleteModal from "@/hooks/useDeleteModal";
 import ConfirmModal from "@/modules/ConfirmModal";
 import { cn } from "@/styles/utils";
@@ -12,10 +12,6 @@ import { OrderNote } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
 import { FC, useState } from "react";
 import { useForm } from "react-hook-form";
-import { format, register } from "timeago.js";
-import esLocale from "timeago.js/lib/lang/es";
-
-register("es", esLocale);
 
 type OrderNotesProps = {
   orderId: string;
@@ -97,7 +93,7 @@ const OrderNotes: FC<OrderNotesProps> = ({ orderId, notes }) => {
                       className="text-muted"
                       title={formatDatetime(note.createdDate)}
                     >
-                      {format(note.createdDate, "es")}
+                      {formatTimeAgo(note.createdDate)}
                     </Typography>
                     <Button
                       color="muted"

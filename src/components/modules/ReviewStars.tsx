@@ -8,6 +8,7 @@ type ReviewStarsProps = {
   className?: string;
   showLegend?: boolean;
   stars: number;
+  size?: number;
   onChange?: (starts: number) => void;
 };
 
@@ -15,6 +16,7 @@ const ReviewStars: FC<ReviewStarsProps> = ({
   className,
   showLegend,
   stars,
+  size,
   onChange,
 }) => {
   const handleChange = (index: number) => {
@@ -29,7 +31,7 @@ const ReviewStars: FC<ReviewStarsProps> = ({
         "pb-5": showLegend,
       })}
     >
-      <div className="flex">
+      <div className={cn("flex", { "gap-1": onChange == null })}>
         {Array(5)
           .fill(0)
           .map((_, i) => (
@@ -37,17 +39,27 @@ const ReviewStars: FC<ReviewStarsProps> = ({
               type="button"
               key={i}
               onClick={() => handleChange(i)}
-              className={cn("rounded-full p-1", {
+              className={cn("rounded-full", {
                 "cursor-default": onChange == null,
-                "hover:bg-slate-200": onChange != null,
+                "hover:bg-slate-200 p-1": onChange != null,
               })}
             >
-              <Icons.Star
-                color={colors.secondary.DEFAULT}
-                className={cn({
-                  "fill-secondary": stars > i,
-                })}
-              />
+              <div className="flex relative">
+                <Icons.StarHalf
+                  size={size}
+                  color={colors.secondary.DEFAULT}
+                  className={cn("absolute", {
+                    "fill-secondary": stars > i,
+                  })}
+                />
+                <Icons.StarHalf
+                  size={size}
+                  color={colors.secondary.DEFAULT}
+                  className={cn("-scale-x-100", {
+                    "fill-secondary": stars > i + 0.5,
+                  })}
+                />
+              </div>
             </button>
           ))}
       </div>

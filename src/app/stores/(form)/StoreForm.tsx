@@ -24,6 +24,7 @@ import {
 } from "@prisma/client";
 import { FC, useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
+import StoreReviews from "./StoreReviews";
 
 const YES_NO_OPTIONS = [
   {
@@ -112,159 +113,164 @@ const StoreForm: FC<StoreFormProps> = ({ isLoading, store, onSubmit }) => {
   }, [setValue, store]);
 
   return (
-    <form className="flex w-full flex-col" onSubmit={handleSubmit(onSubmit)}>
-      <div className="mb-4">
-        <Input
-          variant="unstyled"
-          placeholder="Sin nombre"
-          className="text-lg font-semibold sm:text-3xl"
-          readOnly={isReadOnly}
-          {...register("name", { required: true })}
-        />
-        {errors.name && (
-          <Typography className="mt-1 text-error" size="xs">
-            El nombre es obligatorio
-          </Typography>
-        )}
-      </div>
-      <FormRow
-        title="Tipo"
-        Icon={Icons.ChevronSquareDown}
-        placeholder="Negocio o persona"
-        type="select"
-        options={storeTypeOptions}
-        control={control}
-        formField="type"
-        required
-        error={!!errors.type}
-        errorMessage="El tipo de tienda es obligatorio"
-        readOnly={isReadOnly}
-      />
-      <FormRow
-        title="Tipos de producto"
-        Icon={Icons.Category}
-        placeholder="Elige los tipo de productos en venta"
-        type="select"
-        options={productTypeOptions}
-        control={control}
-        formField="productTypeIds"
-        newModalTitle="Nuevo tipo de producto"
-        onAdd={addNewProductType}
-        multiple
-        required
-        error={!!errors.productTypeIds}
-        errorMessage="El tipo de producto es obligatorio"
-        readOnly={isReadOnly}
-      />
-      {!(isReadOnly && store?.productsCountry?.length === 0) && (
+    <>
+      <form className="flex w-full flex-col" onSubmit={handleSubmit(onSubmit)}>
+        <div className="mb-4">
+          <Input
+            variant="unstyled"
+            placeholder="Sin nombre"
+            className="text-lg font-semibold sm:text-3xl"
+            readOnly={isReadOnly}
+            {...register("name", { required: true })}
+          />
+          {errors.name && (
+            <Typography className="mt-1 text-error" size="xs">
+              El nombre es obligatorio
+            </Typography>
+          )}
+        </div>
         <FormRow
-          title="Países de importación"
-          Icon={Icons.CornerUpLeftArrow}
-          placeholder="Elige los países de importación"
+          title="Tipo"
+          Icon={Icons.ChevronSquareDown}
+          placeholder="Negocio o persona"
           type="select"
-          options={productsCountryOptions}
+          options={storeTypeOptions}
           control={control}
-          formField="productsCountryIds"
-          newModalTitle="Nuevo país de importación"
-          onAdd={addNewProductsCountry}
+          formField="type"
+          required
+          error={!!errors.type}
+          errorMessage="El tipo de tienda es obligatorio"
+          readOnly={isReadOnly}
+        />
+        <FormRow
+          title="Tipos de producto"
+          Icon={Icons.Category}
+          placeholder="Elige los tipo de productos en venta"
+          type="select"
+          options={productTypeOptions}
+          control={control}
+          formField="productTypeIds"
+          newModalTitle="Nuevo tipo de producto"
+          onAdd={addNewProductType}
           multiple
+          required
+          error={!!errors.productTypeIds}
+          errorMessage="El tipo de producto es obligatorio"
           readOnly={isReadOnly}
         />
-      )}
-      <FormRow
-        title="País"
-        Icon={Icons.Globe}
-        placeholder="Elige el país de la tienda"
-        type="select"
-        options={countryOptions}
-        control={control}
-        formField="countryId"
-        newModalTitle="Nuevo país"
-        onAdd={addNewCountry}
-        required
-        error={!!errors.countryId}
-        errorMessage="El país de la tienda es obligatorio"
-        readOnly={isReadOnly}
-      />
-      {storeType === StoreType.Business && (
-        <>
-          {!(isReadOnly && store?.whatsapp?.length === 0) && (
-            <FormRow
-              title="Whatsapp"
-              Icon={Icons.Message}
-              placeholder="987 654 321"
-              type="input"
-              readOnly={isReadOnly}
-              {...register("whatsapp")}
-            />
-          )}
-          {!(isReadOnly && store?.facebook?.length === 0) && (
-            <FormRow
-              title="Facebook"
-              Icon={Icons.Facebook}
-              placeholder="https://fb.com/misitio"
-              type="input"
-              readOnly={isReadOnly}
-              {...register("facebook")}
-            />
-          )}
-          {!(isReadOnly && store?.instagram?.length === 0) && (
-            <FormRow
-              title="Instagram"
-              Icon={Icons.Instagram}
-              placeholder="https://instagram.com/misitio"
-              type="input"
-              readOnly={isReadOnly}
-              {...register("instagram")}
-            />
-          )}
-          {!(isReadOnly && store?.website?.length === 0) && (
-            <FormRow
-              title="Website"
-              Icon={Icons.Web}
-              placeholder="https://misitio.com"
-              type="input"
-              readOnly={isReadOnly}
-              {...register("website")}
-            />
-          )}
-        </>
-      )}
-      {!(isReadOnly && store?.hasStock == null) && (
+        {!(isReadOnly && store?.productsCountry?.length === 0) && (
+          <FormRow
+            title="Países de importación"
+            Icon={Icons.CornerUpLeftArrow}
+            placeholder="Elige los países de importación"
+            type="select"
+            options={productsCountryOptions}
+            control={control}
+            formField="productsCountryIds"
+            newModalTitle="Nuevo país de importación"
+            onAdd={addNewProductsCountry}
+            multiple
+            readOnly={isReadOnly}
+          />
+        )}
         <FormRow
-          title="Tiene stock"
-          Icon={Icons.ChevronSquareDown}
-          placeholder="si o no"
+          title="País"
+          Icon={Icons.Globe}
+          placeholder="Elige el país de la tienda"
           type="select"
-          options={YES_NO_OPTIONS}
+          options={countryOptions}
           control={control}
-          formField="hasStock"
+          formField="countryId"
+          newModalTitle="Nuevo país"
+          onAdd={addNewCountry}
+          required
+          error={!!errors.countryId}
+          errorMessage="El país de la tienda es obligatorio"
           readOnly={isReadOnly}
         />
+        {storeType === StoreType.Business && (
+          <>
+            {!(isReadOnly && store?.whatsapp?.length === 0) && (
+              <FormRow
+                title="Whatsapp"
+                Icon={Icons.Message}
+                placeholder="987 654 321"
+                type="input"
+                readOnly={isReadOnly}
+                {...register("whatsapp")}
+              />
+            )}
+            {!(isReadOnly && store?.facebook?.length === 0) && (
+              <FormRow
+                title="Facebook"
+                Icon={Icons.Facebook}
+                placeholder="https://fb.com/misitio"
+                type="input"
+                readOnly={isReadOnly}
+                {...register("facebook")}
+              />
+            )}
+            {!(isReadOnly && store?.instagram?.length === 0) && (
+              <FormRow
+                title="Instagram"
+                Icon={Icons.Instagram}
+                placeholder="https://instagram.com/misitio"
+                type="input"
+                readOnly={isReadOnly}
+                {...register("instagram")}
+              />
+            )}
+            {!(isReadOnly && store?.website?.length === 0) && (
+              <FormRow
+                title="Website"
+                Icon={Icons.Web}
+                placeholder="https://misitio.com"
+                type="input"
+                readOnly={isReadOnly}
+                {...register("website")}
+              />
+            )}
+          </>
+        )}
+        {!(isReadOnly && store?.hasStock == null) && (
+          <FormRow
+            title="Tiene stock"
+            Icon={Icons.ChevronSquareDown}
+            placeholder="si o no"
+            type="select"
+            options={YES_NO_OPTIONS}
+            control={control}
+            formField="hasStock"
+            readOnly={isReadOnly}
+          />
+        )}
+        {!(isReadOnly && store?.receiveOrders == null) && (
+          <FormRow
+            title="Recibe órdenes"
+            Icon={Icons.ChevronSquareDown}
+            placeholder="si o no"
+            type="select"
+            options={YES_NO_OPTIONS}
+            control={control}
+            formField="receiveOrders"
+            readOnly={isReadOnly}
+          />
+        )}
+        {!isReadOnly && (
+          <Button
+            type="submit"
+            className="mt-5 w-fit"
+            isLoading={isLoading}
+            StartIcon={Icons.Save}
+          >
+            Guardar
+          </Button>
+        )}
+      </form>
+      {store && (
+        <StoreReviews reviews={store.storeReviews} totalRating={store.rating} />
       )}
-      {!(isReadOnly && store?.receiveOrders == null) && (
-        <FormRow
-          title="Recibe órdenes"
-          Icon={Icons.ChevronSquareDown}
-          placeholder="si o no"
-          type="select"
-          options={YES_NO_OPTIONS}
-          control={control}
-          formField="receiveOrders"
-          readOnly={isReadOnly}
-        />
-      )}
-      {!isReadOnly && (
-        <Button
-          type="submit"
-          className="mt-5 w-fit"
-          isLoading={isLoading}
-          StartIcon={Icons.Save}
-        >
-          Guardar
-        </Button>
-      )}
-    </form>
+    </>
   );
 };
 

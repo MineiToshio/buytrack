@@ -1,5 +1,9 @@
 import { Locale } from "@/types/types";
 import { init } from "@paralleldrive/cuid2";
+import { format, register } from "timeago.js";
+import esLocale from "timeago.js/lib/lang/es";
+
+register("es", esLocale);
 
 export const createId = (length: number = 25) =>
   init({
@@ -49,3 +53,5 @@ export const formatDatetime = (date: Date | string, lang: Locale = "es") =>
 
 export const pushState = (params: string) =>
   window.history.pushState({}, "", window.location.pathname + "?" + params);
+
+export const formatTimeAgo = (date: Date) => format(date, "es");

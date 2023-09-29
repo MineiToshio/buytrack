@@ -40,6 +40,7 @@ import {
   LayoutDashboard,
   FileText,
   Star,
+  StarHalf,
 } from "lucide-react";
 
 export const Icons = {
@@ -84,6 +85,7 @@ export const Icons = {
   Dashboard: LayoutDashboard,
   File: FileText,
   Star,
+  StarHalf,
 };
 
 export default Icons;

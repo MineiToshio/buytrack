@@ -19,8 +19,11 @@ const computeStore = <T extends StoreCompute>(store: T) => {
   return {
     ...store,
     rating:
-      store.storeReviews.reduce((acc, curr) => acc + curr.rating, 0) /
-      store.storeReviews.length,
+      Math.round(
+        (store.storeReviews.reduce((acc, curr) => acc + curr.rating, 0) /
+          store.storeReviews.length) *
+          10,
+      ) / 10,
   };
 };
 

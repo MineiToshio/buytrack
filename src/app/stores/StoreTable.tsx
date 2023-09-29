@@ -113,9 +113,9 @@ const columns = [
       return (
         <div
           className="flex items-center justify-center gap-1"
-          title="Calificación"
+          title={`${rating} de calificación`}
         >
-          <Typography>{rating?.toFixed(1) ?? "-"}</Typography>
+          <Typography>{rating ?? "-"}</Typography>
           {rating && <Icons.Star className="text-letters" />}
         </div>
       );
