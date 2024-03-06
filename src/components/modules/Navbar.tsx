@@ -1,3 +1,4 @@
+import Icons from "@/core/Icons";
 import Logo from "@/core/Logo";
 import { authOptions } from "@/helpers/auth";
 import { deliveryStatus } from "@/helpers/constants";
@@ -7,9 +8,9 @@ import { OrderStatus } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import Link from "next/link";
 import { ReactElement } from "react";
-import Icons from "../core/Icons";
 import BurgerMenu from "./BurgerMenu";
 import GoogleAuthButton from "./GoogleAuthButton";
+import UserButton from "./UserButton";
 
 export type NavLink = {
   id: number;
@@ -81,7 +82,11 @@ const Navbar = async () => {
         </div>
       </div>
       <div className="flex items-center">
-        <GoogleAuthButton />
+        {session ? (
+          <UserButton src={session.user.image} />
+        ) : (
+          <GoogleAuthButton />
+        )}
         <BurgerMenu links={linksToRender} />
       </div>
     </div>
