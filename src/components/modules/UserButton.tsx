@@ -6,18 +6,9 @@ import UserImage from "@/core/UserImage";
 import useBoolean from "@/hooks/useBoolean";
 import useHandleOutsideClick from "@/hooks/useHandleOutsideClick";
 import { cn } from "@/styles/utils";
-import { FC } from "react";
-
-const OPTIONS = [
-  {
-    name: "Editar Perfil",
-    Icon: Icons.User,
-  },
-  {
-    name: "Salir",
-    Icon: Icons.LogOut,
-  },
-];
+import { FC, useMemo } from "react";
+import { signOut } from "next-auth/react";
+import useRouter from "@/hooks/useRouter";
 
 type UserButton = {
   src?: string | null;
@@ -25,6 +16,26 @@ type UserButton = {
 };
 
 const UserButton: FC<UserButton> = ({ src, name }) => {
+  const route = useRouter();
+
+  const options = useMemo(
+    () => [
+      {
+        id: "editProfile",
+        name: "Editar Perfil",
+        Icon: Icons.User,
+        onClick: () => route.push("/profile"),
+      },
+      {
+        id: "signOut",
+        name: "Salir",
+        Icon: Icons.LogOut,
+        onClick: async () => await signOut(),
+      },
+    ],
+    [route],
+  );
+
   const {
     state: areOptionsOpen,
     setFalse: hideOptions,
@@ -45,17 +56,18 @@ const UserButton: FC<UserButton> = ({ src, name }) => {
       {areOptionsOpen && (
         <div className="absolute bg-gray-100 right-0 top-11 rounded-md">
           <ul className="w-36">
-            {OPTIONS.map((option, i) => (
+            {options.map((option, i) => (
               <li
-                key={option.name}
+                key={option.id}
                 className={cn(
                   "px-3 py-2 border-b flex items-center cursor-pointer hover:bg-gray-200",
                   {
-                    "border-gray-300": OPTIONS.length !== i + 1,
-                    "rounded-b-md": OPTIONS.length === i + 1,
+                    "border-gray-300": options.length !== i + 1,
+                    "rounded-b-md": options.length === i + 1,
                     "rounded-t-md": i === 0,
                   },
                 )}
+                onClick={option.onClick}
               >
                 <option.Icon size={15} />
                 <Typography className="ml-1">{option.name}</Typography>
