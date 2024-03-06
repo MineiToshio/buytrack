@@ -19,7 +19,7 @@ type FormType = {
 type OrderReviewProps = {
   storeId: string;
   orderId: string;
-  review?: StoreReview;
+  review?: StoreReview | null;
 };
 
 type CurrentReview = FormType & {
@@ -32,7 +32,7 @@ const createStoreReview = (data: FormType, storeId: string, orderId: string) =>
 const updateStoreReview = (data: FormType, storeReviewId: string) =>
   put<StoreReview>(UPDATE_STORE_REVIEW, { storeReviewId, ...data });
 
-const getReviewData = <T extends CurrentReview>(data: T | undefined) => {
+const getReviewData = <T extends CurrentReview>(data: T | undefined | null) => {
   if (data) {
     return {
       id: data.id,
