@@ -9,7 +9,11 @@
     "lint": "next lint",
     "prettier": "prettier --config .prettierrc.json --write \"**/*.*\"",
     "db-push": "npx prisma db push && npx prisma generate",
-    "db-reset": "npx prisma db push --force-reset"
+    "db-reset": "npx prisma db push --force-reset",
+    "db-seed": "npx prisma db seed"
+  },
+  "prisma": {
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   },
   "dependencies": {
     "@next-auth/prisma-adapter": "^1.0.7",
@@ -46,6 +50,7 @@
     "prettier": "3.0.3",
     "prettier-plugin-tailwindcss": "^0.5.4",
     "tailwindcss": "3.3.3",
+    "ts-node": "^10.9.2",
     "typescript": "5.2.2"
   }
 }
