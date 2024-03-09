@@ -294,8 +294,10 @@ export const updateOrder = (
       });
 
       if (orderProducts) {
+        const dbName = Prisma.raw(process.env.DATABASE_NAME ?? "");
+
         await tx.$executeRaw`
-          INSERT INTO \`buytrack-db\`.OrderProduct (id, orderId, productName, price)
+          INSERT INTO \`${dbName}\`.OrderProduct (id, orderId, productName, price)
           VALUES ${Prisma.join(
             orderProducts.map(
               (field) =>
