@@ -9,7 +9,7 @@
     "lint": "next lint",
     "prettier": "prettier --config .prettierrc.json --write \"**/*.*\"",
     "db-push": "npx prisma db push && npx prisma generate",
-    "db-reset": "npx prisma db push --force-reset",
+    "db-reset": "npx prisma db push --force-reset && npx prisma db seed",
     "db-seed": "npx prisma db seed"
   },
   "prisma": {
