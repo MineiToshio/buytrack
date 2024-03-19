@@ -41,6 +41,8 @@ import {
   FileText,
   Star,
   StarHalf,
+  Banknote,
+  User,
 } from "lucide-react";
 
 export const Icons = {
@@ -86,6 +88,8 @@ export const Icons = {
   File: FileText,
   Star,
   StarHalf,
+  Bill: Banknote,
+  User,
 };
 
 export default Icons;

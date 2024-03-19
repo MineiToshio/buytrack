@@ -7,16 +7,17 @@ const DEFAULT_USER = "/images/user.png";
 type UserImageProps = {
   src?: string | null;
   name?: string;
+  size?: number;
   className?: string;
 };
 
-const UserImage: FC<UserImageProps> = ({ src, name, className }) => {
+const UserImage: FC<UserImageProps> = ({ src, name, size, className }) => {
   return (
     <Image
       src={src ?? DEFAULT_USER}
       alt={name ?? "Usuario"}
-      width={40}
-      height={40}
+      width={size ?? 40}
+      height={size ?? 40}
       className={cn("rounded-full", className)}
     />
   );

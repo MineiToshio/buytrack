@@ -10,6 +10,7 @@ const typographyVariants = cva("", {
       sm: "text-sm sm:text-base",
       md: "text-base sm:text-lg",
       lg: "text-lg sm:text-xl",
+      unset: "",
     },
     color: {
       default: "text-letters",
