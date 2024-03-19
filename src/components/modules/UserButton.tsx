@@ -67,7 +67,10 @@ const UserButton: FC<UserButton> = ({ src, name }) => {
                     "rounded-t-md": i === 0,
                   },
                 )}
-                onClick={option.onClick}
+                onClick={() => {
+                  option.onClick();
+                  hideOptions();
+                }}
               >
                 <option.Icon size={15} />
                 <Typography className="ml-1">{option.name}</Typography>
