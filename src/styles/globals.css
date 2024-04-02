@@ -9,3 +9,7 @@
 .p-page {
   @apply p-4 md:p-10;
 }
+
+.link {
+  @apply text-primary hover:text-green-600;
+}

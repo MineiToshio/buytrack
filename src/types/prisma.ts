@@ -13,11 +13,16 @@ import {
   ProductsCountry,
   Store,
   StoreReview,
+  User,
 } from "@prisma/client";
 import {
   DefaultArgs,
   PrismaClientOptions,
 } from "@prisma/client/runtime/library";
+
+export type UserFull = User & {
+  currency: Currency | null;
+};
 
 export type StoreFull = Store & {
   country: Country;

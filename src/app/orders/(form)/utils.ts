@@ -1,6 +1,10 @@
 import { OrderFormType } from "./OrderForm";
 
-export const formatOrderFormData = (data: OrderFormType, orderId?: string) => ({
+export const formatOrderFormData = (
+  data: OrderFormType,
+  currencyId: string,
+  orderId?: string,
+) => ({
   ...(orderId && { orderId }),
   storeId: data.storeId,
   productsCost: data.productsCost,
@@ -11,7 +15,7 @@ export const formatOrderFormData = (data: OrderFormType, orderId?: string) => ({
   ...(data.approximateDeliveryDate?.max && {
     maxApproximateDeliveryDate: data.approximateDeliveryDate?.max,
   }),
-  currencyId: data.currencyId,
+  currencyId,
   products: data.products.map((p) => ({
     productName: p.productName,
     ...(p.price && { price: p.price }),

@@ -39,10 +39,7 @@ const page = async () => {
             <Typography>
               Es necesario tener órdenes pendientes para registrar una entrega.
               Registra tu orden{" "}
-              <Link
-                href="/orders/new"
-                className="text-primary hover:text-green-600"
-              >
+              <Link href="/orders/new" className="link">
                 aquí
               </Link>
               .

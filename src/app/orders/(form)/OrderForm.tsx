@@ -18,7 +18,7 @@ import { put } from "@/helpers/request";
 import useRouter from "@/hooks/useRouter";
 import useSelect from "@/hooks/useSelect";
 import FormRow from "@/modules/FormRow";
-import { OrderFull } from "@/types/prisma";
+import { OrderFull, UserFull } from "@/types/prisma";
 import { Currency, Order, OrderStatus } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
 import { FC, useEffect, useState } from "react";
@@ -44,20 +44,34 @@ export type OrderFormType = {
     max?: Date;
   };
   products: Product[];
-  currencyId: string;
   productsCost: number;
 };
 
-type OrderFormProps = {
-  order?: OrderFull | null;
+type EditOrderFormProps = {
+  order: OrderFull;
   isLoading?: boolean;
+  user?: undefined;
   onSubmit: (data: OrderFormType) => void;
 };
+
+type CreateOrderFormProps = {
+  order?: null;
+  isLoading?: boolean;
+  user: UserFull;
+  onSubmit: (data: OrderFormType) => void;
+};
+
+type OrderFormProps = CreateOrderFormProps | EditOrderFormProps;
 
 const cancelOrder = (orderId: string) =>
   put<Order>(UPDATE_ORDER, { orderId, status: OrderStatus.Canceled });
 
-const OrderForm: FC<OrderFormProps> = ({ isLoading, order, onSubmit }) => {
+const OrderForm: FC<OrderFormProps> = ({
+  isLoading,
+  order,
+  user,
+  onSubmit,
+}) => {
   const router = useRouter();
   const [formState, setFormState] = useState<FormState>(
     order != null ? FormState.view : FormState.create,
@@ -95,7 +109,6 @@ const OrderForm: FC<OrderFormProps> = ({ isLoading, order, onSubmit }) => {
     if (order) {
       setValue("storeId", order.storeId);
       setValue("orderDate", order.orderDate);
-      setValue("currencyId", order.currencyId);
       setValue("productsCost", order.productsCost);
       if (
         order.minApproximateDeliveryDate &&
@@ -243,16 +256,8 @@ const OrderForm: FC<OrderFormProps> = ({ isLoading, order, onSubmit }) => {
             title="Moneda"
             Icon={Icons.Coins}
             placeholder="Elige el tipo de moneda"
-            type="select"
-            options={currencyOptions}
-            control={control}
-            formField="currencyId"
-            newModalTitle="Nueva moneda"
-            onAdd={addNewCurrency}
-            required
-            error={!!errors.currencyId}
-            errorMessage="La moneda es obligatoria"
-            readOnly={isViewing}
+            type="label"
+            label={user?.currency?.name ?? order?.currency?.name ?? ""}
           />
           <FormRow
             title="Costo Total"

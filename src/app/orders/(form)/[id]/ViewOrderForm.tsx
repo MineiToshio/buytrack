@@ -11,18 +11,22 @@ import { put } from "@/helpers/request";
 import { formatOrderFormData } from "../utils";
 
 type ViewOrderFormProps = {
-  order?: OrderFull | null;
+  order: OrderFull;
 };
 
-const updateOrder = (data: OrderFormType, orderId: string) => {
-  const updateOrder = formatOrderFormData(data, orderId);
+const updateOrder = (
+  data: OrderFormType,
+  currencyId: string,
+  orderId: string,
+) => {
+  const updateOrder = formatOrderFormData(data, currencyId, orderId);
   return put<Order>(UPDATE_ORDER, updateOrder);
 };
 
 const ViewOrderForm: FC<ViewOrderFormProps> = ({ order }) => {
   const { isLoading, mutate } = useMutation({
     mutationFn: ({ data, orderId }: { data: OrderFormType; orderId: string }) =>
-      updateOrder(data, orderId),
+      updateOrder(data, order.currencyId, orderId),
   });
 
   const handleSubmit: SubmitHandler<OrderFormType> = (data) => {

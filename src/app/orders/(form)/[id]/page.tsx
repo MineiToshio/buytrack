@@ -28,6 +28,7 @@ const page = async ({ params }: Params) => {
   const dehydratedState = dehydrate(queryClient);
 
   const order = await getOrderById(params.id, session.user.id);
+  if (order == null) return notFound();
 
   return (
     <div className="flex w-full flex-col items-center px-4 pt-8 md:px-10">

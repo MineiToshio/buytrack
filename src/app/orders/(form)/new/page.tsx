@@ -1,12 +1,23 @@
-import Hydrate from "@/modules/Hydrate";
 import Heading from "@/core/Heading";
+import { authOptions } from "@/helpers/auth";
 import { getQueryClient } from "@/helpers/reactQuery";
-import { dehydrate } from "@tanstack/react-query";
-import { getStores } from "@/queries/store";
-import NewOrderForm from "./NewOrderForm";
+import Hydrate from "@/modules/Hydrate";
 import { getCurrencies } from "@/queries/currency";
+import { getStores } from "@/queries/store";
+import { dehydrate } from "@tanstack/react-query";
+import { getServerSession } from "next-auth";
+import { notFound } from "next/navigation";
+import NewOrderForm from "./NewOrderForm";
+import { getUserById } from "@/queries/user";
+import Typography from "@/components/core/Typography";
+import Link from "next/link";
 
 const page = async () => {
+  const session = await getServerSession(authOptions);
+  if (!session) return notFound();
+
+  const user = await getUserById(session.user.id);
+
   const queryClient = getQueryClient();
   await Promise.all([
     queryClient.prefetchQuery(["stores"], getStores),
@@ -20,9 +31,21 @@ const page = async () => {
         Nuevo Pedido
       </Heading>
       <div className="w-form">
-        <Hydrate state={dehydratedState}>
-          <NewOrderForm />
-        </Hydrate>
+        {user?.currencyId ? (
+          <Hydrate state={dehydratedState}>
+            <NewOrderForm user={user!} />
+          </Hydrate>
+        ) : (
+          <div className="w-full flex justify-center">
+            <Typography>
+              Para registrar un pedido, primero{" "}
+              <Link href="/profile" className="link">
+                elige tu moneda local
+              </Link>
+              .
+            </Typography>
+          </div>
+        )}
       </div>
     </div>
   );

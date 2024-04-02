@@ -382,15 +382,13 @@ const StoreTable: FC<StoreTableProps> = ({ stores, hasFilters }) => {
         <div className="mt-4 text-center">
           {hasFilters ? (
             <Typography>
-              No se encontraron resultados con los filtros seleccionados.
+              ¡Oops! Parece que no hay resultados que coincidan con los filtros
+              que seleccionaste.
             </Typography>
           ) : (
             <Typography>
               Aún no hay tiendas. Puedes agregar una desde{" "}
-              <Link
-                href="/stores/new"
-                className="text-primary hover:text-green-600"
-              >
+              <Link href="/stores/new" className="link">
                 aquí
               </Link>
               .
