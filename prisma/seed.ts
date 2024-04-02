@@ -34,7 +34,7 @@ const addProductType = async () => {
     data: [
       { name: "Manga" },
       { name: "Funko" },
-      { name: "Cartas" },
+      { name: "TCG" },
       { name: "Cuidado Mangas" },
       { name: "Comics" },
     ],
