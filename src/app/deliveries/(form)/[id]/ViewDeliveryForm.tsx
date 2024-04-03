@@ -11,13 +11,17 @@ import { useMutation } from "@tanstack/react-query";
 import { SubmitHandler } from "react-hook-form";
 
 type ViewDeliveryFormProps = {
-  delivery?: DeliveryFull | null;
+  delivery: DeliveryFull;
   stores: Store[];
   orders: OrderWithProducts[];
 };
 
-const updateDelivery = (data: DeliveryFormType, deliveryId: string) => {
-  const delivery = formatDeliveryFormData(data, deliveryId);
+const updateDelivery = (
+  data: DeliveryFormType,
+  currencyId: string,
+  deliveryId: string,
+) => {
+  const delivery = formatDeliveryFormData(data, currencyId, deliveryId);
   return put(UPDATE_DELIVERY, delivery);
 };
 
@@ -33,7 +37,7 @@ const ViewDeliveryForm: FC<ViewDeliveryFormProps> = ({
     }: {
       data: DeliveryFormType;
       deliveryId: string;
-    }) => updateDelivery(data, deliveryId),
+    }) => updateDelivery(data, delivery.currencyId, deliveryId),
   });
 
   const handleSubmit: SubmitHandler<DeliveryFormType> = (data) => {

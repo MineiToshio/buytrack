@@ -22,6 +22,7 @@ const page = async ({ params }: Params) => {
   if (!session) return notFound();
 
   const delivery = await getDeliveryById(params.id, session.user.id);
+  if (delivery == null) return notFound();
 
   const queryClient = getQueryClient();
   const res = await Promise.all([

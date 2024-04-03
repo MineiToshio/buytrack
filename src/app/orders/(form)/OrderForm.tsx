@@ -88,9 +88,6 @@ const OrderForm: FC<OrderFormProps> = ({
     onSuccess: () => setStatus(OrderStatus.Canceled),
   });
 
-  const { options: currencyOptions, addNewOption: addNewCurrency } =
-    useSelect<Currency>(["currencies"], GET_CURRENCY, CREATE_CURRENCY);
-
   const isDeliveryAvailable =
     (order?.products?.filter((p) => p.deliveryId == null)?.length ?? 0) > 0;
 

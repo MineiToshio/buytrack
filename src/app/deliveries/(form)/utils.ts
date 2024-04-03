@@ -2,6 +2,7 @@ import { DeliveryFormType } from "./DeliveryForm";
 
 export const formatDeliveryFormData = (
   data: DeliveryFormType,
+  currencyId: string,
   deliveryId?: string,
 ) => ({
   deliveryId,
@@ -12,4 +13,5 @@ export const formatDeliveryFormData = (
   ...(data.approximateDeliveryDate?.max && {
     maxApproximateDeliveryDate: data.approximateDeliveryDate?.max,
   }),
+  currencyId,
 });

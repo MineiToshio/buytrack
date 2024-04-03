@@ -23,7 +23,7 @@ import ConfirmModal from "@/modules/ConfirmModal";
 import FormRow from "@/modules/FormRow";
 import Modal from "@/modules/Modal";
 import { cn } from "@/styles/utils";
-import { DeliveryFull, OrderWithProducts } from "@/types/prisma";
+import { DeliveryFull, OrderWithProducts, UserFull } from "@/types/prisma";
 import { Currency, Store } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
 import { FC, useCallback, useEffect, useState } from "react";
@@ -48,17 +48,30 @@ export type DeliveryFormType = {
   products: string[];
 };
 
-type DeliveryFormProps = {
+type EditDeliveryFormProps = {
+  defaults?: undefined;
+  stores: Store[];
+  orders: OrderWithProducts[];
+  delivery: DeliveryFull;
+  isLoading?: boolean;
+  user?: undefined;
+  onSubmit: (data: DeliveryFormType) => void;
+};
+
+type CreateDeliveryFormProps = {
   defaults?: {
     storeId?: string | null;
     orderId?: string | null;
   };
   stores: Store[];
   orders: OrderWithProducts[];
-  delivery?: DeliveryFull | null;
+  delivery?: undefined;
   isLoading?: boolean;
+  user: UserFull;
   onSubmit: (data: DeliveryFormType) => void;
 };
+
+type DeliveryFormProps = CreateDeliveryFormProps | EditDeliveryFormProps;
 
 const deleteDelivery = (deliveryId: string) =>
   del(`${DELETE_DELIVERY}${deliveryId}`);
@@ -72,6 +85,7 @@ const DeliveryForm: FC<DeliveryFormProps> = ({
   orders,
   delivery,
   isLoading,
+  user,
   onSubmit,
 }) => {
   const router = useRouter();
@@ -121,9 +135,6 @@ const DeliveryForm: FC<DeliveryFormProps> = ({
   });
 
   const storeOptions = formatOptions(stores);
-
-  const { options: currencyOptions, addNewOption: addNewCurrency } =
-    useSelect<Currency>(["currencies"], GET_CURRENCY, CREATE_CURRENCY);
 
   const {
     control,
@@ -370,16 +381,8 @@ const DeliveryForm: FC<DeliveryFormProps> = ({
                 title="Moneda"
                 Icon={Icons.Coins}
                 placeholder="Elige el tipo de moneda"
-                type="select"
-                options={currencyOptions}
-                control={control}
-                formField="currencyId"
-                newModalTitle="Nueva moneda"
-                onAdd={addNewCurrency}
-                required
-                error={!!errors.currencyId}
-                errorMessage="La moneda es obligatoria"
-                readOnly={isViewing}
+                type="label"
+                label={user?.currency?.name ?? delivery?.currency?.name ?? ""}
               />
               <FormRow
                 title="Precio"
