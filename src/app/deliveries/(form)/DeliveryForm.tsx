@@ -4,12 +4,7 @@ import Button from "@/core/Button";
 import DatePicker from "@/core/DatePicker";
 import Icons from "@/core/Icons";
 import Typography from "@/core/Typography";
-import {
-  CREATE_CURRENCY,
-  DELETE_DELIVERY,
-  GET_CURRENCY,
-  UPDATE_DELIVERY,
-} from "@/helpers/apiUrls";
+import { DELETE_DELIVERY, UPDATE_DELIVERY } from "@/helpers/apiUrls";
 import {
   FormState,
   deliveryStatus,
@@ -18,13 +13,14 @@ import {
 import { del, put } from "@/helpers/request";
 import { formatDate } from "@/helpers/utils";
 import useRouter from "@/hooks/useRouter";
-import useSelect, { formatOptions } from "@/hooks/useSelect";
+import { formatOptions } from "@/hooks/useSelect";
 import ConfirmModal from "@/modules/ConfirmModal";
 import FormRow from "@/modules/FormRow";
 import Modal from "@/modules/Modal";
 import { cn } from "@/styles/utils";
-import { DeliveryFull, OrderWithProducts, UserFull } from "@/types/prisma";
-import { Currency, Store } from "@prisma/client";
+import { UserSession } from "@/types/next-auth";
+import { DeliveryFull, OrderWithProducts } from "@/types/prisma";
+import { Store } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
 import { FC, useCallback, useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
@@ -67,7 +63,7 @@ type CreateDeliveryFormProps = {
   orders: OrderWithProducts[];
   delivery?: undefined;
   isLoading?: boolean;
-  user: UserFull;
+  user: UserSession;
   onSubmit: (data: DeliveryFormType) => void;
 };
 

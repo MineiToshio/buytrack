@@ -3,16 +3,16 @@
 import { CREATE_ORDER } from "@/helpers/apiUrls";
 import { post } from "@/helpers/request";
 import useRouter from "@/hooks/useRouter";
-import { UserFull } from "@/types/prisma";
 import { Order } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
 import { FC, useState } from "react";
 import { SubmitHandler } from "react-hook-form";
 import OrderForm, { OrderFormType } from "../OrderForm";
 import { formatOrderFormData } from "../utils";
+import { UserSession } from "@/types/next-auth";
 
 type NewOrderFormProps = {
-  user: UserFull;
+  user: UserSession;
 };
 
 const createOrder = (data: OrderFormType, currencyId: string) => {
@@ -25,7 +25,7 @@ const NewOrderForm: FC<NewOrderFormProps> = ({ user }) => {
   const [isPending, setIsPending] = useState<boolean>(false);
 
   const { isLoading, mutate } = useMutation({
-    mutationFn: (data: OrderFormType) => createOrder(data, user.currencyId!),
+    mutationFn: (data: OrderFormType) => createOrder(data, user.currency?.id!),
     onSuccess: (newOrder) => {
       setIsPending(true);
       router.push(`/orders/${newOrder?.id}`);

@@ -16,8 +16,6 @@ const page = async () => {
   const session = await getServerSession(authOptions);
   if (!session) return notFound();
 
-  const user = await getUserById(session.user.id);
-
   const queryClient = getQueryClient();
   await Promise.all([
     queryClient.prefetchQuery(["stores"], getStores),
@@ -31,9 +29,9 @@ const page = async () => {
         Nuevo Pedido
       </Heading>
       <div className="w-form">
-        {user?.currencyId ? (
+        {session.user.currency ? (
           <Hydrate state={dehydratedState}>
-            <NewOrderForm user={user!} />
+            <NewOrderForm user={session.user!} />
           </Hydrate>
         ) : (
           <div className="w-full flex justify-center">

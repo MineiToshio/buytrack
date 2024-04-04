@@ -3,12 +3,7 @@
 import ConfirmModal from "@/components/modules/ConfirmModal";
 import Button from "@/core/Button";
 import Icons from "@/core/Icons";
-import {
-  CREATE_CURRENCY,
-  GET_CURRENCY,
-  GET_STORE,
-  UPDATE_ORDER,
-} from "@/helpers/apiUrls";
+import { GET_STORE, UPDATE_ORDER } from "@/helpers/apiUrls";
 import {
   FormState,
   orderStatusColor,
@@ -19,7 +14,7 @@ import useRouter from "@/hooks/useRouter";
 import useSelect from "@/hooks/useSelect";
 import FormRow from "@/modules/FormRow";
 import { OrderFull, UserFull } from "@/types/prisma";
-import { Currency, Order, OrderStatus } from "@prisma/client";
+import { Order, OrderStatus } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
 import { FC, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -27,6 +22,7 @@ import OrderFormProducts from "./OrderFormProducts";
 import OrderNotes from "./OrderNotes";
 import OrderPayments from "./OrderPayments";
 import OrderReview from "./OrderReview";
+import { UserSession } from "@/types/next-auth";
 
 export type Product = {
   productId?: string;
@@ -57,7 +53,7 @@ type EditOrderFormProps = {
 type CreateOrderFormProps = {
   order?: null;
   isLoading?: boolean;
-  user: UserFull;
+  user: UserSession;
   onSubmit: (data: OrderFormType) => void;
 };
 
