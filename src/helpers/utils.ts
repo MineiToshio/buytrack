@@ -57,7 +57,7 @@ export const pushState = (params: string) =>
 export const formatTimeAgo = (date: Date) => format(date, "es");
 
 export const getMonthRange = (date = new Date()) => {
-  const firstDay = new Date(date.getFullYear(), date.getMonth() + 1, 1);
+  const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
   const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
 
   return {

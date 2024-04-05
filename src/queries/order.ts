@@ -29,16 +29,20 @@ type ProductUpdate = {
 };
 
 type OrderCompute = Order & {
-  products: (OrderProduct & {
-    delivery: Delivery | null;
-  })[];
   orderPayments: OrderPayment[];
 };
 
-const computeOrder = <T extends OrderCompute>(order: T) => ({
-  ...order,
-  paidAmount: order.orderPayments.reduce((acc, curr) => acc + curr.amount, 0),
-});
+export const computeOrder = <T extends OrderCompute>(order: T) => {
+  const paidAmount = order.orderPayments.reduce(
+    (acc, curr) => acc + curr.amount,
+    0,
+  );
+  return {
+    ...order,
+    paidAmount,
+    remainingPayment: order.productsCost - paidAmount,
+  };
+};
 
 export const getOrdersByUser = async (userId: string) => {
   const orders = await db.order.findMany({
