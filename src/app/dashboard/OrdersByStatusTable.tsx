@@ -5,7 +5,7 @@ import { typeSafeObjectEntries } from "@/helpers/utils";
 import type { OrderByStatus } from "@/queries/dashboard";
 import { FC, useMemo } from "react";
 
-type OrdersByStateTableProps = {
+type OrdersByStatusTableProps = {
   data: OrderByStatus;
 };
 
@@ -21,7 +21,7 @@ const COLUMNS: SimpleTableColumns = [
   },
 ];
 
-const OrdersByStateTable: FC<OrdersByStateTableProps> = ({ data }) => {
+const OrdersByStatusTable: FC<OrdersByStatusTableProps> = ({ data }) => {
   const statusData = useMemo(
     () =>
       typeSafeObjectEntries(orderStatusLabel)
@@ -50,4 +50,4 @@ const OrdersByStateTable: FC<OrdersByStateTableProps> = ({ data }) => {
   );
 };
 
-export default OrdersByStateTable;
+export default OrdersByStatusTable;
