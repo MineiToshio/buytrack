@@ -65,3 +65,12 @@ export const getMonthRange = (date = new Date()) => {
     last: lastDay,
   };
 };
+
+export const typeSafeObjectKeys = Object.keys as <T extends object>(
+  obj: T,
+) => Array<keyof T>;
+
+export const typeSafeObjectEntries = <T extends Record<PropertyKey, unknown>>(
+  obj: T,
+): { [K in keyof T]: [K, T[K]] }[keyof T][] =>
+  Object.entries(obj) as { [K in keyof T]: [K, T[K]] }[keyof T][];
