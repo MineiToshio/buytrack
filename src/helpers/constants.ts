@@ -51,16 +51,19 @@ export const deliveryStatusData = Object.freeze({
     label: "Sin Entrega",
     color: "muted",
     icon: Icons.NoDelivery,
+    order: 1,
   }),
   [deliveryStatus.delivered]: Object.freeze({
     label: "Entregado",
     color: "primary",
     icon: Icons.Delivered,
+    order: 3,
   }),
   [deliveryStatus.inRoute]: Object.freeze({
     label: "En Ruta",
     color: "secondary",
     icon: Icons.Courier,
+    order: 2,
   }),
 });
 

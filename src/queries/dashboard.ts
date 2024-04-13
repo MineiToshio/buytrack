@@ -16,7 +16,7 @@ export type OrderByStatus =
     >
   | {};
 
-type DeliveryByStatus = Record<DeliveryStatus, number> | {};
+export type DeliveryByStatus = Record<DeliveryStatus, number> | {};
 
 type OrderByMonth = {
   year: number;

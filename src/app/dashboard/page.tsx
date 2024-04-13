@@ -11,6 +11,7 @@ import {
 import { OrderStatus } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { notFound } from "next/navigation";
+import DeliveriesByStatusTable from "./DeliveriesByStatusTable";
 import InfoCard from "./InfoCard";
 import OrdersByStatusTable from "./OrdersByStatusTable";
 
@@ -97,8 +98,9 @@ const page = async () => {
           />
         </div>
         <div className="flex w-full gap-4">
-          <div className="flex flex-col w-full">
+          <div className="flex flex-col w-full gap-10">
             <OrdersByStatusTable data={ordersByStatus} />
+            <DeliveriesByStatusTable data={deliveriesByStatus} />
           </div>
           <div className="flex flex-col w-full"></div>
         </div>
