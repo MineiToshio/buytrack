@@ -22,7 +22,7 @@ const InfoCard: FC<InfoCardProps> = ({
   return (
     <div
       className={cn(
-        "w-full bg-slate-100 p-2 border rounded-lg shadow-lg flex gap-2",
+        "w-full bg-slate-100 p-2 rounded-lg shadow-md flex gap-2",
         className,
       )}
     >

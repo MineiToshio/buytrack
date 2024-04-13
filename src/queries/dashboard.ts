@@ -6,7 +6,7 @@ import { DeliveryStatus } from "@/types/prisma";
 import { OrderStatus, Prisma } from "@prisma/client";
 import { computeOrder } from "./order";
 
-type OrderByStatus =
+export type OrderByStatus =
   | Record<
       OrderStatus,
       {

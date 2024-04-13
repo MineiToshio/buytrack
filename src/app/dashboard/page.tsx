@@ -1,17 +1,18 @@
 import Heading from "@/core/Heading";
 import Icons from "@/core/Icons";
+import { authOptions } from "@/helpers/auth";
+import { deliveryStatus } from "@/helpers/constants";
 import {
   getDeliveriesGroupByStatus,
   getOrdersByMonth,
   getOrdersGroupByStatus,
   getOrdersOfTheMonth,
 } from "@/queries/dashboard";
-import InfoCard from "./InfoCard";
 import { OrderStatus } from "@prisma/client";
-import { deliveryStatus } from "@/helpers/constants";
-import { notFound } from "next/navigation";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/helpers/auth";
+import { notFound } from "next/navigation";
+import InfoCard from "./InfoCard";
+import OrdersByStateTable from "./OrdersByStateTable";
 
 const page = async () => {
   const session = await getServerSession(authOptions);
@@ -67,7 +68,7 @@ const page = async () => {
         Dashboard
       </Heading>
       <div className="flex flex-col w-full">
-        <div className="grid gap-4 lg:grid-cols-4 sm:grid-cols-2 grid-cols-1 w-full">
+        <div className="grid gap-4 lg:grid-cols-4 sm:grid-cols-2 grid-cols-1 w-full mb-8 lg:mb-12">
           <InfoCard
             title="Órdenes pendientes"
             Icon={Icons.File}
@@ -94,6 +95,12 @@ const page = async () => {
             data={`${session.user.currency
               ?.symbol} ${pendingPayment.toString()}`}
           />
+        </div>
+        <div className="flex w-full gap-4">
+          <div className="flex flex-col w-full">
+            <OrdersByStateTable data={ordersByStatus} />
+          </div>
+          <div className="flex flex-col w-full"></div>
         </div>
       </div>
     </div>
