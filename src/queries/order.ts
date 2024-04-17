@@ -2,12 +2,7 @@ import { db } from "@/helpers/db";
 import { addDays, createId } from "@/helpers/utils";
 import { OrderArrivalStatus, Transaction } from "@/types/prisma";
 import { DateRange } from "@/types/types";
-import {
-  Order,
-  OrderPayment,
-  OrderStatus,
-  Prisma
-} from "@prisma/client";
+import { Order, OrderPayment, OrderStatus, Prisma } from "@prisma/client";
 
 type OrderCreate =
   | (Prisma.Without<Prisma.OrderCreateInput, Prisma.OrderUncheckedCreateInput> &

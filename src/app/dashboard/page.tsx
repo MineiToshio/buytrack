@@ -5,6 +5,7 @@ import { deliveryStatus } from "@/helpers/constants";
 import {
   getDeliveriesGroupByStatus,
   getOrdersByMonth,
+  getOrdersForThisMonth,
   getOrdersGroupByStatus,
   getOrdersOfTheMonth,
 } from "@/queries/dashboard";
@@ -23,7 +24,7 @@ const page = async () => {
     await Promise.all([
       getOrdersGroupByStatus(session.user),
       getDeliveriesGroupByStatus(session.user),
-      getOrdersOfTheMonth(session.user),
+      getOrdersForThisMonth(session.user),
       getOrdersByMonth(session.user),
     ]);
 
@@ -56,7 +57,7 @@ const page = async () => {
   const pendingPayment = Object.entries(ordersByStatus).reduce(
     (acc, [key, value]) => {
       if (key !== OrderStatus.Canceled && key !== OrderStatus.Delivered) {
-        return acc + value.productsCost;
+        return acc + value.remainingPayment;
       }
       return acc;
     },
