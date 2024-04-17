@@ -324,13 +324,19 @@ const OrderTable: FC<Props> = ({ orders, hasFilters }) => {
                             </table>
                           </div>
                           <div className="mt-4 flex w-full flex-col md:mt-0">
-                            <Typography className="font-semibold">
-                              {`${row.original.products.length} Pago${
-                                row.original.products.length > 1 ? "s" : ""
-                              } Realizado${
-                                row.original.products.length > 1 ? "s" : ""
-                              }`}
-                            </Typography>
+                            {row.original.orderPayments.length > 0 && (
+                              <Typography className="font-semibold">
+                                {`${row.original.orderPayments.length} Pago${
+                                  row.original.orderPayments.length > 1
+                                    ? "s"
+                                    : ""
+                                } Realizado${
+                                  row.original.orderPayments.length > 1
+                                    ? "s"
+                                    : ""
+                                }`}
+                              </Typography>
+                            )}
                             <OrderPaymentTable
                               className="w-fit"
                               currency={row.original.currency.name}
