@@ -66,6 +66,15 @@ export const getMonthRange = (date = new Date()) => {
   };
 };
 
+export const addDays = (date = new Date(), days: number) => {
+  const newDate = new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate() + days,
+  );
+  return newDate;
+};
+
 export const typeSafeObjectKeys = Object.keys as <T extends object>(
   obj: T,
 ) => Array<keyof T>;

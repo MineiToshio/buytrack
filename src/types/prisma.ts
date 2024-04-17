@@ -36,6 +36,13 @@ export type StoreFull = Store & {
   rating?: number;
 };
 
+export enum OrderArrivalStatus {
+  Delayed = "Delayed",
+  OnTime = "OnTime",
+  Pending = "Pending",
+  Completed = "Completed",
+}
+
 export type OrderFullProduct = OrderProduct & {
   delivery: Delivery | null;
 };

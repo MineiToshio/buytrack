@@ -1,14 +1,12 @@
 import { db } from "@/helpers/db";
-import { createId } from "@/helpers/utils";
-import { Transaction } from "@/types/prisma";
+import { addDays, createId } from "@/helpers/utils";
+import { OrderArrivalStatus, Transaction } from "@/types/prisma";
 import { DateRange } from "@/types/types";
 import {
-  Delivery,
   Order,
   OrderPayment,
-  OrderProduct,
   OrderStatus,
-  Prisma,
+  Prisma
 } from "@prisma/client";
 
 type OrderCreate =
@@ -33,14 +31,41 @@ type OrderCompute = Order & {
 };
 
 export const computeOrder = <T extends OrderCompute>(order: T) => {
+  const today = new Date();
+  let arrivalStatus = OrderArrivalStatus.Pending;
+
+  if (
+    order.status === OrderStatus.Canceled ||
+    order.status === OrderStatus.Delivered
+  ) {
+    arrivalStatus = OrderArrivalStatus.Completed;
+  } else if (
+    order.maxApproximateDeliveryDate &&
+    order.minApproximateDeliveryDate
+  ) {
+    const maxDelivery = addDays(order.maxApproximateDeliveryDate, 1).getTime();
+    const minDelivery = order.minApproximateDeliveryDate.getTime();
+
+    if (maxDelivery < today.getTime()) {
+      arrivalStatus = OrderArrivalStatus.Delayed;
+    } else if (
+      minDelivery <= today.getTime() &&
+      maxDelivery >= today.getTime()
+    ) {
+      arrivalStatus = OrderArrivalStatus.OnTime;
+    }
+  }
+
   const paidAmount = order.orderPayments.reduce(
     (acc, curr) => acc + curr.amount,
     0,
   );
+
   return {
     ...order,
     paidAmount,
     remainingPayment: order.productsCost - paidAmount,
+    arrivalStatus,
   };
 };
 
