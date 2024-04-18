@@ -8,6 +8,7 @@ import {
   getOrdersForThisMonth,
   getOrdersGroupByStatus,
   getOrdersOfTheMonth,
+  getPendingOrdersGroupByStore,
 } from "@/queries/dashboard";
 import { OrderStatus } from "@prisma/client";
 import { getServerSession } from "next-auth";
@@ -15,18 +16,25 @@ import { notFound } from "next/navigation";
 import DeliveriesByStatusTable from "./DeliveriesByStatusTable";
 import InfoCard from "./InfoCard";
 import OrdersByStatusTable from "./OrdersByStatusTable";
+import PendingOrdersByStoreTable from "./PendingOrdersByStoreTable";
 
 const page = async () => {
   const session = await getServerSession(authOptions);
   if (!session) return notFound();
 
-  const [ordersByStatus, deliveriesByStatus, ordersOfTheMonth, ordersByMonth] =
-    await Promise.all([
-      getOrdersGroupByStatus(session.user),
-      getDeliveriesGroupByStatus(session.user),
-      getOrdersForThisMonth(session.user),
-      getOrdersByMonth(session.user),
-    ]);
+  const [
+    ordersByStatus,
+    deliveriesByStatus,
+    ordersOfTheMonth,
+    ordersByMonth,
+    pendingOrdersByStore,
+  ] = await Promise.all([
+    getOrdersGroupByStatus(session.user),
+    getDeliveriesGroupByStatus(session.user),
+    getOrdersForThisMonth(session.user),
+    getOrdersByMonth(session.user),
+    getPendingOrdersGroupByStore(session.user),
+  ]);
 
   const pendingOrders = Object.entries(ordersByStatus).reduce(
     (acc, [key, value]) => {
@@ -101,6 +109,7 @@ const page = async () => {
         <div className="flex w-full gap-4">
           <div className="flex flex-col w-full gap-10">
             <OrdersByStatusTable data={ordersByStatus} />
+            <PendingOrdersByStoreTable data={pendingOrdersByStore} />
             <DeliveriesByStatusTable data={deliveriesByStatus} />
           </div>
           <div className="flex flex-col w-full"></div>

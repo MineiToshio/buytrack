@@ -27,6 +27,24 @@ export type OrderByStatus =
     >
   | {};
 
+type PendingOrderByStoreResponse = {
+  storeId: string;
+  store: string;
+  count: number;
+  symbol: string;
+  productsCost: number;
+  paidAmount: number | null;
+};
+
+type PendingOrdersByStoreResponse = PendingOrderByStoreResponse[];
+
+export type PendingOrdersByStore = Array<
+  PendingOrderByStoreResponse & {
+    remainingPayment: number;
+    remainingPaymentText: string;
+  }
+>;
+
 export type DeliveryByStatus = Record<DeliveryStatus, number> | {};
 
 type OrderByMonth = {
@@ -65,6 +83,41 @@ export const getOrdersGroupByStatus = async (user: UserSession) => {
     }),
     {},
   );
+};
+
+export const getPendingOrdersGroupByStore = async (
+  user: UserSession,
+): Promise<PendingOrdersByStore> => {
+  const userId = Prisma.raw(user.id);
+  const currencyId = Prisma.raw(user.currency?.id ?? "");
+  const delivered = Prisma.raw(OrderStatus.Delivered);
+  const canceled = Prisma.raw(OrderStatus.Canceled);
+
+  const res: PendingOrdersByStoreResponse = await db.$queryRaw`
+    select
+      o.storeId as 'storeId',
+      s.name as 'store',
+      c.symbol as 'symbol',
+      count(distinct o.id) as 'count',
+      sum(op.amount)  as 'paidAmount',
+      (select sum(o2.productsCost) from \`${DB_NAME}\`.order o2 where o.storeId = o2.storeId) as 'productsCost'
+    from \`${DB_NAME}\`.order o
+      join \`${DB_NAME}\`.store s on o.storeId = s.id
+      join \`${DB_NAME}\`.currency c on o.currencyId = c.id
+      left join \`${DB_NAME}\`.orderpayment op on o.id = op.orderId
+    where o.status <> \'${canceled}\'
+      and o.status <> \'${delivered}\'
+      and o.userId = \'${userId}\'
+      and o.currencyId = \'${currencyId}\'
+    group by o.storeId, c.id;
+  `;
+
+  return res.map((r) => ({
+    ...r,
+    count: Number(r.count),
+    remainingPayment: r.productsCost - (r.paidAmount ?? 0),
+    remainingPaymentText: `${r.symbol} ${r.productsCost - (r.paidAmount ?? 0)}`,
+  }));
 };
 
 export const getDeliveriesGroupByStatus = async (user: UserSession) => {
