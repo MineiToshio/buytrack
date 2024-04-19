@@ -28,13 +28,19 @@ const PendingOrdersByStoreTable: FC<PendingOrdersByStoreTableProps> = ({
 }) => (
   <div className="flex flex-col">
     <Typography className="font-semibold">
-      ÓRDENES PENDIENTES POR TIENDA
+      PEDIDOS PENDIENTES POR TIENDA
     </Typography>
     <Typography size="sm" className="mb-6">
       Aquí puedes ver la cantidad de órdenes que aún no han sido entregadas,
       organizadas por tienda.
     </Typography>
-    <SimpleTable data={data} columns={COLUMNS} dataKeyAttribute="storeId" />
+    <SimpleTable
+      data={data}
+      columns={COLUMNS}
+      dataKeyAttribute="storeId"
+      emptyText="No tienes ningún pedido pendiente de entrega"
+      showRowNumber
+    />
   </div>
 );
 

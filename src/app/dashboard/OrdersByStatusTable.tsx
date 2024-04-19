@@ -40,7 +40,7 @@ const OrdersByStatusTable: FC<OrdersByStatusTableProps> = ({ data }) => {
 
   return (
     <div className="flex flex-col">
-      <Typography className="font-semibold">ÓRDENES POR ESTADO</Typography>
+      <Typography className="font-semibold">PEDIDOS POR ESTADO</Typography>
       <Typography size="sm" className="mb-6">
         Aquí puedes ver la cantidad de órdenes realizadas, organizadas por su
         estado.
