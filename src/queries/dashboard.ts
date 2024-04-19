@@ -2,7 +2,7 @@ import { deliveryStatus } from "@/helpers/constants";
 import { db } from "@/helpers/db";
 import { getMonthRange } from "@/helpers/utils";
 import { UserSession } from "@/types/next-auth";
-import { DeliveryStatus } from "@/types/prisma";
+import { DeliveryFull, DeliveryStatus } from "@/types/prisma";
 import { OrderStatus, Prisma } from "@prisma/client";
 import { computeOrder } from "./order";
 
@@ -120,28 +120,6 @@ export const getPendingOrdersGroupByStore = async (
   }));
 };
 
-export const getDeliveriesGroupByStatus = async (user: UserSession) => {
-  const res = await db.delivery.groupBy({
-    by: "delivered",
-    _count: {
-      _all: true,
-    },
-    where: {
-      currencyId: user.currency?.id,
-      orderProducts: { some: { order: { userId: user.id } } },
-    },
-  });
-
-  return res.reduce(
-    (acc: DeliveryByStatus, curr) => ({
-      ...acc,
-      [curr.delivered ? deliveryStatus.delivered : deliveryStatus.inRoute]:
-        curr._count._all,
-    }),
-    {},
-  );
-};
-
 export const getOrdersOfTheMonth = async (user: UserSession) => {
   const monthRange = getMonthRange();
 
@@ -203,3 +181,41 @@ export const getOrdersByMonth = (
     group by year(o.orderDate), month(o.orderDate)
   `;
 };
+
+export const getDeliveriesGroupByStatus = async (user: UserSession) => {
+  const res = await db.delivery.groupBy({
+    by: "delivered",
+    _count: {
+      _all: true,
+    },
+    where: {
+      currencyId: user.currency?.id,
+      orderProducts: { some: { order: { userId: user.id } } },
+    },
+  });
+
+  return res.reduce(
+    (acc: DeliveryByStatus, curr) => ({
+      ...acc,
+      [curr.delivered ? deliveryStatus.delivered : deliveryStatus.inRoute]:
+        curr._count._all,
+    }),
+    {},
+  );
+};
+
+export const getPendingDeliveries = (
+  user: UserSession,
+): Promise<DeliveryFull[]> =>
+  db.delivery.findMany({
+    include: {
+      store: true,
+      orderProducts: true,
+      currency: true,
+    },
+    where: {
+      currencyId: user.currency?.id,
+      orderProducts: { some: { order: { userId: user.id } } },
+      delivered: false,
+    },
+  });

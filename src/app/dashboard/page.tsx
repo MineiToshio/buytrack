@@ -8,6 +8,7 @@ import {
   getOrdersForThisMonth,
   getOrdersGroupByStatus,
   getOrdersOfTheMonth,
+  getPendingDeliveries,
   getPendingOrdersGroupByStore,
 } from "@/queries/dashboard";
 import { OrderStatus } from "@prisma/client";
@@ -17,6 +18,7 @@ import DeliveriesByStatusTable from "./DeliveriesByStatusTable";
 import InfoCard from "./InfoCard";
 import OrdersByStatusTable from "./OrdersByStatusTable";
 import PendingOrdersByStoreTable from "./PendingOrdersByStoreTable";
+import PendingDeliveriesTable from "./PendingDeliveriesTable";
 
 const page = async () => {
   const session = await getServerSession(authOptions);
@@ -28,12 +30,14 @@ const page = async () => {
     ordersOfTheMonth,
     ordersByMonth,
     pendingOrdersByStore,
+    pendingDeliveries,
   ] = await Promise.all([
     getOrdersGroupByStatus(session.user),
     getDeliveriesGroupByStatus(session.user),
     getOrdersForThisMonth(session.user),
     getOrdersByMonth(session.user),
     getPendingOrdersGroupByStore(session.user),
+    getPendingDeliveries(session.user),
   ]);
 
   const pendingOrders = Object.entries(ordersByStatus).reduce(
@@ -45,12 +49,6 @@ const page = async () => {
     },
     0,
   );
-
-  const pendingDeliveries =
-    Object.entries(deliveriesByStatus).length > 0
-      ? // @ts-ignore
-        deliveriesByStatus[deliveryStatus.inRoute]
-      : 0;
 
   const totalPaymentOfTheMonth = ordersOfTheMonth.reduce((acc, curr) => {
     if (
@@ -78,7 +76,7 @@ const page = async () => {
         Dashboard
       </Heading>
       <div className="flex flex-col w-full">
-        <div className="grid gap-4 lg:grid-cols-4 sm:grid-cols-2 grid-cols-1 w-full mb-8 lg:mb-12">
+        <div className="grid gap-5 lg:grid-cols-4 sm:grid-cols-2 grid-cols-1 w-full mb-8 lg:mb-12">
           <InfoCard
             title="Órdenes pendientes"
             Icon={Icons.File}
@@ -89,7 +87,7 @@ const page = async () => {
             title="Delivery pendientes"
             Icon={Icons.Courier}
             iconColor="bg-muted text-white"
-            data={pendingDeliveries.toString()}
+            data={pendingDeliveries.length.toString()}
           />
           <InfoCard
             title="Pago total del mes"
@@ -106,13 +104,15 @@ const page = async () => {
               ?.symbol} ${pendingPayment.toString()}`}
           />
         </div>
-        <div className="flex w-full gap-4">
+        <div className="flex w-full gap-5">
           <div className="flex flex-col w-full gap-10">
             <OrdersByStatusTable data={ordersByStatus} />
             <PendingOrdersByStoreTable data={pendingOrdersByStore} />
-            <DeliveriesByStatusTable data={deliveriesByStatus} />
           </div>
-          <div className="flex flex-col w-full"></div>
+          <div className="flex flex-col w-full gap-10">
+            <DeliveriesByStatusTable data={deliveriesByStatus} />
+            <PendingDeliveriesTable data={pendingDeliveries} />
+          </div>
         </div>
       </div>
     </div>
