@@ -19,6 +19,7 @@ import {
 } from "@tanstack/react-table";
 import Link from "next/link";
 import { FC, Fragment, useState } from "react";
+import CollapseTableInfo from "./CollapseTableInfo";
 
 type PendingDeliveriesTableProps = {
   data: DeliveryFull[];
@@ -119,7 +120,7 @@ const PendingDeliveriesTable: FC<PendingDeliveriesTableProps> = ({ data }) => {
   ]);
 
   const table = useReactTable({
-    data: data ?? [],
+    data,
     columns,
     defaultColumn: {
       minSize: 0,
@@ -229,24 +230,16 @@ const PendingDeliveriesTable: FC<PendingDeliveriesTableProps> = ({ data }) => {
                           <div className="flex w-full flex-col pb-6 pl-10 md:flex-row">
                             <div className="flex w-full flex-col gap-2">
                               {row.original.currier && (
-                                <div className="flex gap-2">
-                                  <Typography className="font-semibold">
-                                    Courier
-                                  </Typography>
-                                  <Typography>
-                                    {row.original.currier}
-                                  </Typography>
-                                </div>
+                                <CollapseTableInfo
+                                  title="Courier"
+                                  info={row.original.currier}
+                                />
                               )}
                               {row.original.tracking && (
-                                <div className="flex gap-2">
-                                  <Typography className="font-semibold">
-                                    Tracking
-                                  </Typography>
-                                  <Typography>
-                                    {row.original.tracking}
-                                  </Typography>
-                                </div>
+                                <CollapseTableInfo
+                                  title="Tracking"
+                                  info={row.original.tracking}
+                                />
                               )}
                               <div className="flex flex-col">
                                 <Typography className="font-semibold">
@@ -270,8 +263,8 @@ const PendingDeliveriesTable: FC<PendingDeliveriesTableProps> = ({ data }) => {
                                         <td>
                                           <Typography>
                                             {r.price
-                                              ? `${row.original.currency.name} ${r.price}`
-                                              : `${row.original.currency.name} -`}
+                                              ? `${row.original.currency.symbol} ${r.price}`
+                                              : `${row.original.currency.symbol} -`}
                                           </Typography>
                                         </td>
                                       </tr>
