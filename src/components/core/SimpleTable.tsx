@@ -1,6 +1,7 @@
-import { FC } from "react";
 import Typography from "@/core/Typography";
 import { cn } from "@/styles/utils";
+import { FC } from "react";
+import EmptyTableBody from "./EmptyTableBody";
 
 export type SimpleTableColumns = Array<{
   title: string;
@@ -19,21 +20,6 @@ type SimpleTableProps = {
   className?: string;
   emptyText?: string;
 };
-
-type EmptyBodyProps = {
-  numberOfColumns: number;
-  emptyText?: string;
-};
-
-const EmptyBody: FC<EmptyBodyProps> = ({ numberOfColumns, emptyText }) => (
-  <tr className="border-b">
-    <td colSpan={numberOfColumns}>
-      <Typography className="text-center p-2">
-        {emptyText ?? "No hay información para mostrar"}
-      </Typography>
-    </td>
-  </tr>
-);
 
 const SimpleTable: FC<SimpleTableProps> = ({
   data,
@@ -100,7 +86,7 @@ const SimpleTable: FC<SimpleTableProps> = ({
               ))}
             </>
           ) : (
-            <EmptyBody
+            <EmptyTableBody
               numberOfColumns={columns.length + (showRowNumber ? 1 : 0)}
               emptyText={emptyText}
             />
