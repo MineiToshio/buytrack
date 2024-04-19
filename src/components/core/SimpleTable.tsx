@@ -17,7 +17,23 @@ type SimpleTableProps = {
   showRowNumber?: boolean;
   dataKeyAttribute: string;
   className?: string;
+  emptyText?: string;
 };
+
+type EmptyBodyProps = {
+  numberOfColumns: number;
+  emptyText?: string;
+};
+
+const EmptyBody: FC<EmptyBodyProps> = ({ numberOfColumns, emptyText }) => (
+  <tr className="border-b">
+    <td colSpan={numberOfColumns}>
+      <Typography className="text-center p-2">
+        {emptyText ?? "No hay información para mostrar"}
+      </Typography>
+    </td>
+  </tr>
+);
 
 const SimpleTable: FC<SimpleTableProps> = ({
   data,
@@ -25,6 +41,7 @@ const SimpleTable: FC<SimpleTableProps> = ({
   showRowNumber,
   dataKeyAttribute,
   className,
+  emptyText,
 }) => {
   return (
     <div
@@ -50,33 +67,44 @@ const SimpleTable: FC<SimpleTableProps> = ({
           </tr>
         </thead>
         <tbody>
-          {data.map((itemBody, i) => (
-            <tr
-              key={itemBody[dataKeyAttribute]}
-              className={cn({
-                "border-b": i < data.length - 1,
-                "bg-slate-100": i % 2 !== 0,
-              })}
-            >
-              {showRowNumber && (
-                <td className="text-center w-7 px-2 py-1">
-                  <Typography>{i + 1}</Typography>
-                </td>
-              )}
-              {columns.map((itemHeader) => (
-                <td
-                  className="px-2 py-1"
-                  align={itemHeader.align ?? "center"}
-                  key={
-                    itemBody[dataKeyAttribute] +
-                    itemBody[itemHeader.dataAttribute]
-                  }
+          {data.length > 0 ? (
+            <>
+              {data.map((itemBody, i) => (
+                <tr
+                  key={itemBody[dataKeyAttribute]}
+                  className={cn({
+                    "border-b": i < data.length - 1,
+                    "bg-slate-100": i % 2 !== 0,
+                  })}
                 >
-                  <Typography>{itemBody[itemHeader.dataAttribute]}</Typography>
-                </td>
+                  {showRowNumber && (
+                    <td className="text-center w-7 px-2 py-1">
+                      <Typography>{i + 1}</Typography>
+                    </td>
+                  )}
+                  {columns.map((itemHeader) => (
+                    <td
+                      className="px-2 py-1"
+                      align={itemHeader.align ?? "center"}
+                      key={
+                        itemBody[dataKeyAttribute] +
+                        itemBody[itemHeader.dataAttribute]
+                      }
+                    >
+                      <Typography>
+                        {itemBody[itemHeader.dataAttribute]}
+                      </Typography>
+                    </td>
+                  ))}
+                </tr>
               ))}
-            </tr>
-          ))}
+            </>
+          ) : (
+            <EmptyBody
+              numberOfColumns={columns.length + (showRowNumber ? 1 : 0)}
+              emptyText={emptyText}
+            />
+          )}
         </tbody>
       </table>
     </div>
