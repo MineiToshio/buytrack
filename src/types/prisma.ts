@@ -55,6 +55,8 @@ export type OrderFull = Order & {
   store: Store;
   currency: Currency;
   paidAmount: number;
+  remainingPayment: number;
+  arrivalStatus: OrderArrivalStatus;
 };
 
 export type OrderWithProducts = Order & {

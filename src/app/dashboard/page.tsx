@@ -1,13 +1,11 @@
 import Heading from "@/core/Heading";
 import Icons from "@/core/Icons";
 import { authOptions } from "@/helpers/auth";
-import { deliveryStatus } from "@/helpers/constants";
 import {
   getDeliveriesGroupByStatus,
   getOrdersByMonth,
   getOrdersForThisMonth,
   getOrdersGroupByStatus,
-  getOrdersOfTheMonth,
   getPendingDeliveries,
   getPendingOrdersGroupByStore,
 } from "@/queries/dashboard";
@@ -17,8 +15,9 @@ import { notFound } from "next/navigation";
 import DeliveriesByStatusTable from "./DeliveriesByStatusTable";
 import InfoCard from "./InfoCard";
 import OrdersByStatusTable from "./OrdersByStatusTable";
-import PendingOrdersByStoreTable from "./PendingOrdersByStoreTable";
 import PendingDeliveriesTable from "./PendingDeliveriesTable";
+import PendingOrdersByStoreTable from "./PendingOrdersByStoreTable";
+import PendingOrdersThisMonthTable from "./PendingOrdersThisMonthTable";
 
 const page = async () => {
   const session = await getServerSession(authOptions);
@@ -104,12 +103,13 @@ const page = async () => {
               ?.symbol} ${pendingPayment.toString()}`}
           />
         </div>
-        <div className="flex w-full gap-5">
+        <div className="flex w-full gap-5 flex-col md:flex-row">
           <div className="flex flex-col w-full gap-10">
             <OrdersByStatusTable data={ordersByStatus} />
-            <PendingOrdersByStoreTable data={pendingOrdersByStore} />
+            <PendingOrdersThisMonthTable data={ordersOfTheMonth} />
           </div>
           <div className="flex flex-col w-full gap-10">
+            <PendingOrdersByStoreTable data={pendingOrdersByStore} />
             <DeliveriesByStatusTable data={deliveriesByStatus} />
             <PendingDeliveriesTable data={pendingDeliveries} />
           </div>

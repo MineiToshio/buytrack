@@ -2,8 +2,20 @@ import { deliveryStatus } from "@/helpers/constants";
 import { db } from "@/helpers/db";
 import { getMonthRange } from "@/helpers/utils";
 import { UserSession } from "@/types/next-auth";
-import { DeliveryFull, DeliveryStatus } from "@/types/prisma";
-import { OrderStatus, Prisma } from "@prisma/client";
+import {
+  DeliveryFull,
+  DeliveryStatus,
+  OrderArrivalStatus,
+} from "@/types/prisma";
+import {
+  Currency,
+  Order,
+  OrderPayment,
+  OrderProduct,
+  OrderStatus,
+  Prisma,
+  Store,
+} from "@prisma/client";
 import { computeOrder } from "./order";
 
 const DB_NAME = Prisma.raw(process.env.DATABASE_NAME ?? "");
@@ -44,6 +56,15 @@ export type PendingOrdersByStore = Array<
     remainingPaymentText: string;
   }
 >;
+export type OrderForThisMonth = Order & {
+  products: OrderProduct[];
+  orderPayments: OrderPayment[];
+  store: Store;
+  currency: Currency;
+  paidAmount: number;
+  remainingPayment: number;
+  arrivalStatus: OrderArrivalStatus;
+};
 
 export type DeliveryByStatus = Record<DeliveryStatus, number> | {};
 
@@ -139,12 +160,17 @@ export const getOrdersOfTheMonth = async (user: UserSession) => {
   return orders.map((o) => computeOrder(o));
 };
 
-export const getOrdersForThisMonth = async (user: UserSession) => {
+export const getOrdersForThisMonth = async (
+  user: UserSession,
+): Promise<OrderForThisMonth[]> => {
   const monthRange = getMonthRange();
 
   const orders = await db.order.findMany({
     include: {
       orderPayments: true,
+      products: true,
+      currency: true,
+      store: true,
     },
     where: {
       AND: [

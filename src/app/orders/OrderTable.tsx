@@ -64,7 +64,7 @@ const columns = [
       const date = info.getValue();
       return <Typography>{date != null ? formatDate(date) : "-"}</Typography>;
     },
-    header: () => "FECHA DE PEDIDO",
+    header: () => "FECHA DEL PEDIDO",
   }),
   columnHelper.accessor(
     (row) => ({ name: row.store.name, url: row.store.url }),
