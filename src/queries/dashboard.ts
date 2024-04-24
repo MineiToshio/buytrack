@@ -1,6 +1,6 @@
-import { deliveryStatus } from "@/helpers/constants";
+import { abbreviatedMonthNames, deliveryStatus } from "@/helpers/constants";
 import { db } from "@/helpers/db";
-import { getMonthRange } from "@/helpers/utils";
+import { getMonthRange, getPreviousMonth } from "@/helpers/utils";
 import { UserSession } from "@/types/next-auth";
 import {
   DeliveryFull,
@@ -17,6 +17,7 @@ import {
   Store,
 } from "@prisma/client";
 import { computeOrder } from "./order";
+import { MonthNumber, isMonthNumber } from "@/types/types";
 
 const DB_NAME = Prisma.raw(process.env.DATABASE_NAME ?? "");
 
@@ -68,11 +69,15 @@ export type OrderForThisMonth = Order & {
 
 export type DeliveryByStatus = Record<DeliveryStatus, number> | {};
 
-type OrderByMonth = {
+export type OrderByMonthResponse = {
   year: number;
-  month: number;
+  month: MonthNumber;
   quantity: number;
   cost: number;
+};
+
+export type OrderByMonth = OrderByMonthResponse & {
+  monthLabel: string;
 };
 
 export const getOrdersGroupByStatus = async (user: UserSession) => {
@@ -189,13 +194,13 @@ export const getOrdersForThisMonth = async (
   return orders.map((o) => computeOrder(o));
 };
 
-export const getOrdersByMonth = (
+export const getOrdersByMonth = async (
   user: UserSession,
 ): Promise<OrderByMonth[]> => {
   const userId = Prisma.raw(user.id);
   const currencyId = Prisma.raw(user.currency?.id ?? "");
 
-  return db.$queryRaw`
+  const orders: OrderByMonthResponse[] = await db.$queryRaw`
     select
       year(o.orderDate) as 'year',
       month(o.orderDate) as 'month',
@@ -204,8 +209,41 @@ export const getOrdersByMonth = (
     from \`${DB_NAME}\`.Order o 
     where o.userId = \'${userId}\'
       and o.currencyId = \'${currencyId}\'
+      and o.orderDate between DATE_SUB(CURDATE(), INTERVAL 1 YEAR) and now()
     group by year(o.orderDate), month(o.orderDate)
   `;
+
+  const today = new Date();
+  let currentMonth = today.getMonth() + 1;
+  const graphOrders = [];
+
+  for (let i = 0; i < 12; i++) {
+    const monthOrder = orders.find((o) => Number(o.month) === currentMonth);
+
+    if (isMonthNumber(currentMonth)) {
+      const monthLabel = abbreviatedMonthNames[currentMonth];
+      if (monthOrder) {
+        graphOrders.push({
+          ...monthOrder,
+          year: Number(monthOrder.year),
+          quantity: Number(monthOrder.quantity),
+          monthLabel,
+        });
+      } else {
+        graphOrders.push({
+          year: 0,
+          month: currentMonth,
+          quantity: 0,
+          cost: 0,
+          monthLabel,
+        });
+      }
+    }
+
+    currentMonth = getPreviousMonth(currentMonth);
+  }
+
+  return graphOrders.reverse();
 };
 
 export const getDeliveriesGroupByStatus = async (user: UserSession) => {

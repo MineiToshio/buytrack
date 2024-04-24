@@ -83,3 +83,8 @@ export const typeSafeObjectEntries = <T extends Record<PropertyKey, unknown>>(
   obj: T,
 ): { [K in keyof T]: [K, T[K]] }[keyof T][] =>
   Object.entries(obj) as { [K in keyof T]: [K, T[K]] }[keyof T][];
+
+export const getPreviousMonth = (month: number) => {
+  if (month === 1) return 12;
+  return month - 1;
+};

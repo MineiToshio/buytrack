@@ -72,3 +72,18 @@ export enum FormState {
   edit,
   view,
 }
+
+export const abbreviatedMonthNames = {
+  1: "ENE",
+  2: "FEB",
+  3: "MAR",
+  4: "ABR",
+  5: "MAY",
+  6: "JUN",
+  7: "JUL",
+  8: "AGO",
+  9: "SET",
+  10: "OCT",
+  11: "NOV",
+  12: "DIC",
+};
