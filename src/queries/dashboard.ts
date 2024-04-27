@@ -69,14 +69,34 @@ export type OrderForThisMonth = Order & {
 
 export type DeliveryByStatus = Record<DeliveryStatus, number> | {};
 
-export type OrderByMonthResponse = {
+export type OrderByMonth = {
   year: number;
   month: MonthNumber;
   quantity: number;
   cost: number;
+  productsCount: number;
 };
 
-export type OrderByMonth = OrderByMonthResponse & {
+export type OrderPaymentByMonth = {
+  year: number;
+  month: MonthNumber;
+  paidAmount: number;
+};
+
+export type DeliveryProductByMonth = {
+  year: number;
+  month: MonthNumber;
+  productsCount: number;
+};
+
+export type OrderFromPast12Month = {
+  year: number;
+  month: MonthNumber;
+  quantity: number;
+  cost: number;
+  paidAmount: number;
+  productsDeliveryCount: number;
+  productsOrderCount: number;
   monthLabel: string;
 };
 
@@ -194,24 +214,81 @@ export const getOrdersForThisMonth = async (
   return orders.map((o) => computeOrder(o));
 };
 
-export const getOrdersByMonth = async (
+export const getOrdersByMonth = (
   user: UserSession,
 ): Promise<OrderByMonth[]> => {
   const userId = Prisma.raw(user.id);
   const currencyId = Prisma.raw(user.currency?.id ?? "");
 
-  const orders: OrderByMonthResponse[] = await db.$queryRaw`
+  return db.$queryRaw`
     select
       year(o.orderDate) as 'year',
       month(o.orderDate) as 'month',
-      count(o.id) as 'quantity',
-      sum(o.productsCost) as 'cost'
-    from \`${DB_NAME}\`.Order o 
+      count(distinct o.id) as 'quantity',
+      sum(o.productsCost) as 'cost',
+      sum(groupedProducts.productsCount) as 'productsCount'
+    from \`${DB_NAME}\`.Order o
+      left join (
+        select op.orderId,
+          count(op.id) as 'productsCount'
+        from \`${DB_NAME}\`.orderproduct op
+        group by op.orderId
+        ) as groupedProducts on o.id = groupedProducts.orderId
     where o.userId = \'${userId}\'
       and o.currencyId = \'${currencyId}\'
       and o.orderDate between DATE_SUB(CURDATE(), INTERVAL 1 YEAR) and now()
-    group by year(o.orderDate), month(o.orderDate)
+    group by year(o.orderDate), month(o.orderDate);
   `;
+};
+
+export const getOrderPaymentsByMonth = (
+  user: UserSession,
+): Promise<OrderPaymentByMonth[]> => {
+  const userId = Prisma.raw(user.id);
+  const currencyId = Prisma.raw(user.currency?.id ?? "");
+
+  return db.$queryRaw`
+    select
+      year(op.paymentDate) as 'year',
+      month(op.paymentDate) as 'month',
+      sum(op.amount) as 'paidAmount'
+    from \`${DB_NAME}\`.Order o
+      left join \`${DB_NAME}\`.orderpayment op on o.id = op.orderId
+    where o.userId = \'${userId}\'
+      and o.currencyId = \'${currencyId}\'
+      and op.paymentDate between DATE_SUB(CURDATE(), INTERVAL 1 YEAR) and now()
+    group by year(op.paymentDate), month(op.paymentDate)
+  `;
+};
+
+export const getDeliveryProductsByMonth = (
+  user: UserSession,
+): Promise<DeliveryProductByMonth[]> => {
+  const userId = Prisma.raw(user.id);
+
+  return db.$queryRaw`
+    select
+      year(d.deliveryDate) as 'year',
+      month(d.deliveryDate) as 'month',
+      count(distinct op.id) as 'productsCount'
+    from \`${DB_NAME}\`.delivery d
+      join \`${DB_NAME}\`.orderproduct op on d.id = op.deliveryId
+      join \`${DB_NAME}\`.order o on o.id = op.orderId
+    where
+      o.userId = \'${userId}\'
+      and d.deliveryDate between DATE_SUB(CURDATE(), INTERVAL 1 YEAR) and now()
+    group by year(d.deliveryDate), month(d.deliveryDate)
+  `;
+};
+
+export const getOrdersFromPast12Months = async (
+  user: UserSession,
+): Promise<OrderFromPast12Month[]> => {
+  const [orders, orderPayments, deliveryProducts] = await Promise.all([
+    getOrdersByMonth(user),
+    getOrderPaymentsByMonth(user),
+    getDeliveryProductsByMonth(user),
+  ]);
 
   const today = new Date();
   let currentMonth = today.getMonth() + 1;
@@ -219,25 +296,28 @@ export const getOrdersByMonth = async (
 
   for (let i = 0; i < 12; i++) {
     const monthOrder = orders.find((o) => Number(o.month) === currentMonth);
+    const monthDeliveryProducts = deliveryProducts.find(
+      (o) => Number(o.month) === currentMonth,
+    );
+    const monthOrderPayments = orderPayments.find(
+      (o) => Number(o.month) === currentMonth,
+    );
 
     if (isMonthNumber(currentMonth)) {
       const monthLabel = abbreviatedMonthNames[currentMonth];
-      if (monthOrder) {
-        graphOrders.push({
-          ...monthOrder,
-          year: Number(monthOrder.year),
-          quantity: Number(monthOrder.quantity),
-          monthLabel,
-        });
-      } else {
-        graphOrders.push({
-          year: 0,
-          month: currentMonth,
-          quantity: 0,
-          cost: 0,
-          monthLabel,
-        });
-      }
+
+      graphOrders.push({
+        year: Number(monthOrder?.year ?? monthDeliveryProducts?.year ?? 0),
+        month: currentMonth,
+        quantity: Number(monthOrder?.quantity ?? 0),
+        cost: monthOrder?.cost ?? 0,
+        paidAmount: monthOrderPayments?.paidAmount ?? 0,
+        productsDeliveryCount: Number(
+          monthDeliveryProducts?.productsCount ?? 0,
+        ),
+        productsOrderCount: Number(monthOrder?.productsCount ?? 0),
+        monthLabel,
+      });
     }
 
     currentMonth = getPreviousMonth(currentMonth);
