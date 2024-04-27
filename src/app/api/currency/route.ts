@@ -11,6 +11,7 @@ import { z } from "zod";
 
 const reqPostSchema = z.object({
   name: z.string(),
+  symbol: z.string(),
 });
 
 export const GET = async () => {
@@ -31,7 +32,7 @@ export const POST = async (req: NextRequest) => {
       return apiResponses().unauthorized;
     }
 
-    const { name } = reqPostSchema.parse(body);
+    const { name, symbol } = reqPostSchema.parse(body);
 
     const existingCurrency = await getCurrencyByName(name);
 
@@ -40,7 +41,7 @@ export const POST = async (req: NextRequest) => {
         .badRequest;
     }
 
-    const newCurrency = await createCurrency({ name });
+    const newCurrency = await createCurrency({ name, symbol });
     return apiResponses(newCurrency).success;
   } catch (error) {
     return apiResponses(error).error;
