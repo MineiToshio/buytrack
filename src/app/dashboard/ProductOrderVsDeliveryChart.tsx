@@ -19,7 +19,7 @@ type OrdersByMonthChartProps = {
   data: OrderPaymentByMonth[];
 };
 
-const OrdersByMonthChart: FC<OrdersByMonthChartProps> = ({ data }) => (
+const ProductOrderVsDeliveryChart: FC<OrdersByMonthChartProps> = ({ data }) => (
   <div className="flex flex-col mb-4 w-full">
     <Typography className="font-semibold">
       PRODUCTOS PEDIDOS VS ENTREGADOS
@@ -89,4 +89,4 @@ const OrdersByMonthChart: FC<OrdersByMonthChartProps> = ({ data }) => (
   </div>
 );
 
-export default OrdersByMonthChart;
+export default ProductOrderVsDeliveryChart;

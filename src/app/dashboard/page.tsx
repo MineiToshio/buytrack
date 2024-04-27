@@ -18,7 +18,7 @@ import OrdersByStatusTable from "./OrdersByStatusTable";
 import PendingDeliveriesTable from "./PendingDeliveriesTable";
 import PendingOrdersByStoreTable from "./PendingOrdersByStoreTable";
 import PendingOrdersThisMonthTable from "./PendingOrdersThisMonthTable";
-import OrdersByMonthChart from "./OrdersByMonthChart";
+import ProductOrderVsDeliveryChart from "./ProductOrderVsDeliveryChart";
 
 const page = async () => {
   const session = await getServerSession(authOptions);
@@ -105,7 +105,7 @@ const page = async () => {
           />
         </div>
         <div className="flex w-full gap-5 flex-col md:flex-row">
-          <OrdersByMonthChart data={ordersByMonth} />
+          <ProductOrderVsDeliveryChart data={ordersByMonth} />
         </div>
         <div className="flex w-full gap-5 flex-col md:flex-row">
           <div className="flex flex-col w-full gap-10">
