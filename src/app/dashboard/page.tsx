@@ -3,7 +3,7 @@ import Icons from "@/core/Icons";
 import { authOptions } from "@/helpers/auth";
 import {
   getDeliveriesGroupByStatus,
-  getOrdersByMonth,
+  getOrdersFromPast12Months,
   getOrdersForThisMonth,
   getOrdersGroupByStatus,
   getPendingDeliveries,
@@ -18,6 +18,7 @@ import OrdersByStatusTable from "./OrdersByStatusTable";
 import PendingDeliveriesTable from "./PendingDeliveriesTable";
 import PendingOrdersByStoreTable from "./PendingOrdersByStoreTable";
 import PendingOrdersThisMonthTable from "./PendingOrdersThisMonthTable";
+import OrdersByMonthChart from "./OrdersByMonthChart";
 
 const page = async () => {
   const session = await getServerSession(authOptions);
@@ -34,7 +35,7 @@ const page = async () => {
     getOrdersGroupByStatus(session.user),
     getDeliveriesGroupByStatus(session.user),
     getOrdersForThisMonth(session.user),
-    getOrdersByMonth(session.user),
+    getOrdersFromPast12Months(session.user),
     getPendingOrdersGroupByStore(session.user),
     getPendingDeliveries(session.user),
   ]);
@@ -74,8 +75,8 @@ const page = async () => {
       <Heading size="sm" className="mb-5">
         Dashboard
       </Heading>
-      <div className="flex flex-col w-full">
-        <div className="grid gap-5 lg:grid-cols-4 sm:grid-cols-2 grid-cols-1 w-full mb-8 lg:mb-12">
+      <div className="flex flex-col w-full gap-10">
+        <div className="grid gap-5 lg:grid-cols-4 sm:grid-cols-2 grid-cols-1 w-full">
           <InfoCard
             title="Órdenes pendientes"
             Icon={Icons.File}
@@ -102,6 +103,9 @@ const page = async () => {
             data={`${session.user.currency
               ?.symbol} ${pendingPayment.toString()}`}
           />
+        </div>
+        <div className="flex w-full gap-5 flex-col md:flex-row">
+          <OrdersByMonthChart data={ordersByMonth} />
         </div>
         <div className="flex w-full gap-5 flex-col md:flex-row">
           <div className="flex flex-col w-full gap-10">
